@@ -17,11 +17,7 @@ import java.util.Date;
 @Table(name = "tbl_tj_l11960_selic")
 public class Indice_TJ_L11960_Selic extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @JoinColumn(name = "ID_BC", referencedColumnName = "id_bc", nullable = false, columnDefinition = "Codigo Id do IndiceCb")
+    @JoinColumn(name = "ID_BC", referencedColumnName = "id_bc", nullable = false)
     @ManyToOne
     private IndiceBC indiceBC;
 

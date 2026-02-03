@@ -19,7 +19,7 @@ import java.util.Date;
 public class IndiceBC {
 
     @Id
-    @Column(name = "id_bc", nullable = false, columnDefinition = "Codigo do indice do banco central")
+    @Column(name = "id_bc", nullable = false)
     private int ID_BC;
     private String serie;
     private int codigo;
