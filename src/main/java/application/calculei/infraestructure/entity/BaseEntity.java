@@ -10,7 +10,6 @@ import lombok.Setter;
 import java.util.Date;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @MappedSuperclass
@@ -24,5 +23,19 @@ public abstract class BaseEntity {
     private Double valor;
     @JsonFormat(pattern = "dd~MM~yyyy")
     private Date dataInit;
+
+    protected BaseEntity(
+            Long id,
+            String nome,
+            Double fator,
+            Double valor,
+            Date dataInit
+    ) {
+        this.id = id;
+        this.nome = nome;
+        this.fator = fator;
+        this.valor = valor;
+        this.dataInit = dataInit;
+    }
 
 }

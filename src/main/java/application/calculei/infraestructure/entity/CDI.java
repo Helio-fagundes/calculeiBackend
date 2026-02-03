@@ -10,7 +10,6 @@ import lombok.Setter;
 import java.util.Date;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -20,5 +19,10 @@ public class CDI extends BaseEntity{
     @JoinColumn(name = "ID_BC", referencedColumnName = "id_bc", nullable = false)
     @ManyToOne
     private IndiceBC indiceBC;
+
+    public CDI(Long id, String nome, Double fator, Double valor, Date dataInit, IndiceBC indiceBC) {
+        super(id, nome, fator, valor, dataInit);
+        this.indiceBC = indiceBC;
+    }
 
 }
