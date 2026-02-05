@@ -1,6 +1,5 @@
-package application.calculei.infraestructure.repository;
+package application.calculei.infraestructure.repository.cdi;
 
-import application.calculei.infraestructure.entity.BaseEntity;
 import application.calculei.infraestructure.entity.CDI;
 import org.springframework.data.jpa.repository.JpaRepository;
 

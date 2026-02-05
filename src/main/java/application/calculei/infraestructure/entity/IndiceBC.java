@@ -13,7 +13,6 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "tbl_indices_bc")
 public class IndiceBC {
@@ -31,4 +30,16 @@ public class IndiceBC {
     private String periodicidade;
     @JsonFormat(pattern = "dd~MM~yyyy")
     private Date lastUpdate;
+
+    public IndiceBC(int ID_BC, String serie, int codigo, String descricao, Date dataInit, String urlBC, String controller, String periodicidade, Date lastUpdate) {
+        this.ID_BC = ID_BC;
+        this.serie = serie;
+        this.codigo = codigo;
+        this.descricao = descricao;
+        this.dataInit = dataInit;
+        this.urlBC = urlBC;
+        this.controller = controller;
+        this.periodicidade = periodicidade;
+        this.lastUpdate = lastUpdate;
+    }
 }

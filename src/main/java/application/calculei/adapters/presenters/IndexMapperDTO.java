@@ -1,4 +1,4 @@
-package application.calculei.adapters.mapper;
+package application.calculei.adapters.presenters;
 
 import application.calculei.domain.dto.IndexRequestDTO;
 import application.calculei.domain.dto.IndexResponseDTO;

@@ -1,0 +1,15 @@
+package application.calculei.adapters.mapper.tbf;
+
+import application.calculei.domain.models.Index;
+import application.calculei.infraestructure.entity.TBF;
+
+public class TbfMapperEntity {
+
+    public static Index toDomain(TBF entity){
+        return new Index(entity.getId(), entity.getNome(), entity.getFator(), entity.getValor(), entity.getDataInit());
+    }
+
+    public static TBF toEntity(Index domain){
+        return new TBF(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit());
+    }
+}
