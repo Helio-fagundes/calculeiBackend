@@ -45,8 +45,8 @@ public class CdiJpaRepository implements IndexRepository {
     }
 
     @Override
-    public List<Index> findByDateMax(Date dataMax) {
-        List<CDI> entityList = repository.findByDataMax(dataMax);
+    public List<Index> findByDataLessThanEqual(Date dataInit) {
+        List<CDI> entityList = repository.findByDataInitLessThanEqual(dataInit);
         return entityList.stream().map(CdiMapperEntity::toDomain).toList();
     }
 }

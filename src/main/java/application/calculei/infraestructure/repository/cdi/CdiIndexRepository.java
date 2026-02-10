@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface CdiIndexRepository extends JpaRepository<CDI, Long> {
     List<CDI> findByValor(Double valor);
-    List<CDI> findByDataInitBetween(Date inicio, Date fim);
-    List<CDI> findByDataMax(Date data);
+    List<CDI> findByDataInitBetween(Date dataInit, Date fim);
+    List<CDI> findByDataInitLessThanEqual(Date dataInit);
 }

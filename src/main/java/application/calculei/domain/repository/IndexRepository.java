@@ -12,5 +12,5 @@ public interface IndexRepository {
     List<Index> findByValor(Double valor);
     Optional<Index> findByLastUpdate();
     List<Index> findByDataInitBetween(Date dataInit, Date dataFim);
-    List<Index> findByDateMax(Date dataMax);
+    List<Index> findByDataLessThanEqual(Date dataInit);
 }

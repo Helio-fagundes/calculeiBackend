@@ -45,8 +45,8 @@ public class IgpdiJpaRepository implements IndexRepository {
     }
 
     @Override
-    public List<Index> findByDateMax(Date dataMax) {
-        List<IGPDI> listEntity = repository.findByDataMax(dataMax);
+    public List<Index> findByDataLessThanEqual(Date data) {
+        List<IGPDI> listEntity = repository.findByDataInitLessThanEqual(data);
         return listEntity.stream().map(IgpdiMapperEntity::toDomain).toList();
     }
 }

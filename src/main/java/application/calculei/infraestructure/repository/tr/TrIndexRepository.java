@@ -8,5 +8,5 @@ import java.util.List;
 public interface TrIndexRepository {
     List<TR> findByValor(Double valor);
     List<TR> findByDataInitBetween(Date inicio, Date fim);
-    List<TR> findByDataMax(Date data);
+    List<TR> findByDataInitLessThanEqual(Date dataInit);
 }

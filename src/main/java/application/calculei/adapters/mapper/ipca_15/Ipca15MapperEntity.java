@@ -1,4 +1,4 @@
-package application.calculei.adapters.mapper.ipca15;
+package application.calculei.adapters.mapper.ipca_15;
 
 import application.calculei.domain.models.Index;
 import application.calculei.infraestructure.entity.IPCA15;

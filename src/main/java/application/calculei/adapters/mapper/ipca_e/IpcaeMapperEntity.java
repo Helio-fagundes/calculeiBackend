@@ -1,4 +1,4 @@
-package application.calculei.adapters.mapper.ipcae;
+package application.calculei.adapters.mapper.ipca_e;
 
 import application.calculei.domain.models.Index;
 import application.calculei.infraestructure.entity.IPCAE;

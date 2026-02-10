@@ -1,4 +1,4 @@
-package application.calculei.adapters.mapper.ipcbr;
+package application.calculei.adapters.mapper.ipc_br;
 
 import application.calculei.domain.models.Index;
 import application.calculei.infraestructure.entity.IPCBR;

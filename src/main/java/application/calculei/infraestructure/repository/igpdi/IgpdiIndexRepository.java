@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface IgpdiIndexRepository extends JpaRepository<IGPDI, Long> {
     List<IGPDI> findByValor(Double valor);
-    List<IGPDI> findByDataInitBetween(Date inicio, Date fim);
-    List<IGPDI> findByDataMax(Date data);
+    List<IGPDI> findByDataInitBetween(Date dataInit, Date fim);
+    List<IGPDI> findByDataInitLessThanEqual(Date dataInit);
 }
