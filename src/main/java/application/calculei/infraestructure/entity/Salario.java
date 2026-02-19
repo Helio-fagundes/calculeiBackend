@@ -21,7 +21,7 @@ public class Salario extends BaseEntity {
     @ManyToOne
     private IndiceBC indiceBC;
 
-    public Salario(Long id, String nome, Double fator, Double valor, Date dataInit) {
+    public Salario(Long id, String nome, Double fator, Double valor, Date dataInit, IndiceBC indiceBC) {
         super(id, nome, fator, valor, dataInit);
         this.indiceBC = indiceBC;
     }

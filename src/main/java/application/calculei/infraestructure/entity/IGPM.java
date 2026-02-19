@@ -19,7 +19,7 @@ public class IGPM extends BaseEntity {
     @ManyToOne
     private IndiceBC indiceBC;
 
-    public IGPM(Long id, String nome, Double fator, Double valor, Date dataInit) {
+    public IGPM(Long id, String nome, Double fator, Double valor, Date dataInit, IndiceBC indiceBC) {
         super(id, nome, fator, valor, dataInit);
         this.indiceBC = indiceBC;
     }

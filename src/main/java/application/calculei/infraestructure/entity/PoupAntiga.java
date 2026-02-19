@@ -19,7 +19,7 @@ public class PoupAntiga extends BaseEntity {
     @ManyToOne
     private IndiceBC indiceBC;
 
-    public PoupAntiga(Long id, String nome, Double fator, Double valor, Date dataInit) {
+    public PoupAntiga(Long id, String nome, Double fator, Double valor, Date dataInit, IndiceBC indiceBC) {
         super(id, nome, fator, valor, dataInit);
         this.indiceBC = indiceBC;
     }

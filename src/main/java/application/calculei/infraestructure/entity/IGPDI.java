@@ -19,7 +19,7 @@ public class IGPDI extends BaseEntity {
     @ManyToOne
     private IndiceBC indiceBC;
 
-    public IGPDI(Long id, String nome, Double fator, Double valor, Date dataInit) {
+    public IGPDI(Long id, String nome, Double fator, Double valor, Date dataInit, IndiceBC indiceBC) {
         super(id, nome, fator, valor, dataInit);
         this.indiceBC = indiceBC;
     }

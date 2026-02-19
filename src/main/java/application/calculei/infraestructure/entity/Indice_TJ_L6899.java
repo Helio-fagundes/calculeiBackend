@@ -19,7 +19,7 @@ public class Indice_TJ_L6899 extends BaseEntity {
     @ManyToOne
     private IndiceBC indiceBC;
 
-    public Indice_TJ_L6899(Long id, String nome, Double fator, Double valor, Date dataInit) {
+    public Indice_TJ_L6899(Long id, String nome, Double fator, Double valor, Date dataInit, IndiceBC indiceBC) {
         super(id, nome, fator, valor, dataInit);
         this.indiceBC = indiceBC;
     }

@@ -1,6 +1,7 @@
 package application.calculei.adapters.mapper.poupanca_antiga;
 
 import application.calculei.domain.models.Index;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.PoupAntiga;
 
 public class PoupAntigaMapperEntity {
@@ -10,6 +11,6 @@ public class PoupAntigaMapperEntity {
     }
 
     public static PoupAntiga toEntity(Index domain){
-        return new PoupAntiga(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit());
+        return new PoupAntiga(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
     }
 }

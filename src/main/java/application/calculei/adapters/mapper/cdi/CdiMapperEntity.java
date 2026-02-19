@@ -11,6 +11,6 @@ public class CdiMapperEntity {
     }
 
     public static CDI toEntity(Index domain){
-        return new CDI(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit());
+        return new CDI(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
     }
 }

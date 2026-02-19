@@ -2,6 +2,7 @@ package application.calculei.adapters.mapper.igpm;
 
 import application.calculei.domain.models.Index;
 import application.calculei.infraestructure.entity.IGPM;
+import application.calculei.infraestructure.entity.IndiceBC;
 
 public class IgpmMapperEntity {
 
@@ -10,6 +11,6 @@ public class IgpmMapperEntity {
     }
 
     public static IGPM toEntity(Index domain){
-        return new IGPM(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit());
+        return new IGPM(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
     }
 }

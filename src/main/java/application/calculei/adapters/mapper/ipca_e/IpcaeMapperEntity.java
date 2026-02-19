@@ -2,6 +2,7 @@ package application.calculei.adapters.mapper.ipca_e;
 
 import application.calculei.domain.models.Index;
 import application.calculei.infraestructure.entity.IPCAE;
+import application.calculei.infraestructure.entity.IndiceBC;
 
 public class IpcaeMapperEntity {
 
@@ -10,6 +11,6 @@ public class IpcaeMapperEntity {
     }
 
     public static IPCAE toEntity(Index domain){
-        return new IPCAE(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit());
+        return new IPCAE(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
     }
 }

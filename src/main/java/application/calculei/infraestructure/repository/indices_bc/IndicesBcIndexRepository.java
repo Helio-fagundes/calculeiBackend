@@ -1,4 +1,7 @@
 package application.calculei.infraestructure.repository.indices_bc;
 
-public interface IndicesBcIndexRepository {
+import application.calculei.infraestructure.entity.IndiceBC;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface IndicesBcIndexRepository extends JpaRepository<IndiceBC, Long> {
 }

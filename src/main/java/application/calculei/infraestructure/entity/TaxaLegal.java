@@ -19,7 +19,7 @@ public class TaxaLegal extends BaseEntity {
     @ManyToOne
     private IndiceBC indiceBC;
 
-    public TaxaLegal(Long id, String nome, Double fator, Double valor, Date dataInit) {
+    public TaxaLegal(Long id, String nome, Double fator, Double valor, Date dataInit, IndiceBC indiceBC) {
         super(id, nome, fator, valor, dataInit);
         this.indiceBC = indiceBC;
     }

@@ -1,6 +1,7 @@
 package application.calculei.adapters.mapper.ufir_rj;
 
 import application.calculei.domain.models.Index;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.UfirRJ;
 
 public class UfirRjMapperEntity {
@@ -10,6 +11,6 @@ public class UfirRjMapperEntity {
     }
 
     public static UfirRJ toEntity(Index domain){
-        return new UfirRJ(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit());
+        return new UfirRJ(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
     }
 }

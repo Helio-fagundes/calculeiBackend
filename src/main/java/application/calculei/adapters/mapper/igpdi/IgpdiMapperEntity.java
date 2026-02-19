@@ -2,6 +2,7 @@ package application.calculei.adapters.mapper.igpdi;
 
 import application.calculei.domain.models.Index;
 import application.calculei.infraestructure.entity.IGPDI;
+import application.calculei.infraestructure.entity.IndiceBC;
 
 public class IgpdiMapperEntity {
 
@@ -10,6 +11,6 @@ public class IgpdiMapperEntity {
     }
 
     public static IGPDI toEntity(Index domain){
-        return new IGPDI(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(),domain.getDataInit());
+        return new IGPDI(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(),domain.getDataInit(), new IndiceBC());
     }
 }

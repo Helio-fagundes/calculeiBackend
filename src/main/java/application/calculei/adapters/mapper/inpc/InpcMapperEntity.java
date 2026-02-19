@@ -2,6 +2,7 @@ package application.calculei.adapters.mapper.inpc;
 
 import application.calculei.domain.models.Index;
 import application.calculei.infraestructure.entity.INPC;
+import application.calculei.infraestructure.entity.IndiceBC;
 
 public class InpcMapperEntity {
 
@@ -10,6 +11,6 @@ public class InpcMapperEntity {
     }
 
     public static INPC toEntity(Index domain){
-        return new INPC(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit());
+        return new INPC(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
     }
 }

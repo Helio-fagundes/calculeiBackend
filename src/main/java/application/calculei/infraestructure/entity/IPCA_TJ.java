@@ -19,7 +19,7 @@ public class IPCA_TJ extends BaseEntity {
     @ManyToOne
     private IndiceBC indiceBC;
 
-    public IPCA_TJ(Long id, String nome, Double fator, Double valor, Date dataInit) {
+    public IPCA_TJ(Long id, String nome, Double fator, Double valor, Date dataInit, IndiceBC indiceBC) {
         super(id, nome, fator, valor, dataInit);
         this.indiceBC = indiceBC;
     }
