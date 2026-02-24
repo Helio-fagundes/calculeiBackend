@@ -6,6 +6,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.IPCA_TJ;
 import application.calculei.infraestructure.repository.ipca_tj.IpcaTjIndexRepository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -38,13 +39,13 @@ public class IpcaJpaRepository implements IndexRepository {
     }
 
     @Override
-    public List<Index> findByDataInitBetween(Date dataInit, Date dataFim) {
+    public List<Index> findByDataInitBetween(LocalDate dataInit, LocalDate dataFim) {
         List<IPCA_TJ> entity = repository.findByDataInitBetween(dataInit, dataFim);
         return entity.stream().map(IpcaTjMapperEntity::toDomain).toList();
     }
 
     @Override
-    public List<Index> findByDataLessThanEqual(Date dataInit) {
+    public List<Index> findByDataLessThanEqual(LocalDate dataInit) {
         List<IPCA_TJ> listEntity = repository.findByDataInitLessThanEqual(dataInit);
         return listEntity.stream().map(IpcaTjMapperEntity::toDomain).toList();
     }

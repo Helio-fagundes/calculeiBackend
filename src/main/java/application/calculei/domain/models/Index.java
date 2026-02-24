@@ -1,6 +1,6 @@
 package application.calculei.domain.models;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Index {
 
@@ -8,9 +8,9 @@ public class Index {
     private String nome;
     private Double fator;
     private Double valor;
-    private Date dataInit;
+    private LocalDate dataInit;
 
-    public Index(Long id, String nome, Double fator, Double valor, Date dataInit) {
+    public Index(Long id, String nome, Double fator, Double valor, LocalDate dataInit) {
         this.id = id;
         this.nome = nome;
         this.fator = fator;
@@ -50,11 +50,11 @@ public class Index {
         this.valor = valor;
     }
 
-    public Date getDataInit() {
+    public LocalDate getDataInit() {
         return dataInit;
     }
 
-    public void setDataInit(Date dataInit) {
+    public void setDataInit(LocalDate dataInit) {
         this.dataInit = dataInit;
     }
 }

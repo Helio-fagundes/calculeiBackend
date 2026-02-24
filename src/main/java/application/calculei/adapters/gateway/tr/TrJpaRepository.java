@@ -6,6 +6,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.TR;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -38,13 +39,13 @@ public class TrJpaRepository implements IndexRepository {
     }
 
     @Override
-    public List<Index> findByDataInitBetween(Date dataInit, Date dataFim) {
+    public List<Index> findByDataInitBetween(LocalDate dataInit, LocalDate dataFim) {
         List<TR> listEntity = repository.findByDataInitBetween(dataInit, dataFim);
         return listEntity.stream().map(TrMapperEntity::toDomain).toList();
     }
 
     @Override
-    public List<Index> findByDataLessThanEqual(Date dataInit) {
+    public List<Index> findByDataLessThanEqual(LocalDate dataInit) {
         List<TR> listEntity = repository.findByDataInitLessThanEqual(dataInit);
         return listEntity.stream().map(TrMapperEntity::toDomain).toList();
     }

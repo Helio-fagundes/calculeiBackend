@@ -7,6 +7,7 @@ import application.calculei.infraestructure.entity.mappedClass.BaseEntity;
 import application.calculei.infraestructure.entity.CDI;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -39,13 +40,13 @@ public class CdiJpaRepository implements IndexRepository {
     }
 
     @Override
-    public List<Index> findByDataInitBetween(Date dataInit, Date dataFim) {
+    public List<Index> findByDataInitBetween(LocalDate dataInit, LocalDate dataFim) {
         List<CDI> entityList = repository.findByDataInitBetween(dataInit, dataFim);
         return entityList.stream().map(CdiMapperEntity::toDomain).toList();
     }
 
     @Override
-    public List<Index> findByDataLessThanEqual(Date dataInit) {
+    public List<Index> findByDataLessThanEqual(LocalDate dataInit) {
         List<CDI> entityList = repository.findByDataInitLessThanEqual(dataInit);
         return entityList.stream().map(CdiMapperEntity::toDomain).toList();
     }

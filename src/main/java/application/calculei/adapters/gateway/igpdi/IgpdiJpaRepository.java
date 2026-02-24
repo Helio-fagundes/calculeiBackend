@@ -6,6 +6,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.IGPDI;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -39,13 +40,13 @@ public class IgpdiJpaRepository implements IndexRepository {
     }
 
     @Override
-    public List<Index> findByDataInitBetween(Date dataInit, Date dataFim) {
+    public List<Index> findByDataInitBetween(LocalDate dataInit, LocalDate dataFim) {
         List<IGPDI> listEntity = repository.findByDataInitBetween(dataInit, dataFim);
         return listEntity.stream().map(IgpdiMapperEntity::toDomain).toList();
     }
 
     @Override
-    public List<Index> findByDataLessThanEqual(Date data) {
+    public List<Index> findByDataLessThanEqual(LocalDate data) {
         List<IGPDI> listEntity = repository.findByDataInitLessThanEqual(data);
         return listEntity.stream().map(IgpdiMapperEntity::toDomain).toList();
     }

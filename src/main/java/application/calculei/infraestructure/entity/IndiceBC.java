@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -19,19 +20,20 @@ public class IndiceBC {
 
     @Id
     @Column(name = "id_bc", nullable = false)
-    private int ID_BC;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long ID_BC;
     private String serie;
     private int codigo;
     private String descricao;
     @JsonFormat(pattern = "dd~MM~yyyy")
-    private Date dataInit;
+    private LocalDate dataInit;
     private String urlBC;
     private String controller;
     private String periodicidade;
     @JsonFormat(pattern = "dd~MM~yyyy")
     private Date lastUpdate;
 
-    public IndiceBC(int ID_BC, String serie, int codigo, String descricao, Date dataInit, String urlBC, String controller, String periodicidade, Date lastUpdate) {
+    public IndiceBC(Long ID_BC, String serie, int codigo, String descricao, LocalDate dataInit, String urlBC, String controller, String periodicidade, Date lastUpdate) {
         this.ID_BC = ID_BC;
         this.serie = serie;
         this.codigo = codigo;

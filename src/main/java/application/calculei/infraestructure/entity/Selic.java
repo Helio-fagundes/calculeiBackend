@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -19,7 +20,7 @@ public class Selic extends BaseEntity {
     @ManyToOne
     private IndiceBC indiceBC;
 
-    public Selic(Long id, String nome, Double fator, Double valor, Date dataInit, IndiceBC indiceBC) {
+    public Selic(Long id, String nome, Double fator, Double valor, LocalDate dataInit, IndiceBC indiceBC) {
         super(id, nome, fator, valor, dataInit);
         this.indiceBC = indiceBC;
     }

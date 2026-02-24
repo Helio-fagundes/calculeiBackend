@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -21,14 +22,14 @@ public abstract class BaseEntity {
     private Double fator;
     private Double valor;
     @JsonFormat(pattern = "dd~MM~yyyy")
-    private Date dataInit;
+    private LocalDate dataInit;
 
     protected BaseEntity(
             Long id,
             String nome,
             Double fator,
             Double valor,
-            Date dataInit
+            LocalDate dataInit
     ) {
         this.id = id;
         this.nome = nome;

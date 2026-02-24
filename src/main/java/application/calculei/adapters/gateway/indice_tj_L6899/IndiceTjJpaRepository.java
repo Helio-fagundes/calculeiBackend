@@ -6,6 +6,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.Indice_TJ_L6899;
 import application.calculei.infraestructure.repository.indice_tj_L6899.TjL6899IndexRepository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -38,13 +39,13 @@ public class IndiceTjJpaRepository implements IndexRepository {
     }
 
     @Override
-    public List<Index> findByDataInitBetween(Date dataInit, Date dataFim) {
+    public List<Index> findByDataInitBetween(LocalDate dataInit, LocalDate dataFim) {
         List<Indice_TJ_L6899> listEntity = repository.findByDataInitBetween(dataInit, dataFim);
         return listEntity.stream().map(IndiceTjL6899MapperEntity::toDomain).toList();
     }
 
     @Override
-    public List<Index> findByDataLessThanEqual(Date dataInit) {
+    public List<Index> findByDataLessThanEqual(LocalDate dataInit) {
         List<Indice_TJ_L6899> listEntity = repository.findByDataInitLessThanEqual(dataInit);
         return listEntity.stream().map(IndiceTjL6899MapperEntity::toDomain).toList();
     }

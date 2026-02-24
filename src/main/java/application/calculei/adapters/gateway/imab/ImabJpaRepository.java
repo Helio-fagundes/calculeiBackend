@@ -6,6 +6,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.IMAB;
 import application.calculei.infraestructure.repository.imab.ImabIndexRepository;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -38,13 +39,13 @@ public class ImabJpaRepository implements IndexRepository {
     }
 
     @Override
-    public List<Index> findByDataInitBetween(Date dataInit, Date dataFim) {
+    public List<Index> findByDataInitBetween(LocalDate dataInit, LocalDate dataFim) {
         List<IMAB> listEntity = repository.findByDataInitBetween(dataInit, dataFim);
         return listEntity.stream().map(ImabMapperEntity::toDomain).toList();
     }
 
     @Override
-    public List<Index> findByDataLessThanEqual(Date dataInit) {
+    public List<Index> findByDataLessThanEqual(LocalDate dataInit) {
         List<IMAB> listEntity = repository.findByDataInitLessThanEqual(dataInit);
         return listEntity.stream().map(ImabMapperEntity::toDomain).toList();
     }
