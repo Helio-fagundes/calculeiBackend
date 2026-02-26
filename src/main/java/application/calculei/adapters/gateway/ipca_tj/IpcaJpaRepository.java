@@ -4,6 +4,7 @@ import application.calculei.adapters.mapper.ipca_tj.IpcaTjMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.IPCA_TJ;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.ipca_tj.IpcaTjIndexRepository;
 
 import java.time.LocalDate;
@@ -18,6 +19,11 @@ public class IpcaJpaRepository implements IndexRepository {
 
     public IpcaJpaRepository(IpcaTjIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.salario;
 import application.calculei.adapters.mapper.salario.SalarioMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.Salario;
 import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
 
@@ -18,6 +19,11 @@ public class SalarioJpaRepository implements IndexRepository {
 
     public SalarioJpaRepository(SalarioIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

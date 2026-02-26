@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.poupanca_antiga;
 import application.calculei.adapters.mapper.poupanca_antiga.PoupAntigaMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.PoupAntiga;
 import application.calculei.infraestructure.repository.poupanca_antiga.PoupAntigaIndexRepository;
 
@@ -18,6 +19,11 @@ public class PoupJpaRepository implements IndexRepository {
 
     public PoupJpaRepository(PoupAntigaIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

@@ -4,6 +4,7 @@ import application.calculei.adapters.mapper.imab.ImabMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.IMAB;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.imab.ImabIndexRepository;
 
 import java.time.LocalDate;
@@ -18,6 +19,11 @@ public class ImabJpaRepository implements IndexRepository {
 
     public ImabJpaRepository(ImabIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

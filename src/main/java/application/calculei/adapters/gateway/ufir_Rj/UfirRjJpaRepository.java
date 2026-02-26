@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.ufir_Rj;
 import application.calculei.adapters.mapper.ufir_rj.UfirRjMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.UfirRJ;
 import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
 
@@ -18,6 +19,11 @@ public class UfirRjJpaRepository implements IndexRepository {
 
     public UfirRjJpaRepository(UfirRjIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

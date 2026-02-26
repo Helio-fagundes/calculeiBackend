@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.tbf;
 import application.calculei.adapters.mapper.tbf.TbfMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.TBF;
 import application.calculei.infraestructure.repository.tbf.TbfIndexRepository;
 
@@ -18,6 +19,11 @@ public class TbfJpaRepository implements IndexRepository {
 
     public TbfJpaRepository(TbfIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

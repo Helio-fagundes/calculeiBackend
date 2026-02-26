@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.cdi;
 import application.calculei.adapters.mapper.cdi.CdiMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.mappedClass.BaseEntity;
 import application.calculei.infraestructure.entity.CDI;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
@@ -19,6 +20,11 @@ public class CdiJpaRepository implements IndexRepository {
 
     public CdiJpaRepository(CdiIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

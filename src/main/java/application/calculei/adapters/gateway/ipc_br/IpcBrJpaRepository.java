@@ -4,6 +4,7 @@ import application.calculei.adapters.mapper.ipc_br.IpcbrMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.IPCBR;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.ipc_br.IpcbrIndexRepository;
 
 import java.time.LocalDate;
@@ -18,6 +19,11 @@ public class IpcBrJpaRepository implements IndexRepository {
 
     public IpcBrJpaRepository(IpcbrIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

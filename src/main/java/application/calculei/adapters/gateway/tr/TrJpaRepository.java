@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.tr;
 import application.calculei.adapters.mapper.tr.TrMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.TR;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 
@@ -18,6 +19,11 @@ public class TrJpaRepository implements IndexRepository {
 
     public TrJpaRepository(TrIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

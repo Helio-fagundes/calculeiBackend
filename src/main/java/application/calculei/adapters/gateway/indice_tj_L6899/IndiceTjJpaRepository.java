@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.indice_tj_L6899;
 import application.calculei.adapters.mapper.indice_tj_L6899.IndiceTjL6899MapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.Indice_TJ_L6899;
 import application.calculei.infraestructure.repository.indice_tj_L6899.TjL6899IndexRepository;
 
@@ -18,6 +19,11 @@ public class IndiceTjJpaRepository implements IndexRepository {
 
     public IndiceTjJpaRepository(TjL6899IndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

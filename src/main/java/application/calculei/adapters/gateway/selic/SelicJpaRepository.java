@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.selic;
 import application.calculei.adapters.mapper.selic.SelicMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.Selic;
 import application.calculei.infraestructure.repository.selic.SelicIndexRepository;
 
@@ -18,6 +19,11 @@ public class SelicJpaRepository implements IndexRepository {
 
     public SelicJpaRepository(SelicIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

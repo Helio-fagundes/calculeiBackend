@@ -2,23 +2,23 @@ package application.calculei.usecase.cdi;
 
 import application.calculei.infraestructure.entity.CDI;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
-import application.calculei.usecase.cdi.dto.CalculateBetweenDateRequest;
-import application.calculei.usecase.cdi.dto.CalculateBetweenDateResponse;
+import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
+import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class CalculateAccumulatedValueBetweenDates {
+public class CalculateCdiAccumulatedValueBetweenDates {
 
     private final CdiIndexRepository repository;
 
-    public CalculateAccumulatedValueBetweenDates(CdiIndexRepository repository) {
+    public CalculateCdiAccumulatedValueBetweenDates(CdiIndexRepository repository) {
         this.repository = repository;
     }
 
-    public CalculateBetweenDateResponse calcular(CalculateBetweenDateRequest request){
+    public CalculateCdiBetweenDateResponse calcular(CalculateCdiBetweenDateRequest request){
 
         if (request.dateFim().isBefore(request.dateInit())){
             throw new IllegalArgumentException("Data fim não pode ser menor que a data inicio");
@@ -36,6 +36,6 @@ public class CalculateAccumulatedValueBetweenDates {
                 .multiply(fatorAcumulado)
                 .setScale(10, RoundingMode.HALF_UP);
 
-        return new CalculateBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal);
+        return new CalculateCdiBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal);
     }
 }

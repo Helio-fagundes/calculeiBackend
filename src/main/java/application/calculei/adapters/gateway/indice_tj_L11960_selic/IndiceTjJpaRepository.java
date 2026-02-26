@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.indice_tj_L11960_selic;
 import application.calculei.adapters.mapper.indice_tj_L11960_selic.IndiceTjL11960SelicMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.Indice_TJ_L11960_Selic;
 import application.calculei.infraestructure.repository.indice_tj_L11960_selic.TjL11960SelicIndexRepository;
 
@@ -18,6 +19,11 @@ public class IndiceTjJpaRepository implements IndexRepository {
 
     public IndiceTjJpaRepository(TjL11960SelicIndexRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
     }
 
     @Override

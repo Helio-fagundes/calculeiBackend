@@ -4,6 +4,7 @@ import application.calculei.adapters.mapper.igpm.IgpmMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.IGPM;
+import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.igpm.IgpmIndexRepository;
 
 import java.time.LocalDate;
@@ -20,6 +21,10 @@ public class IgpmJpaRepository implements IndexRepository {
         this.repository = repository;
     }
 
+    @Override
+    public Optional<IndiceBC> findByDescricao(String codigo) {
+        return Optional.empty();
+    }
 
     @Override
     public List<Index> findAll() {
