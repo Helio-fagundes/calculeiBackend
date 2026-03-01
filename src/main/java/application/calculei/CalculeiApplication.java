@@ -3,7 +3,7 @@ package application.calculei;
 import application.calculei.adapters.gateway.cdi.CdiJpaRepository;
 import application.calculei.adapters.gateway.igpdi.IgpdiJpaRepository;
 import application.calculei.adapters.gateway.indice_bc.IndiceBcJpaRepository;
-import application.calculei.adapters.scheduler.IgpdiScheduler;
+import application.calculei.adapters.scheduler.SchedulerConfig;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
@@ -57,8 +57,8 @@ public class CalculeiApplication {
     }
 
     @Bean
-    public IgpdiScheduler igpdiScheduler(UpdateIgpdiFromBc useCase) {
-        return new IgpdiScheduler(useCase);
+    public SchedulerConfig igpdiScheduler(UpdateIgpdiFromBc useCase) {
+        return new SchedulerConfig(useCase);
     }
 
     @Bean

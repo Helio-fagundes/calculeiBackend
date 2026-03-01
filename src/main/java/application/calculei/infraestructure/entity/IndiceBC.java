@@ -31,9 +31,9 @@ public class IndiceBC {
     private String controller;
     private String periodicidade;
     @JsonFormat(pattern = "dd~MM~yyyy")
-    private Date lastUpdate;
+    private LocalDate lastUpdate;
 
-    public IndiceBC(Long ID_BC, String serie, int codigo, String descricao, LocalDate dataInit, String urlBC, String controller, String periodicidade, Date lastUpdate) {
+    public IndiceBC(Long ID_BC, String serie, int codigo, String descricao, LocalDate dataInit, String urlBC, String controller, String periodicidade, LocalDate lastUpdate) {
         this.ID_BC = ID_BC;
         this.serie = serie;
         this.codigo = codigo;

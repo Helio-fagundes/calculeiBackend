@@ -32,7 +32,7 @@ public class UpdateIgpdiFromBc {
         if (lastDate == null){
             dados = buscarIgpdiNoBcPort.buscar(null);
         } else {
-            dados = buscarIgpdiNoBcPort.buscar(lastDate.plusDays(1));
+            dados = buscarIgpdiNoBcPort.buscar(lastDate.plusMonths(1));
         }
 
         for (var dado : dados){
