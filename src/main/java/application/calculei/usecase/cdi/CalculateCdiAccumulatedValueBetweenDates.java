@@ -29,13 +29,18 @@ public class CalculateCdiAccumulatedValueBetweenDates {
         List<CDI> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
 
         for (CDI entity : listEntity){
-            fatorAcumulado = fatorAcumulado.multiply(BigDecimal.valueOf(entity.getFator()));
+            fatorAcumulado = fatorAcumulado.multiply(entity.getFator());
         }
         BigDecimal valorFinal =
                 BigDecimal.valueOf(request.valor())
                 .multiply(fatorAcumulado)
-                .setScale(10, RoundingMode.HALF_UP);
+                .setScale(2, BigDecimal.ROUND_HALF_UP);
 
-        return new CalculateCdiBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal);
+        BigDecimal percentualAcumulado = fatorAcumulado
+                .subtract(BigDecimal.ONE)
+                .multiply(BigDecimal.valueOf(100))
+                .setScale(6, RoundingMode.HALF_UP);
+
+        return new CalculateCdiBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal, percentualAcumulado);
     }
 }

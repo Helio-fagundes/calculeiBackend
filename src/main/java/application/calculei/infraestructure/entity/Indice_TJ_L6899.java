@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -20,8 +21,8 @@ public class Indice_TJ_L6899 extends BaseEntity {
     @ManyToOne
     private IndiceBC indiceBC;
 
-    public Indice_TJ_L6899(Long id, String nome, Double fator, Double valor, LocalDate dataInit, IndiceBC indiceBC) {
-        super(id, nome, fator, valor, dataInit);
+    public Indice_TJ_L6899(Long id, BigDecimal fator, LocalDate dataInit, IndiceBC indiceBC) {
+        super(id, fator, dataInit);
         this.indiceBC = indiceBC;
     }
 }

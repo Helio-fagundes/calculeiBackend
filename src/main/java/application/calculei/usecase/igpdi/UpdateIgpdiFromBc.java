@@ -4,8 +4,8 @@ import application.calculei.infraestructure.entity.IGPDI;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.usecase.igpdi.dto.DadoIgpdi;
-import application.calculei.usecase.igpdi.port.BuscarIgpdiNoBcPort;
+import application.calculei.usecase.dto.DadoBancoCentral;
+import application.calculei.usecase.igpdi.port.BuscarIgpdiFromBcPort;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,30 +14,33 @@ import java.util.List;
 
 public class UpdateIgpdiFromBc {
 
-    private final BuscarIgpdiNoBcPort buscarIgpdiNoBcPort;
+    private final BuscarIgpdiFromBcPort buscarIgpdiFromBcPort;
     private final IgpdiIndexRepository repository;
     private final IndicesBcIndexRepository indicesBcIndexRepository;
 
-    public UpdateIgpdiFromBc(BuscarIgpdiNoBcPort buscarIgpdiNoBcPort, IgpdiIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
-        this.buscarIgpdiNoBcPort = buscarIgpdiNoBcPort;
+    public UpdateIgpdiFromBc(BuscarIgpdiFromBcPort buscarIgpdiFromBcPort, IgpdiIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+        this.buscarIgpdiFromBcPort = buscarIgpdiFromBcPort;
         this.repository = repository;
         this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void execute(){
+    public void update(){
 
         LocalDate lastDate = repository.findMaxDataInit();
-        List<DadoIgpdi> dados;
+        List<DadoBancoCentral> dados;
 
         if (lastDate == null){
-            dados = buscarIgpdiNoBcPort.buscar(null);
+            dados = buscarIgpdiFromBcPort.buscar(null);
         } else {
-            dados = buscarIgpdiNoBcPort.buscar(lastDate.plusMonths(1));
+            dados = buscarIgpdiFromBcPort.buscar(lastDate.plusMonths(1));
         }
+
+        IndiceBC indice = indicesBcIndexRepository.findBySerie("IGPDI")
+                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
 
         for (var dado : dados){
 
-            if (repository.existsByDataInit(dado.data()))
+            if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
                 continue;
 
             BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
@@ -46,12 +49,9 @@ public class UpdateIgpdiFromBc {
                     .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
                     .add(BigDecimal.ONE);
 
-            IndiceBC indice = indicesBcIndexRepository.findByDescricao("IGP-DI")
-                    .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
-
             IGPDI igpdi = new IGPDI();
             igpdi.setDataInit(dado.data());
-            igpdi.setFator(fator.doubleValue());
+            igpdi.setFator(fator);
             igpdi.setIndiceBC(indice);
 
             repository.save(igpdi);

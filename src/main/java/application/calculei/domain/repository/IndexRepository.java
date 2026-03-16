@@ -10,10 +10,8 @@ import java.util.Optional;
 
 public interface IndexRepository {
 
-    Optional<IndiceBC> findByDescricao(String codigo);
-
+    Optional<IndiceBC> findBySerie(String serie);
     List<Index> findAll();
-    List<Index> findByValor(Double valor);
     Optional<Index> findByLastUpdate();
     List<Index> findByDataInitBetween(LocalDate dataInit, LocalDate dataFim);
     List<Index> findByDataLessThanEqual(LocalDate dataInit);

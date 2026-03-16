@@ -22,19 +22,13 @@ public class UfirRjJpaRepository implements IndexRepository {
     }
 
     @Override
-    public Optional<IndiceBC> findByDescricao(String codigo) {
+    public Optional<IndiceBC> findBySerie(String serie) {
         return Optional.empty();
     }
 
     @Override
     public List<Index> findAll() {
         List<UfirRJ> listEntity = repository.findAll();
-        return listEntity.stream().map(UfirRjMapperEntity::toDomain).toList();
-    }
-
-    @Override
-    public List<Index> findByValor(Double valor) {
-        List<UfirRJ> listEntity = repository.findByValor(valor);
         return listEntity.stream().map(UfirRjMapperEntity::toDomain).toList();
     }
 

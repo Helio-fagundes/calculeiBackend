@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface UfirRjIndexRepository extends JpaRepository<UfirRJ, Long> {
-    List<UfirRJ> findByValor(Double valor);
     List<UfirRJ> findByDataInitBetween(LocalDate inicio, LocalDate fim);
     List<UfirRJ> findByDataInitLessThanEqual(LocalDate dataInit);
 }

@@ -7,10 +7,10 @@ import application.calculei.infraestructure.entity.IndiceBC;
 public class Ipca15MapperEntity {
 
     public static Index toDomain(IPCA15 entity){
-        return new Index(entity.getId(), entity.getNome(), entity.getFator(), entity.getValor(), entity.getDataInit());
+        return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }
 
     public static IPCA15 toEntity(Index domain){
-        return new IPCA15(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
+        return new IPCA15(domain.getId(), domain.getFator(), domain.getDataInit(), new IndiceBC());
     }
 }

@@ -22,19 +22,13 @@ public class PoupJpaRepository implements IndexRepository {
     }
 
     @Override
-    public Optional<IndiceBC> findByDescricao(String codigo) {
+    public Optional<IndiceBC> findBySerie(String serie) {
         return Optional.empty();
     }
 
     @Override
     public List<Index> findAll() {
         List<PoupAntiga> listEntity = repository.findAll();
-        return listEntity.stream().map(PoupAntigaMapperEntity::toDomain).toList();
-    }
-
-    @Override
-    public List<Index> findByValor(Double valor) {
-        List<PoupAntiga> listEntity = repository.findByValor(valor);
         return listEntity.stream().map(PoupAntigaMapperEntity::toDomain).toList();
     }
 

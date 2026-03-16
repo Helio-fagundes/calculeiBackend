@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface TaxaLegalIndexRepository extends JpaRepository<TaxaLegal, Long> {
-    List<TaxaLegal> findByValor(Double valor);
     List<TaxaLegal> findByDataInitBetween(LocalDate inicio, LocalDate fim);
     List<TaxaLegal> findByDataInitLessThanEqual(LocalDate dataInit);
 }

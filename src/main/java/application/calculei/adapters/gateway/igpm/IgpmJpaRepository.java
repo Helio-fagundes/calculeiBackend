@@ -22,19 +22,13 @@ public class IgpmJpaRepository implements IndexRepository {
     }
 
     @Override
-    public Optional<IndiceBC> findByDescricao(String codigo) {
+    public Optional<IndiceBC> findBySerie(String serie) {
         return Optional.empty();
     }
 
     @Override
     public List<Index> findAll() {
         List<IGPM> listEntity = repository.findAll();
-        return listEntity.stream().map(IgpmMapperEntity::toDomain).toList();
-    }
-
-    @Override
-    public List<Index> findByValor(Double valor) {
-        List<IGPM> listEntity = repository.findByValor(valor);
         return listEntity.stream().map(IgpmMapperEntity::toDomain).toList();
     }
 

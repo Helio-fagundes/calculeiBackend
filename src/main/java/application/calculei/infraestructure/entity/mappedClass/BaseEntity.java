@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -18,23 +19,18 @@ public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
-    private Double fator;
-    private Double valor;
+    @Column(precision = 20, scale = 10)
+    private BigDecimal fator;
     @JsonFormat(pattern = "dd~MM~yyyy")
     private LocalDate dataInit;
 
     protected BaseEntity(
             Long id,
-            String nome,
-            Double fator,
-            Double valor,
+            BigDecimal fator,
             LocalDate dataInit
     ) {
         this.id = id;
-        this.nome = nome;
         this.fator = fator;
-        this.valor = valor;
         this.dataInit = dataInit;
     }
 

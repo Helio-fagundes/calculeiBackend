@@ -23,19 +23,13 @@ public class CdiJpaRepository implements IndexRepository {
     }
 
     @Override
-    public Optional<IndiceBC> findByDescricao(String codigo) {
+    public Optional<IndiceBC> findBySerie(String serie) {
         return Optional.empty();
     }
 
     @Override
     public List<Index> findAll() {
         List<CDI> entities = repository.findAll();
-        return entities.stream().map(CdiMapperEntity::toDomain).toList();
-    }
-
-    @Override
-    public List<Index> findByValor(Double valor) {
-        List<CDI> entities = repository.findByValor(valor);
         return entities.stream().map(CdiMapperEntity::toDomain).toList();
     }
 

@@ -7,10 +7,10 @@ import application.calculei.infraestructure.entity.Salario;
 public class SalarioMapperEntity {
 
     public static Index toDomain(Salario entity){
-        return new Index(entity.getId(), entity.getNome(), entity.getFator(), entity.getValor(), entity.getDataInit());
+        return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }
 
     public static Salario toEntity(Index domain){
-        return new Salario(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
+        return new Salario(domain.getId(), domain.getFator(), domain.getDataInit(), new IndiceBC());
     }
 }

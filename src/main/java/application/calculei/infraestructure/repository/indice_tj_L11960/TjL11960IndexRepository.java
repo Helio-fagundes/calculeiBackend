@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface TjL11960IndexRepository extends JpaRepository<Indice_TJ_L11960, Long> {
-    List<Indice_TJ_L11960> findByValor(Double valor);
     List<Indice_TJ_L11960> findByDataInitBetween(LocalDate inicio, LocalDate fim);
     List<Indice_TJ_L11960> findByDataInitLessThanEqual(LocalDate dataInit);
 }

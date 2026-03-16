@@ -7,10 +7,10 @@ import application.calculei.infraestructure.entity.IndiceBC;
 public class CdiMapperEntity {
 
     public static Index toDomain(CDI entity){
-        return new Index(entity.getId(), entity.getNome(), entity.getFator(), entity.getValor(), entity.getDataInit());
+        return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }
 
     public static CDI toEntity(Index domain){
-        return new CDI(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
+        return new CDI(domain.getId(), domain.getFator(), domain.getDataInit(), new IndiceBC());
     }
 }

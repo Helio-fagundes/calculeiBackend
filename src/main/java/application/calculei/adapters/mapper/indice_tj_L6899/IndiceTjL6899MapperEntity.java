@@ -7,10 +7,10 @@ import application.calculei.infraestructure.entity.Indice_TJ_L6899;
 public class IndiceTjL6899MapperEntity {
 
     public static Index toDomain(Indice_TJ_L6899 entity){
-        return new Index(entity.getId(), entity.getNome(), entity.getFator(), entity.getValor(), entity.getDataInit());
+        return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }
 
     public static Indice_TJ_L6899 toEntity(Index domain){
-        return new Indice_TJ_L6899(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
+        return new Indice_TJ_L6899(domain.getId(), domain.getFator(), domain.getDataInit(), new IndiceBC());
     }
 }

@@ -7,10 +7,10 @@ import application.calculei.infraestructure.entity.Indice_TJ_L11960_Selic;
 public class IndiceTjL11960SelicMapperEntity {
 
     public static Index toDomain(Indice_TJ_L11960_Selic entity){
-        return new Index(entity.getId(), entity.getNome(), entity.getFator(), entity.getValor(), entity.getDataInit());
+        return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }
 
     public static Indice_TJ_L11960_Selic toEntity(Index domain){
-        return new Indice_TJ_L11960_Selic(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
+        return new Indice_TJ_L11960_Selic(domain.getId(), domain.getFator(), domain.getDataInit(), new IndiceBC());
     }
 }

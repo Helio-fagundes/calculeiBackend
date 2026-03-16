@@ -22,19 +22,13 @@ public class TrJpaRepository implements IndexRepository {
     }
 
     @Override
-    public Optional<IndiceBC> findByDescricao(String codigo) {
+    public Optional<IndiceBC> findBySerie(String serie) {
         return Optional.empty();
     }
 
     @Override
     public List<Index> findAll() {
         List<TR> listEntity = repository.findAll();
-        return listEntity.stream().map(TrMapperEntity::toDomain).toList();
-    }
-
-    @Override
-    public List<Index> findByValor(Double valor) {
-        List<TR> listEntity = repository.findByValor(valor);
         return listEntity.stream().map(TrMapperEntity::toDomain).toList();
     }
 

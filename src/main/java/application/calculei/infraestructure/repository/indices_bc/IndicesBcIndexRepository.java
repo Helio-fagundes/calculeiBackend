@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface IndicesBcIndexRepository extends JpaRepository<IndiceBC, Long> {
-
-    Optional<IndiceBC> findByDescricao(String codigo);
+    Optional<IndiceBC> findBySerie(String serie);
 
 }

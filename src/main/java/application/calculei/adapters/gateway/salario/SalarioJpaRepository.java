@@ -22,19 +22,13 @@ public class SalarioJpaRepository implements IndexRepository {
     }
 
     @Override
-    public Optional<IndiceBC> findByDescricao(String codigo) {
+    public Optional<IndiceBC> findBySerie(String serie) {
         return Optional.empty();
     }
 
     @Override
     public List<Index> findAll() {
         List<Salario> listEntity = repository.findAll();
-        return listEntity.stream().map(SalarioMapperEntity::toDomain).toList();
-    }
-
-    @Override
-    public List<Index> findByValor(Double valor) {
-        List<Salario> listEntity = repository.findByValor(valor);
         return listEntity.stream().map(SalarioMapperEntity::toDomain).toList();
     }
 

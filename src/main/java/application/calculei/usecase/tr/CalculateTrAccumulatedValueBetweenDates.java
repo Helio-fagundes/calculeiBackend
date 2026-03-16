@@ -1,0 +1,46 @@
+package application.calculei.usecase.tr;
+
+import application.calculei.infraestructure.entity.TR;
+import application.calculei.infraestructure.repository.tr.TrIndexRepository;
+import application.calculei.usecase.tr.dto.CalculateTrBetweenDateRequest;
+import application.calculei.usecase.tr.dto.CalculateTrBetweenDateResponse;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+public class CalculateTrAccumulatedValueBetweenDates {
+
+    private final TrIndexRepository repository;
+
+    public CalculateTrAccumulatedValueBetweenDates(TrIndexRepository repository) {
+        this.repository = repository;
+    }
+
+    public CalculateTrBetweenDateResponse calcular(CalculateTrBetweenDateRequest request){
+        if (request.dateFim().isBefore(request.dateInit())){
+            throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
+        }
+
+        List<TR> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
+        BigDecimal fatorAcumulado = BigDecimal.ONE;
+        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+
+        for (var entity : listEntity){
+            fatorAcumulado = fatorAcumulado.multiply(entity.getFator());
+        }
+
+        BigDecimal valorFinal =
+                BigDecimal.valueOf(request.valor())
+                        .multiply(fatorAcumulado)
+                        .setScale(2, BigDecimal.ROUND_HALF_UP);
+
+        BigDecimal percentualAcumulado = fatorAcumulado
+                .subtract(BigDecimal.ONE)
+                .multiply(BigDecimal.valueOf(100))
+                .setScale(6, RoundingMode.HALF_UP);
+
+        return new CalculateTrBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal, percentualAcumulado);
+    }
+}

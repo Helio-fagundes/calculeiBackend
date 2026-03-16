@@ -7,10 +7,10 @@ import application.calculei.infraestructure.entity.IndiceBC;
 public class IgpmMapperEntity {
 
     public static Index toDomain(IGPM entity){
-        return new Index(entity.getId(), entity.getNome(), entity.getFator(), entity.getValor(), entity.getDataInit());
+        return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }
 
     public static IGPM toEntity(Index domain){
-        return new IGPM(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
+        return new IGPM(domain.getId(),  domain.getFator(),domain.getDataInit(), new IndiceBC());
     }
 }

@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface PoupAntigaIndexRepository extends JpaRepository<PoupAntiga, Long> {
-    List<PoupAntiga> findByValor(Double valor);
     List<PoupAntiga> findByDataInitBetween(LocalDate inicio, LocalDate fim);
     List<PoupAntiga> findByDataInitLessThanEqual(LocalDate dataInit);
 }

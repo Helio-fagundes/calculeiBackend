@@ -18,17 +18,12 @@ public class IndiceBcJpaRepository implements IndexRepository {
     }
 
     @Override
-    public Optional<IndiceBC> findByDescricao(String codigo) {
-        return repository.findByDescricao(codigo);
+    public Optional<IndiceBC> findBySerie(String serie) {
+        return repository.findBySerie(serie);
     }
 
     @Override
     public List<Index> findAll() {
-        return List.of();
-    }
-
-    @Override
-    public List<Index> findByValor(Double valor) {
         return List.of();
     }
 

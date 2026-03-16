@@ -22,19 +22,13 @@ public class IndiceTjJpaRepository implements IndexRepository {
     }
 
     @Override
-    public Optional<IndiceBC> findByDescricao(String codigo) {
+    public Optional<IndiceBC> findBySerie(String serie) {
         return Optional.empty();
     }
 
     @Override
     public List<Index> findAll() {
         List<Indice_TJ_L11960> listEntity = repository.findAll();
-        return listEntity.stream().map(IndiceTjL11960MapperEntity::toDomain).toList();
-    }
-
-    @Override
-    public List<Index> findByValor(Double valor) {
-        List<Indice_TJ_L11960> listEntity = repository.findByValor(valor);
         return listEntity.stream().map(IndiceTjL11960MapperEntity::toDomain).toList();
     }
 

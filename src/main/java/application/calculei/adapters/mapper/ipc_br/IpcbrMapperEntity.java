@@ -7,10 +7,10 @@ import application.calculei.infraestructure.entity.IndiceBC;
 public class IpcbrMapperEntity {
 
     public static Index toDomain(IPCBR entity){
-        return new Index(entity.getId(), entity.getNome(), entity.getFator(), entity.getValor(), entity.getDataInit());
+        return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }
 
     public static IPCBR toEntity(Index domain){
-        return new IPCBR(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
+        return new IPCBR(domain.getId(),  domain.getFator(),domain.getDataInit(), new IndiceBC());
     }
 }

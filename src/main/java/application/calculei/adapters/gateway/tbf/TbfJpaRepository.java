@@ -22,19 +22,13 @@ public class TbfJpaRepository implements IndexRepository {
     }
 
     @Override
-    public Optional<IndiceBC> findByDescricao(String codigo) {
+    public Optional<IndiceBC> findBySerie(String serie) {
         return Optional.empty();
     }
 
     @Override
     public List<Index> findAll() {
         List<TBF> listEntity = repository.findAll();
-        return listEntity.stream().map(TbfMapperEntity::toDomain).toList();
-    }
-
-    @Override
-    public List<Index> findByValor(Double valor) {
-        List<TBF> listEntity = repository.findByValor(valor);
         return listEntity.stream().map(TbfMapperEntity::toDomain).toList();
     }
 

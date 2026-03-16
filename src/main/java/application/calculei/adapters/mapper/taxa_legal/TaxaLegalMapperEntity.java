@@ -7,10 +7,10 @@ import application.calculei.infraestructure.entity.TaxaLegal;
 public class TaxaLegalMapperEntity {
 
     public static Index toDomain(TaxaLegal entity){
-        return new Index(entity.getId(), entity.getNome(), entity.getFator(), entity.getValor(), entity.getDataInit());
+        return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }
 
     public static TaxaLegal toEntity(Index domain){
-        return new TaxaLegal(domain.getId(), domain.getNome(), domain.getFator(), domain.getValor(), domain.getDataInit(), new IndiceBC());
+        return new TaxaLegal(domain.getId(), domain.getFator(), domain.getDataInit(), new IndiceBC());
     }
 }

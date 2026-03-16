@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface IgpdiIndexRepository extends JpaRepository<IGPDI, Long> {
-    List<IGPDI> findByValor(Double valor);
     List<IGPDI> findByDataInitBetween(LocalDate dataInit, LocalDate fim);
     List<IGPDI> findByDataInitLessThanEqual(LocalDate dataInit);
     @Query("SELECT MAX(x.dataInit) FROM IGPDI x")

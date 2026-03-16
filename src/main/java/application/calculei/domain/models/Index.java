@@ -1,20 +1,17 @@
 package application.calculei.domain.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Index {
 
     private Long id;
-    private String nome;
-    private Double fator;
-    private Double valor;
+    private BigDecimal fator;
     private LocalDate dataInit;
 
-    public Index(Long id, String nome, Double fator, Double valor, LocalDate dataInit) {
+    public Index(Long id, BigDecimal fator, LocalDate dataInit) {
         this.id = id;
-        this.nome = nome;
         this.fator = fator;
-        this.valor = valor;
         this.dataInit = dataInit;
     }
 
@@ -26,28 +23,12 @@ public class Index {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Double getFator() {
+    public BigDecimal getFator() {
         return fator;
     }
 
-    public void setFator(Double fator) {
+    public void setFator(BigDecimal fator) {
         this.fator = fator;
-    }
-
-    public Double getValor() {
-        return valor;
-    }
-
-    public void setValor(Double valor) {
-        this.valor = valor;
     }
 
     public LocalDate getDataInit() {
