@@ -9,7 +9,8 @@ import application.calculei.adapters.gateway.ipc_br.IpcBrJpaRepository;
 import application.calculei.adapters.gateway.ipca.IpcaJpaRepository;
 import application.calculei.adapters.gateway.ipca_15.Ipca15JpaRepository;
 import application.calculei.adapters.gateway.ipca_e.IpcaeJpaRepository;
-import application.calculei.adapters.gateway.poupanca_nova.PoupJpaRepository;
+import application.calculei.adapters.gateway.poupanca_antiga.PoupAntigaJpaRepository;
+import application.calculei.adapters.gateway.poupanca_nova.PoupNovaJpaRepository;
 import application.calculei.adapters.gateway.salario.SalarioJpaRepository;
 import application.calculei.adapters.gateway.selic.SelicDiarioJpaRepository;
 import application.calculei.adapters.gateway.selic.SelicMensalJpaRepository;
@@ -26,6 +27,7 @@ import application.calculei.infraestructure.repository.ipc_br.IpcbrIndexReposito
 import application.calculei.infraestructure.repository.ipca.IpcaIndexRepository;
 import application.calculei.infraestructure.repository.ipca_15.Ipca15IndexRepository;
 import application.calculei.infraestructure.repository.ipca_e.IpcaeIndexRepository;
+import application.calculei.infraestructure.repository.poupanca_antiga.PoupAntigaIndexRepository;
 import application.calculei.infraestructure.repository.poupanca_nova.PoupNovaIndexRepository;
 import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
 import application.calculei.infraestructure.repository.selic.SelicDiarioIndexRepository;
@@ -56,6 +58,9 @@ import application.calculei.usecase.ipcae.port.BuscarIpcaeFromBcPort;
 import application.calculei.usecase.ipcbr.CalculateIpcbrAccumulatedValueBetweenDates;
 import application.calculei.usecase.ipcbr.UpdateIpcbrFromBc;
 import application.calculei.usecase.ipcbr.port.BuscarIpcbrFromBcPort;
+import application.calculei.usecase.poupanca_antiga.CalculatePoupAntigoAccumulatedValueBetweenDates;
+import application.calculei.usecase.poupanca_antiga.UpdatePoupAntigoFromBc;
+import application.calculei.usecase.poupanca_antiga.port.BuscarPoupAntigoFromBcPort;
 import application.calculei.usecase.poupanca_nova.CalculatePoupNovaAccumulatedValueBetweenDates;
 import application.calculei.usecase.poupanca_nova.UpdatePoupNovaFromBc;
 import application.calculei.usecase.poupanca_nova.port.BuscarPoupNovaFromBcPort;
@@ -104,6 +109,11 @@ public class CalculeiApplication {
     }
 
     @Bean
+    public IndexRepository indexRepositoryPoupAntiga(PoupAntigaIndexRepository repo){
+        return new PoupAntigaJpaRepository(repo);
+    }
+
+    @Bean
     public IndexRepository indexRepositorySelicDiario(SelicDiarioIndexRepository repo){
         return new SelicDiarioJpaRepository(repo);
     }
@@ -116,7 +126,7 @@ public class CalculeiApplication {
 
     @Bean
     public IndexRepository indexRepositoryPoupNova(PoupNovaIndexRepository repo){
-        return new PoupJpaRepository(repo) {
+        return new PoupNovaJpaRepository(repo) {
         };
     }
 
@@ -309,6 +319,17 @@ public class CalculeiApplication {
                 indicesBcIndexRepository);
     }
 
+    @Bean
+    public UpdatePoupAntigoFromBc updatePoupAntigoFromBc(
+            BuscarPoupAntigoFromBcPort buscarPoupAntigoFromBcPort,
+            PoupAntigaIndexRepository repository,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new UpdatePoupAntigoFromBc(
+                buscarPoupAntigoFromBcPort,
+                repository,
+                indicesBcIndexRepository);
+    }
+
 
     @Bean
     public SchedulerConfig schedulerConfigd(UpdateIgpdiFromBc useCaseIgpdi,
@@ -324,7 +345,8 @@ public class CalculeiApplication {
                                             UpdateTbfFromBc useCaseTbf,
                                             UpdatePoupNovaFromBc useCasePoupNova,
                                             UpdateSelicDiarioFromBc useCaseSelicDiario,
-                                            UpdateSalarioFromBc useCaseSalario) {
+                                            UpdateSalarioFromBc useCaseSalario,
+                                            UpdatePoupAntigoFromBc useCasePoupAntiga) {
         return new SchedulerConfig(
                 useCaseIgpdi,
                 useCaseIpcae,
@@ -339,12 +361,18 @@ public class CalculeiApplication {
                 useCaseTbf,
                 useCasePoupNova,
                 useCaseSelicDiario,
-                useCaseSalario);
+                useCaseSalario,
+                useCasePoupAntiga);
     }
 
     @Bean
     public CalculateCdiAccumulatedValueBetweenDates calculateCdiAccumulatedValueBetweenDates(CdiIndexRepository repo) {
         return new CalculateCdiAccumulatedValueBetweenDates(repo);
+    }
+
+    @Bean
+    public CalculatePoupAntigoAccumulatedValueBetweenDates calculatePoupAntigoAccumulatedValueBetweenDates(PoupAntigaIndexRepository repo) {
+        return new CalculatePoupAntigoAccumulatedValueBetweenDates(repo);
     }
 
     @Bean

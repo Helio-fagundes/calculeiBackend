@@ -9,15 +9,14 @@ import application.calculei.infraestructure.repository.poupanca_nova.PoupNovaInd
 
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public class PoupJpaRepository implements IndexRepository {
+public class PoupNovaJpaRepository implements IndexRepository {
 
     private final PoupNovaIndexRepository repository;
 
-    public PoupJpaRepository(PoupNovaIndexRepository repository) {
+    public PoupNovaJpaRepository(PoupNovaIndexRepository repository) {
         this.repository = repository;
     }
 
