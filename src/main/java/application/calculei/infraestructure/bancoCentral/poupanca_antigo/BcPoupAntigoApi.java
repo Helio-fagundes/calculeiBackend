@@ -16,7 +16,7 @@ import java.util.List;
 public class BcPoupAntigoApi implements BuscarPoupAntigoFromBcPort {
 
     private final RestTemplate restTemplate;
-    private static String BASE_URL = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.12/dados?formato=json";
+    private static String BASE_URL = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.25/dados?formato=json";
 
     @Override
     public List<DadoBancoCentral> buscar(LocalDate dataInicio, LocalDate dataFim) {
