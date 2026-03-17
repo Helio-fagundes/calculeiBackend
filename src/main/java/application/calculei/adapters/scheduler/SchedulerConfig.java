@@ -14,6 +14,7 @@ import application.calculei.usecase.poupanca_nova.UpdatePoupNovaFromBc;
 import application.calculei.usecase.salario.UpdateSalarioFromBc;
 import application.calculei.usecase.selic.diario.UpdateSelicDiarioFromBc;
 import application.calculei.usecase.selic.mensal.UpdateSelicMensalFromBc;
+import application.calculei.usecase.taxa_legal.UpdateTaxaLegalFromBc;
 import application.calculei.usecase.tbf.UpdateTbfFromBc;
 import application.calculei.usecase.tr.UpdateTrFromBc;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class SchedulerConfig {
     private final UpdateSalarioFromBc salariousecase;
     private final UpdatePoupAntigoFromBc poupAntigausecase;
     private final UpdateIpcaTlFromBc ipcaTlusecase;
+    private final UpdateTaxaLegalFromBc taxaLegalusecase;
 
     @Scheduled(cron = "0 * * * * *")
     public void atualizarMensais(){
@@ -55,6 +57,7 @@ public class SchedulerConfig {
         poupNovausecase.update();
         poupAntigausecase.update();
         ipcaTlusecase.update();
+        taxaLegalusecase.update();
     }
 
     @Scheduled(cron = "0 * * * * *")

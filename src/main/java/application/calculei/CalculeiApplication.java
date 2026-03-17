@@ -15,6 +15,7 @@ import application.calculei.adapters.gateway.poupanca_nova.PoupNovaJpaRepository
 import application.calculei.adapters.gateway.salario.SalarioJpaRepository;
 import application.calculei.adapters.gateway.selic.SelicDiarioJpaRepository;
 import application.calculei.adapters.gateway.selic.SelicMensalJpaRepository;
+import application.calculei.adapters.gateway.taxa_legal.TaxaLegalJpaRepository;
 import application.calculei.adapters.gateway.tbf.TbfJpaRepository;
 import application.calculei.adapters.gateway.tr.TrJpaRepository;
 import application.calculei.adapters.scheduler.SchedulerConfig;
@@ -34,6 +35,7 @@ import application.calculei.infraestructure.repository.poupanca_nova.PoupNovaInd
 import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
 import application.calculei.infraestructure.repository.selic.SelicDiarioIndexRepository;
 import application.calculei.infraestructure.repository.selic.SelicMensalIndexRepository;
+import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndexRepository;
 import application.calculei.infraestructure.repository.tbf.TbfIndexRepository;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.usecase.cdi.CalculateCdiAccumulatedValueBetweenDates;
@@ -78,6 +80,9 @@ import application.calculei.usecase.selic.diario.port.BuscarSelicDiarioFromBcPor
 import application.calculei.usecase.selic.mensal.CalculateSelicMensalAccumulatedValueBetweenDates;
 import application.calculei.usecase.selic.mensal.UpdateSelicMensalFromBc;
 import application.calculei.usecase.selic.mensal.port.BuscarSelicMensalFromBcPort;
+import application.calculei.usecase.taxa_legal.CalculateTaxaLegalAccumulatedValueBetweenDates;
+import application.calculei.usecase.taxa_legal.UpdateTaxaLegalFromBc;
+import application.calculei.usecase.taxa_legal.port.BuscarTaxaLegalFromBcPort;
 import application.calculei.usecase.tbf.CalculateTbfAccumulatedValueBetweenDates;
 import application.calculei.usecase.tbf.UpdateTbfFromBc;
 import application.calculei.usecase.tbf.port.BuscarTbfFromBcPort;
@@ -101,6 +106,11 @@ public class CalculeiApplication {
     @Bean
     public IndexRepository indexRepositoryCdi(CdiIndexRepository repo) {
         return new CdiJpaRepository(repo);
+    }
+
+    @Bean
+    public IndexRepository indexRepositoryTaxaLegal(TaxaLegalIndexRepository repo){
+        return new TaxaLegalJpaRepository(repo);
     }
 
     @Bean
@@ -204,6 +214,18 @@ public class CalculeiApplication {
             IndicesBcIndexRepository indicesBcIndexRepository) {
 
         return new UpdateIgpdiFromBc(indexRepositoryIgpdi, igpdiIndexRepository, indicesBcIndexRepository);
+    }
+
+    @Bean
+    public UpdateTaxaLegalFromBc updateTaxaLegalFromBc(
+            BuscarTaxaLegalFromBcPort buscarTaxaLegalFromBcPort,
+            TaxaLegalIndexRepository repository,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new UpdateTaxaLegalFromBc(
+                buscarTaxaLegalFromBcPort,
+                repository,
+                indicesBcIndexRepository
+        );
     }
 
     @Bean
@@ -369,7 +391,8 @@ public class CalculeiApplication {
                                             UpdateSelicDiarioFromBc useCaseSelicDiario,
                                             UpdateSalarioFromBc useCaseSalario,
                                             UpdatePoupAntigoFromBc useCasePoupAntiga,
-                                            UpdateIpcaTlFromBc useCaseIpcaTl) {
+                                            UpdateIpcaTlFromBc useCaseIpcaTl,
+                                            UpdateTaxaLegalFromBc useCaseTaxaLegal) {
         return new SchedulerConfig(
                 useCaseIgpdi,
                 useCaseIpcae,
@@ -386,12 +409,18 @@ public class CalculeiApplication {
                 useCaseSelicDiario,
                 useCaseSalario,
                 useCasePoupAntiga,
-                useCaseIpcaTl);
+                useCaseIpcaTl,
+                useCaseTaxaLegal);
     }
 
     @Bean
     public CalculateCdiAccumulatedValueBetweenDates calculateCdiAccumulatedValueBetweenDates(CdiIndexRepository repo) {
         return new CalculateCdiAccumulatedValueBetweenDates(repo);
+    }
+
+    @Bean
+    public CalculateTaxaLegalAccumulatedValueBetweenDates calculateTaxaLegalAccumulatedValueBetweenDates(TaxaLegalIndexRepository repo){
+        return new CalculateTaxaLegalAccumulatedValueBetweenDates(repo);
     }
 
     @Bean
