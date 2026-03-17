@@ -23,7 +23,7 @@ public class UpdatePoupAntigoFromBc {
     public void update(){
         LocalDate hoje = LocalDate.now();
         LocalDate dataMax = repository.findMaxData();
-        LocalDate inicio = dataMax != null ? dataMax.plusDays(1) : LocalDate.of(1963, 1, 1);
+        LocalDate inicio = dataMax != null ? dataMax.plusDays(1) : LocalDate.of(1990, 1, 1);
 
         if (inicio.isAfter(hoje)) return;
 

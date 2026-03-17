@@ -25,7 +25,6 @@ public class BcPoupAntigoApi implements BuscarPoupAntigoFromBcPort {
         if (dataInicio != null && dataFim != null){
             url += "&dataInicial=" + dataInicio.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                     + "&dataFinal=" + dataFim.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
         }
 
         try {
