@@ -9,6 +9,7 @@ import application.calculei.adapters.gateway.ipc_br.IpcBrJpaRepository;
 import application.calculei.adapters.gateway.ipca.IpcaJpaRepository;
 import application.calculei.adapters.gateway.ipca_15.Ipca15JpaRepository;
 import application.calculei.adapters.gateway.ipca_e.IpcaeJpaRepository;
+import application.calculei.adapters.gateway.ipca_tl.IpcatlJpaRepository;
 import application.calculei.adapters.gateway.poupanca_antiga.PoupAntigaJpaRepository;
 import application.calculei.adapters.gateway.poupanca_nova.PoupNovaJpaRepository;
 import application.calculei.adapters.gateway.salario.SalarioJpaRepository;
@@ -27,6 +28,7 @@ import application.calculei.infraestructure.repository.ipc_br.IpcbrIndexReposito
 import application.calculei.infraestructure.repository.ipca.IpcaIndexRepository;
 import application.calculei.infraestructure.repository.ipca_15.Ipca15IndexRepository;
 import application.calculei.infraestructure.repository.ipca_e.IpcaeIndexRepository;
+import application.calculei.infraestructure.repository.ipca_tl.IpcaTlIndexRepository;
 import application.calculei.infraestructure.repository.poupanca_antiga.PoupAntigaIndexRepository;
 import application.calculei.infraestructure.repository.poupanca_nova.PoupNovaIndexRepository;
 import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
@@ -52,6 +54,9 @@ import application.calculei.usecase.ipca.port.BuscarIpcaFromBcPort;
 import application.calculei.usecase.ipca15.CalculateIpca15AccumulatedValueBetweenDates;
 import application.calculei.usecase.ipca15.UpdateIpca15FromBc;
 import application.calculei.usecase.ipca15.port.BuscarIpca15FromBcPort;
+import application.calculei.usecase.ipca_tl.CalculateIpcaTlAccumulatedValueBetweenDates;
+import application.calculei.usecase.ipca_tl.UpdateIpcaTlFromBc;
+import application.calculei.usecase.ipca_tl.port.BuscarIpcaTlFromBcPort;
 import application.calculei.usecase.ipcae.CalculateIpcaeAccumulatedValueBetweenDates;
 import application.calculei.usecase.ipcae.UpdateIpcaeFromBc;
 import application.calculei.usecase.ipcae.port.BuscarIpcaeFromBcPort;
@@ -96,6 +101,11 @@ public class CalculeiApplication {
     @Bean
     public IndexRepository indexRepositoryCdi(CdiIndexRepository repo) {
         return new CdiJpaRepository(repo);
+    }
+
+    @Bean
+    public IndexRepository indexRepositoryIpcaTl(IpcaTlIndexRepository repo){
+        return new IpcatlJpaRepository(repo);
     }
 
     @Bean
@@ -194,6 +204,18 @@ public class CalculeiApplication {
             IndicesBcIndexRepository indicesBcIndexRepository) {
 
         return new UpdateIgpdiFromBc(indexRepositoryIgpdi, igpdiIndexRepository, indicesBcIndexRepository);
+    }
+
+    @Bean
+    public UpdateIpcaTlFromBc updateIpcaTlFromBc(
+            BuscarIpcaTlFromBcPort buscarIpcaTlFromBcPort,
+            IpcaTlIndexRepository repository,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new UpdateIpcaTlFromBc(
+                buscarIpcaTlFromBcPort,
+                repository,
+                indicesBcIndexRepository
+        );
     }
 
     @Bean
@@ -346,7 +368,8 @@ public class CalculeiApplication {
                                             UpdatePoupNovaFromBc useCasePoupNova,
                                             UpdateSelicDiarioFromBc useCaseSelicDiario,
                                             UpdateSalarioFromBc useCaseSalario,
-                                            UpdatePoupAntigoFromBc useCasePoupAntiga) {
+                                            UpdatePoupAntigoFromBc useCasePoupAntiga,
+                                            UpdateIpcaTlFromBc useCaseIpcaTl) {
         return new SchedulerConfig(
                 useCaseIgpdi,
                 useCaseIpcae,
@@ -362,12 +385,18 @@ public class CalculeiApplication {
                 useCasePoupNova,
                 useCaseSelicDiario,
                 useCaseSalario,
-                useCasePoupAntiga);
+                useCasePoupAntiga,
+                useCaseIpcaTl);
     }
 
     @Bean
     public CalculateCdiAccumulatedValueBetweenDates calculateCdiAccumulatedValueBetweenDates(CdiIndexRepository repo) {
         return new CalculateCdiAccumulatedValueBetweenDates(repo);
+    }
+
+    @Bean
+    public CalculateIpcaTlAccumulatedValueBetweenDates calculateIpcaTlAccumulatedValueBetweenDates(IpcaTlIndexRepository repo){
+        return new CalculateIpcaTlAccumulatedValueBetweenDates(repo);
     }
 
     @Bean

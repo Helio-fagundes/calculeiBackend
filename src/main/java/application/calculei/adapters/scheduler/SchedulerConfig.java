@@ -6,6 +6,7 @@ import application.calculei.usecase.igpm.UpdateIgpmFromBc;
 import application.calculei.usecase.inpc.UpdateInpcFromBc;
 import application.calculei.usecase.ipca.UpdateIpcaFromBc;
 import application.calculei.usecase.ipca15.UpdateIpca15FromBc;
+import application.calculei.usecase.ipca_tl.UpdateIpcaTlFromBc;
 import application.calculei.usecase.ipcae.UpdateIpcaeFromBc;
 import application.calculei.usecase.ipcbr.UpdateIpcbrFromBc;
 import application.calculei.usecase.poupanca_antiga.UpdatePoupAntigoFromBc;
@@ -38,8 +39,9 @@ public class SchedulerConfig {
     private final UpdateSelicDiarioFromBc selicdiariousecase;
     private final UpdateSalarioFromBc salariousecase;
     private final UpdatePoupAntigoFromBc poupAntigausecase;
+    private final UpdateIpcaTlFromBc ipcaTlusecase;
 
-    @Scheduled(cron = "0 */20 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void atualizarMensais(){
         Igpdiusecase.update();
         ipcaeusecase.update();
@@ -52,9 +54,10 @@ public class SchedulerConfig {
         salariousecase.update();
         poupNovausecase.update();
         poupAntigausecase.update();
+        ipcaTlusecase.update();
     }
 
-    @Scheduled(cron = "0 */20 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void atualizarDiarios(){
         cdiusecase.update();
         trusecase.update();
