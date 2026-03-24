@@ -1,7 +1,9 @@
 package application.calculei.infraestructure.bancoCentral.tbf;
 
 import application.calculei.infraestructure.bancoCentral.dto.BcResponse;
+import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.dto.DadoBancoCentral;
+import application.calculei.usecase.port.BuscarUrlBySeriePort;
 import application.calculei.usecase.tbf.port.BuscarTbfFromBcPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -19,11 +21,12 @@ import java.util.List;
 public class BcTbfApi implements BuscarTbfFromBcPort {
 
     private final RestTemplate restTemplate;
-    private final static String BASE_URL = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.253/dados?formato=json";
+    private final BuscarUrlBySeriePort buscarUrl;
 
     @Override
     public List<DadoBancoCentral> buscar(LocalDate dataInicial, LocalDate dataFinal) {
-        String url = BASE_URL;
+        String indice = "TBF";
+        String url = buscarUrl.buscarUrl(indice);
 
         if (dataInicial != null && dataFinal != null) {
             url += "&dataInicial=" + dataInicial.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
@@ -31,7 +34,6 @@ public class BcTbfApi implements BuscarTbfFromBcPort {
         }
 
         try {
-
             BcResponse[] response = restTemplate.getForObject(url, BcResponse[].class);
 
             if (response == null) return List.of();
@@ -41,13 +43,9 @@ public class BcTbfApi implements BuscarTbfFromBcPort {
                             DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                             d.valor()))
                     .toList();
-        } catch (HttpClientErrorException.NotFound e) {
-            return List.of();
-        } catch (RestClientException e) {
-            if (e.getCause() instanceof HttpMessageNotReadableException) {
-                return List.of();
-            }
-            throw new RuntimeException("Erro ao buscar dados da API do BC: " + e.getMessage(), e);
+
+        }catch (HttpMessageNotReadableException | RestClientException e){
+            throw new BancoCentralDataNotFoundException(indice, dataInicial);
         }
     }
 }

@@ -1,5 +1,6 @@
 package application.calculei.adapters.scheduler;
 
+import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.cdi.UpdateCdiFromBc;
 import application.calculei.usecase.igpdi.UpdateIgpdiFromBc;
 import application.calculei.usecase.igpm.UpdateIgpmFromBc;
@@ -18,11 +19,13 @@ import application.calculei.usecase.taxa_legal.UpdateTaxaLegalFromBc;
 import application.calculei.usecase.tbf.UpdateTbfFromBc;
 import application.calculei.usecase.tr.UpdateTrFromBc;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class SchedulerConfig {
 
     private final UpdateIgpdiFromBc Igpdiusecase;
@@ -43,29 +46,18 @@ public class SchedulerConfig {
     private final UpdateIpcaTlFromBc ipcaTlusecase;
     private final UpdateTaxaLegalFromBc taxaLegalusecase;
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 */3 * * * *")
     public void atualizarMensais(){
-        Igpdiusecase.update();
-        ipcaeusecase.update();
-        ipca15usecase.update();
-        ipcbrusecase.update();
-        inpcusecase.update();
-        igpmusecase.update();
-        ipcausecase.update();
-        selicmensalusecase.update();
-        salariousecase.update();
-        poupNovausecase.update();
-        poupAntigausecase.update();
-        ipcaTlusecase.update();
-        taxaLegalusecase.update();
+        try{
+            cdiusecase.update();
+        }
+       catch (BancoCentralDataNotFoundException e){
+           log.warn(e.getMessage());
+       }
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 */3 * * * *")
     public void atualizarDiarios(){
-        cdiusecase.update();
-        trusecase.update();
-        tbfusecase.update();
-        selicdiariousecase.update();
-    }
 
+    }
 }

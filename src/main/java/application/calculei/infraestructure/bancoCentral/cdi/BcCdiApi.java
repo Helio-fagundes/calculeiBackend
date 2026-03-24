@@ -1,13 +1,13 @@
 package application.calculei.infraestructure.bancoCentral.cdi;
 
 import application.calculei.infraestructure.bancoCentral.dto.BcResponse;
+import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.cdi.port.BuscarCdiFromBcPort;
 import application.calculei.usecase.dto.DadoBancoCentral;
+import application.calculei.usecase.port.BuscarUrlBySeriePort;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,11 +20,12 @@ import java.util.List;
 public class BcCdiApi implements BuscarCdiFromBcPort {
 
     private final RestTemplate restTemplate;
-    private final static String BASE_URL = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.12/dados?formato=json";
+    private final BuscarUrlBySeriePort buscarUrl;
 
     @Override
     public List<DadoBancoCentral> buscar(LocalDate dataInicial, LocalDate dataFinal) {
-        String url = BASE_URL;
+        String indice = "CDI";
+        String url = buscarUrl.buscarUrl(indice);
 
         if (dataInicial != null && dataFinal != null) {
             url += "&dataInicial=" + dataInicial.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
@@ -32,24 +33,19 @@ public class BcCdiApi implements BuscarCdiFromBcPort {
         }
 
         try {
-            ResponseEntity<BcResponse[]> response = restTemplate.getForEntity(url, BcResponse[].class);
-            BcResponse[] body = response.getBody();
+            BcResponse[] response = restTemplate.getForObject(url, BcResponse[].class);
 
-            if (body == null) return List.of();
+            if (response == null) return List.of();
 
-            return List.of(body).stream()
-                    .map(d -> new DadoBancoCentral(
-                            LocalDate.parse(d.data(), DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+            return List.of(response)
+                    .stream()
+                    .map(d -> new DadoBancoCentral( LocalDate.parse(d.data(),
+                            DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                             d.valor()))
                     .toList();
-
-        } catch (HttpClientErrorException.NotFound e) {
-            return List.of();
-        } catch (RestClientException e) {
-            if (e.getCause() instanceof HttpMessageNotReadableException) {
-                return List.of();
-            }
-            throw new RuntimeException("Erro ao buscar dados da API do BC: " + e.getMessage(), e);
+        }
+         catch (HttpMessageNotReadableException | RestClientException e) {
+            throw new BancoCentralDataNotFoundException(indice, dataInicial);
         }
     }
 }

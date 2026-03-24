@@ -1,10 +1,14 @@
 package application.calculei.infraestructure.bancoCentral.ipcae;
 
 import application.calculei.infraestructure.bancoCentral.dto.BcResponse;
+import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.dto.DadoBancoCentral;
 import application.calculei.usecase.ipcae.port.BuscarIpcaeFromBcPort;
+import application.calculei.usecase.port.BuscarUrlBySeriePort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -17,25 +21,32 @@ public class BcIpcaeApi implements BuscarIpcaeFromBcPort {
 
     private final RestTemplate restTemplate;
 
-    private final static String BASE_URL = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.10764/dados?formato=json";
+    private final BuscarUrlBySeriePort buscarUrl;
 
 
     @Override
     public List<DadoBancoCentral> buscar(LocalDate dataInicial) {
-        String url = BASE_URL;
+        String indice = "IPCAE";
+        String url = buscarUrl.buscarUrl(indice);
+
         if (dataInicial != null){
             url += "dataInicial="+ dataInicial.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
 
-        BcResponse[] response =
-                restTemplate.getForObject(url, BcResponse[].class);
+        try{
+            BcResponse[] response = restTemplate.getForObject(url, BcResponse[].class);
 
-        if (response == null) return List.of();
+            if (response == null) return List.of();
 
-        return List.of(response).stream()
-                .map(d -> new DadoBancoCentral(LocalDate.parse(d.data(),
-                        DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                        d.valor()))
-                .toList();
+            return List.of(response)
+                    .stream()
+                    .map(d -> new DadoBancoCentral(LocalDate.parse(d.data(),
+                            DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                            d.valor()))
+                    .toList();
+
+        }catch (HttpMessageNotReadableException | RestClientException e){
+            throw new BancoCentralDataNotFoundException(indice, dataInicial);
+        }
     }
 }

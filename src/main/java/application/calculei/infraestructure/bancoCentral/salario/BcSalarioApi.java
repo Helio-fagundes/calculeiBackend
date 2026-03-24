@@ -1,10 +1,14 @@
 package application.calculei.infraestructure.bancoCentral.salario;
 
 import application.calculei.infraestructure.bancoCentral.dto.BcResponse;
+import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.dto.DadoBancoCentral;
+import application.calculei.usecase.port.BuscarUrlBySeriePort;
 import application.calculei.usecase.salario.port.BuscarSalarioFromBcPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -16,11 +20,12 @@ import java.util.List;
 public class BcSalarioApi implements BuscarSalarioFromBcPort {
 
     private final RestTemplate restTemplate;
-    private final String BASE_URL = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.1619/dados?formato=json";
+    private final BuscarUrlBySeriePort buscarUrl;
 
     @Override
     public List<DadoBancoCentral> buscar(LocalDate dateInit, LocalDate dateFim) {
-        String url = BASE_URL;
+        String indice = "SALARIO";
+        String url = buscarUrl.buscarUrl(indice);
 
         if (dateInit != null && dateFim != null) {
             url += "&dataInicial=" + dateInit.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
@@ -28,7 +33,6 @@ public class BcSalarioApi implements BuscarSalarioFromBcPort {
         }
 
         try{
-
             BcResponse[] response = restTemplate.getForObject(url, BcResponse[].class);
 
             if (response == null) return List.of();
@@ -39,8 +43,8 @@ public class BcSalarioApi implements BuscarSalarioFromBcPort {
                             d.valor()))
                     .toList();
 
-        }catch (Exception e) {
-                throw new RuntimeException("Erro ao buscar dados da API do BC: " + e.getMessage(), e);
+        }catch (HttpMessageNotReadableException | RestClientException e){
+            throw new BancoCentralDataNotFoundException(indice, dateInit);
         }
     }
 }

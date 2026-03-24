@@ -6,7 +6,6 @@ import application.calculei.usecase.poupanca_antiga.dto.CalculatePoupAntigoBetwe
 import application.calculei.usecase.poupanca_antiga.dto.CalculatePoupAntigoBetweenDateResponse;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 

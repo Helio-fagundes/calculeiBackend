@@ -31,12 +31,12 @@ public class UpdateCdiFromBc {
         var indice = indicesBcIndexRepository.findBySerie("CDI")
                 .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
 
-        do{
+        while (inicio.isBefore(hoje) || inicio.isEqual(hoje)) {
             LocalDate fim = inicio.plusYears(5).minusDays(1);
 
-            if(fim.isAfter(hoje)) fim = hoje;
+            if (fim.isAfter(hoje)) fim = hoje;
 
-            for (var dado : buscarCdiFromBcPort.buscar(inicio, fim)){
+            for (var dado : buscarCdiFromBcPort.buscar(inicio, fim)) {
 
                 if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
                     continue;
@@ -55,6 +55,6 @@ public class UpdateCdiFromBc {
                 repository.save(cdi);
             }
             inicio = inicio.plusYears(5);
-        } while (inicio.isBefore(hoje));
+        }
     }
 }

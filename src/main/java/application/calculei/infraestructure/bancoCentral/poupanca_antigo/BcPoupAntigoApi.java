@@ -1,10 +1,14 @@
 package application.calculei.infraestructure.bancoCentral.poupanca_antigo;
 
 import application.calculei.infraestructure.bancoCentral.dto.BcResponse;
+import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.dto.DadoBancoCentral;
+import application.calculei.usecase.port.BuscarUrlBySeriePort;
 import application.calculei.usecase.poupanca_antiga.port.BuscarPoupAntigoFromBcPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -16,11 +20,12 @@ import java.util.List;
 public class BcPoupAntigoApi implements BuscarPoupAntigoFromBcPort {
 
     private final RestTemplate restTemplate;
-    private static String BASE_URL = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.25/dados?formato=json";
+    private final BuscarUrlBySeriePort buscarUrl;
 
     @Override
     public List<DadoBancoCentral> buscar(LocalDate dataInicio, LocalDate dataFim) {
-        String url = BASE_URL;
+        String indice = "POUPANTIGA";
+        String url = buscarUrl.buscarUrl(indice);
 
         if (dataInicio != null && dataFim != null){
             url += "&dataInicial=" + dataInicio.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
@@ -28,18 +33,19 @@ public class BcPoupAntigoApi implements BuscarPoupAntigoFromBcPort {
         }
 
         try {
-
             BcResponse[] response = restTemplate.getForObject(url, BcResponse[].class);
 
             if (response == null) return List.of();
 
-            return List.of(response).stream()
+            return List.of(response)
+                    .stream()
                     .map(d -> new DadoBancoCentral(LocalDate.parse(d.data(),
                             DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                             d.valor()))
                     .toList();
-        }catch (Exception e){
-            throw new RuntimeException("Erro ao buscar dados da API do BC: " + e.getMessage(), e);
+
+        }catch (HttpMessageNotReadableException | RestClientException e){
+            throw new BancoCentralDataNotFoundException(indice, dataInicio);
         }
     }
 }
