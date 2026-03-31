@@ -1,5 +1,6 @@
 package application.calculei.usecase.selic.mensal;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.SelicMensal;
 import application.calculei.infraestructure.repository.selic.SelicMensalIndexRepository;
 import application.calculei.usecase.selic.mensal.dto.CalculateSelicMensalBetweenDateRequest;
@@ -23,9 +24,10 @@ public class CalculateSelicMensalAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
+        DateUtils dateUtils = new DateUtils();
         List<SelicMensal> listEntity = repository.findByDataInitBetween(request.dateInit().plusMonths(1), request.dateFim().minusMonths(1));
         BigDecimal fatorAcumulado = BigDecimal.ZERO;
-        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
 
         for (SelicMensal entity : listEntity) {
             fatorAcumulado = fatorAcumulado.add(entity.getFator());
@@ -42,7 +44,7 @@ public class CalculateSelicMensalAccumulatedValueBetweenDates {
         return new CalculateSelicMensalBetweenDateResponse(
                 request.dateInit(),
                 request.dateFim(),
-                diasContados,
+                dias,
                 valorFinal,
                 percentualAcumulado);
     }

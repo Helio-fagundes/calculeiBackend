@@ -1,5 +1,6 @@
 package application.calculei.usecase.ipca15;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.IPCA15;
 import application.calculei.infraestructure.repository.ipca_15.Ipca15IndexRepository;
 import application.calculei.usecase.ipca15.dto.CalculateIpca15BetweenDateRequest;
@@ -22,8 +23,9 @@ public class CalculateIpca15AccumulatedValueBetweenDates {
         if (request.dateFim().isBefore(request.dateInit())){
             throw new IllegalArgumentException("a data inicio não pode ser superior a data final.");
         }
+        DateUtils  dateUtils = new DateUtils();
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
         List<IPCA15> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
 
         for (var entity : listEntity){
@@ -39,6 +41,6 @@ public class CalculateIpca15AccumulatedValueBetweenDates {
                 .multiply(BigDecimal.valueOf(100))
                 .setScale(6, BigDecimal.ROUND_HALF_UP);
 
-        return new CalculateIpca15BetweenDateResponse(request.dateInit(), request.dateFim(), diasContados,valorFinal, percentualAcumulado);
+        return new CalculateIpca15BetweenDateResponse(request.dateInit(), request.dateFim(), dias ,valorFinal, percentualAcumulado);
     }
 }

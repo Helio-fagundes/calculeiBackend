@@ -1,5 +1,6 @@
 package application.calculei.usecase.igpdi;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.IGPDI;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
 import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
@@ -24,8 +25,9 @@ public class CalculateIgpdiAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("a data inicio não pode ser superior a data final.");
         }
 
+        DateUtils  dateUtils = new DateUtils();
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
         List<IGPDI> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
 
         for (IGPDI entity : listEntity){
@@ -41,6 +43,6 @@ public class CalculateIgpdiAccumulatedValueBetweenDates {
                 .multiply(BigDecimal.valueOf(100))
                 .setScale(6, RoundingMode.HALF_UP);
 
-        return new CalculateIgpdiBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal, percentualAcumulado);
+        return new CalculateIgpdiBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
     }
 }

@@ -1,5 +1,6 @@
 package application.calculei.usecase.ipcbr;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.IPCBR;
 import application.calculei.infraestructure.repository.ipc_br.IpcbrIndexRepository;
 import application.calculei.usecase.ipcbr.dto.CalculateIpcbrBetweenDateRequest;
@@ -23,8 +24,9 @@ public class CalculateIpcbrAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
+        DateUtils  dateUtils = new DateUtils();
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
         List<IPCBR> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
 
         for (var entity : listEntity){
@@ -40,6 +42,6 @@ public class CalculateIpcbrAccumulatedValueBetweenDates {
                 .multiply(BigDecimal.valueOf(100))
                 .setScale(6, RoundingMode.HALF_UP);
 
-        return new CalculateIpcbrBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal, percentualAcumulado);
+        return new CalculateIpcbrBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
     }
 }

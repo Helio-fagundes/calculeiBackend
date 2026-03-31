@@ -1,5 +1,6 @@
 package application.calculei.usecase.salario;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.Salario;
 import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
 import application.calculei.usecase.salario.dto.CalculateSalarioBetweenDateRequest;
@@ -22,9 +23,10 @@ public class CalculateSalarioAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior a data inicial.");
         }
 
+        DateUtils dateUtils = new DateUtils();
         List<Salario> listEntity = salarioIndexRepository.findByDataInitBetween(request.dateInit(), request.dateFim());
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
 
         for (Salario entity : listEntity){
             fatorAcumulado = fatorAcumulado.multiply(entity.getFator());
@@ -40,6 +42,6 @@ public class CalculateSalarioAccumulatedValueBetweenDates {
                 .multiply(BigDecimal.valueOf(100))
                 .setScale(6, BigDecimal.ROUND_HALF_UP);
 
-        return new CalculateSalarioBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal, percentualAcumulado);
+        return new CalculateSalarioBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
     }
 }

@@ -1,5 +1,6 @@
 package application.calculei.usecase.taxa_legal;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.TaxaLegal;
 import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndexRepository;
 import application.calculei.usecase.taxa_legal.dto.CalculateTaxaLegalBetweenDateRequest;
@@ -22,7 +23,8 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
-        Long dias = ChronoUnit.DAYS.between(request.dataInit(), request.dataFim());
+        DateUtils dateUtils = new DateUtils();
+        Long dias = dateUtils.businessDays(request.dataInit(), request.dataFim());
         List<TaxaLegal> listEntity = repository.findByDataInitBetween(request.dataInit(), request.dataFim());
         BigDecimal fatorAcumulado = BigDecimal.ONE;
 

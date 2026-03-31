@@ -1,5 +1,6 @@
 package application.calculei.usecase.inpc;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.INPC;
 import application.calculei.infraestructure.repository.inpc.InpcIndexRepository;
 import application.calculei.usecase.inpc.dto.CalculateInpcBetweenDateRequest;
@@ -23,8 +24,9 @@ public class CalculateInpcAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
+        DateUtils  dateUtils = new DateUtils();
         BigDecimal valorAcumulado = BigDecimal.ONE;
-        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
         List<INPC> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
 
         for (var entity : listEntity){
@@ -40,7 +42,7 @@ public class CalculateInpcAccumulatedValueBetweenDates {
                 .multiply(BigDecimal.valueOf(100))
                 .setScale(6, BigDecimal.ROUND_HALF_UP);
 
-        return new CalculateInpcBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal, percentualAcumulado);
+        return new CalculateInpcBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
 
     }
 }

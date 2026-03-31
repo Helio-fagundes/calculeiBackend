@@ -1,5 +1,6 @@
 package application.calculei.usecase.tbf;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.TBF;
 import application.calculei.infraestructure.repository.tbf.TbfIndexRepository;
 import application.calculei.usecase.tbf.dto.CalculateTbfBetweenDateRequest;
@@ -22,9 +23,9 @@ public class CalculateTbfAccumulatedValueBetweenDates {
         if (request.dateFim().isBefore(request.dateInit())){
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
-
+        DateUtils dateUtils = new DateUtils();
         List<TBF> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
-        Long dias = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
         BigDecimal valorAcumulado = BigDecimal.ONE;
 
         for (var entity : listEntity) {

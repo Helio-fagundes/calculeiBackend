@@ -1,5 +1,6 @@
 package application.calculei.usecase.ipcae;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.repository.ipca_e.IpcaeIndexRepository;
 import application.calculei.usecase.ipcae.dto.CalculateIpcaeBetweenDateRequest;
@@ -23,8 +24,9 @@ public class CalculateIpcaeAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("a data inicio não pode ser superior a data final.");
         }
 
+        DateUtils  dateUtils = new DateUtils();
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
         List<IPCAE> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
 
         for (var entity : listEntity){
@@ -40,6 +42,6 @@ public class CalculateIpcaeAccumulatedValueBetweenDates {
                 .multiply(BigDecimal.valueOf(100))
                 .setScale(6, RoundingMode.HALF_UP);
 
-        return new CalculateIpcaeBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal, percentualAcumulado);
+        return new CalculateIpcaeBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
     }
 }

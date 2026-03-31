@@ -1,5 +1,6 @@
 package application.calculei.usecase.poupanca_antiga;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.PoupAntiga;
 import application.calculei.infraestructure.repository.poupanca_antiga.PoupAntigaIndexRepository;
 import application.calculei.usecase.poupanca_antiga.dto.CalculatePoupAntigoBetweenDateRequest;
@@ -22,9 +23,10 @@ public class CalculatePoupAntigoAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("Data final deve ser posterior a data inicial");
         }
 
+        DateUtils dateUtils = new DateUtils();
         List<PoupAntiga> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long dias = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
 
         for (var entity : listEntity){
             fatorAcumulado = fatorAcumulado.multiply(entity.getFator());

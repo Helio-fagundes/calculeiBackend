@@ -1,5 +1,6 @@
 package application.calculei.usecase.selic.diario;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.SelicDiario;
 import application.calculei.infraestructure.repository.selic.SelicDiarioIndexRepository;
 import application.calculei.usecase.selic.diario.dto.CalculateSelicDiarioBetweenDateRequest;
@@ -24,8 +25,9 @@ public class CalculateSelicDiarioAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
+        DateUtils dateUtils = new DateUtils();
         List<SelicDiario> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
-        Long dias = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
         BigDecimal fatorAcumulado = BigDecimal.ONE;
 
         for (SelicDiario entity : listEntity){

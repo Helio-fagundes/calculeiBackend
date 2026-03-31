@@ -1,5 +1,6 @@
 package application.calculei.usecase.poupanca_nova;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.PoupNova;
 import application.calculei.infraestructure.repository.poupanca_nova.PoupNovaIndexRepository;
 import application.calculei.usecase.poupanca_nova.dto.CalculatePoupNovaBetweenDateRequest;
@@ -22,9 +23,10 @@ public class CalculatePoupNovaAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
+        DateUtils  dateUtils = new DateUtils();
         List<PoupNova> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim().minusMonths(1));
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
 
         for (var entity : listEntity){
             fatorAcumulado = fatorAcumulado.multiply(entity.getFator());
@@ -40,6 +42,6 @@ public class CalculatePoupNovaAccumulatedValueBetweenDates {
                 .multiply(BigDecimal.valueOf(100))
                 .setScale(6, BigDecimal.ROUND_HALF_UP);
 
-        return new CalculatePoupNovaBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal, percentualAcumulado);
+        return new CalculatePoupNovaBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
     }
 }

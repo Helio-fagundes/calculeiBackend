@@ -22,8 +22,8 @@ public class CalculateTj6899UfirValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
-        DateUtils  dateUtils = new DateUtils();
-        int dias = dateUtils.businessDays(request.dataInit(), request.dataFinal());
+        DateUtils dateUtils = new DateUtils();
+        Long dias = dateUtils.businessDays(request.dataInit(), request.dataFinal());
         List<Indice_TJ_L6899> valorDataInicial = repository.findByDataInit(request.dataInit().withDayOfMonth(1));
         List<Indice_TJ_L6899> valorDataFinal = repository.findByDataInit(request.dataFinal().withDayOfMonth(1));
 

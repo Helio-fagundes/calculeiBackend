@@ -1,5 +1,6 @@
 package application.calculei.usecase.cdi;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.CDI;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
 import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
@@ -24,8 +25,9 @@ public class CalculateCdiAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("Data fim não pode ser menor que a data inicio");
         }
 
+        DateUtils  dateUtils = new DateUtils();
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
         List<CDI> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
 
         for (CDI entity : listEntity){
@@ -41,6 +43,6 @@ public class CalculateCdiAccumulatedValueBetweenDates {
                 .multiply(BigDecimal.valueOf(100))
                 .setScale(6, RoundingMode.HALF_UP);
 
-        return new CalculateCdiBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal, percentualAcumulado);
+        return new CalculateCdiBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
     }
 }
