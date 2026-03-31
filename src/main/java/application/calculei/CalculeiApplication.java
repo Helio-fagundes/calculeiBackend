@@ -4,6 +4,7 @@ import application.calculei.adapters.gateway.cdi.CdiJpaRepository;
 import application.calculei.adapters.gateway.igpdi.IgpdiJpaRepository;
 import application.calculei.adapters.gateway.igpm.IgpmJpaRepository;
 import application.calculei.adapters.gateway.indice_bc.IndiceBcJpaRepository;
+import application.calculei.adapters.gateway.indice_tj_L6899.IndiceTjJpaRepository;
 import application.calculei.adapters.gateway.inpc.InpcJpaRepository;
 import application.calculei.adapters.gateway.ipc_br.IpcBrJpaRepository;
 import application.calculei.adapters.gateway.ipca.IpcaJpaRepository;
@@ -18,11 +19,13 @@ import application.calculei.adapters.gateway.selic.SelicMensalJpaRepository;
 import application.calculei.adapters.gateway.taxa_legal.TaxaLegalJpaRepository;
 import application.calculei.adapters.gateway.tbf.TbfJpaRepository;
 import application.calculei.adapters.gateway.tr.TrJpaRepository;
+import application.calculei.adapters.gateway.ufir_Rj.UfirRjJpaRepository;
 import application.calculei.adapters.scheduler.SchedulerConfig;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
 import application.calculei.infraestructure.repository.igpm.IgpmIndexRepository;
+import application.calculei.infraestructure.repository.indice_tj_L6899.TjL6899IndexRepository;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.inpc.InpcIndexRepository;
 import application.calculei.infraestructure.repository.ipc_br.IpcbrIndexRepository;
@@ -38,6 +41,9 @@ import application.calculei.infraestructure.repository.selic.SelicMensalIndexRep
 import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndexRepository;
 import application.calculei.infraestructure.repository.tbf.TbfIndexRepository;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
+import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
+import application.calculei.usecase.Tj6899.CalculateTj6899UfirValueBetweenDates;
+import application.calculei.usecase.Tj6899.dto.CalculateTj6899BetweenDateResponse;
 import application.calculei.usecase.cdi.CalculateCdiAccumulatedValueBetweenDates;
 import application.calculei.usecase.cdi.UpdateCdiFromBc;
 import application.calculei.usecase.cdi.port.BuscarCdiFromBcPort;
@@ -111,6 +117,11 @@ public class CalculeiApplication {
     @Bean
     public IndexRepository indexRepositoryTaxaLegal(TaxaLegalIndexRepository repo){
         return new TaxaLegalJpaRepository(repo);
+    }
+
+    @Bean
+    public IndexRepository indexRepositoryTj6899(UfirRjIndexRepository repo){
+        return new UfirRjJpaRepository(repo);
     }
 
     @Bean
@@ -426,6 +437,11 @@ public class CalculeiApplication {
     @Bean
     public CalculateIpcaTlAccumulatedValueBetweenDates calculateIpcaTlAccumulatedValueBetweenDates(IpcaTlIndexRepository repo){
         return new CalculateIpcaTlAccumulatedValueBetweenDates(repo);
+    }
+
+    @Bean
+    public CalculateTj6899UfirValueBetweenDates calculateTj6899UfirValueBetweenDates(TjL6899IndexRepository repo){
+        return new CalculateTj6899UfirValueBetweenDates(repo);
     }
 
     @Bean

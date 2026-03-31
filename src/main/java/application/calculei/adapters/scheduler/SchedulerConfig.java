@@ -48,12 +48,7 @@ public class SchedulerConfig {
 
     @Scheduled(cron = "0 */3 * * * *")
     public void atualizarMensais(){
-        try{
-            cdiusecase.update();
-        }
-       catch (BancoCentralDataNotFoundException e){
-           log.warn(e.getMessage());
-       }
+
     }
 
     @Scheduled(cron = "0 */3 * * * *")
