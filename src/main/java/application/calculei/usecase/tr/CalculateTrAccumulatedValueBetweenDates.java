@@ -1,5 +1,6 @@
 package application.calculei.usecase.tr;
 
+import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.TR;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.usecase.tr.dto.CalculateTrBetweenDateRequest;
@@ -23,9 +24,10 @@ public class CalculateTrAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
+        DateUtils  dateUtils = new DateUtils();
         List<TR> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long diasContados = ChronoUnit.DAYS.between(request.dateInit(), request.dateFim());
+        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
 
         for (var entity : listEntity){
             fatorAcumulado = fatorAcumulado.multiply(entity.getFator());
@@ -41,6 +43,6 @@ public class CalculateTrAccumulatedValueBetweenDates {
                 .multiply(BigDecimal.valueOf(100))
                 .setScale(6, RoundingMode.HALF_UP);
 
-        return new CalculateTrBetweenDateResponse(request.dateInit(), request.dateFim(), diasContados, valorFinal, percentualAcumulado);
+        return new CalculateTrBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
     }
 }
