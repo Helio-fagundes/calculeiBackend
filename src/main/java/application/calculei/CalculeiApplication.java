@@ -43,6 +43,7 @@ import application.calculei.infraestructure.repository.tbf.TbfIndexRepository;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
 import application.calculei.usecase.Tj6899.CalculateTj6899UfirValueBetweenDates;
+import application.calculei.usecase.Tj6899.UpdateTj6899FromUfirRj;
 import application.calculei.usecase.Tj6899.dto.CalculateTj6899BetweenDateResponse;
 import application.calculei.usecase.cdi.CalculateCdiAccumulatedValueBetweenDates;
 import application.calculei.usecase.cdi.UpdateCdiFromBc;
@@ -95,6 +96,7 @@ import application.calculei.usecase.tbf.port.BuscarTbfFromBcPort;
 import application.calculei.usecase.tr.CalculateTrAccumulatedValueBetweenDates;
 import application.calculei.usecase.tr.UpdateTrFromBc;
 import application.calculei.usecase.tr.port.BuscarTrFromBcPort;
+import org.hibernate.sql.Update;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -385,6 +387,18 @@ public class CalculeiApplication {
                 indicesBcIndexRepository);
     }
 
+    @Bean
+    public UpdateTj6899FromUfirRj  updateTj6899FromUfirRj(
+            UfirRjIndexRepository ufirRjIndexRepository,
+            TjL6899IndexRepository repository,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new UpdateTj6899FromUfirRj(
+                ufirRjIndexRepository,
+                repository,
+                indicesBcIndexRepository
+        );
+    }
+
 
     @Bean
     public SchedulerConfig schedulerConfigd(UpdateIgpdiFromBc useCaseIgpdi,
@@ -403,7 +417,8 @@ public class CalculeiApplication {
                                             UpdateSalarioFromBc useCaseSalario,
                                             UpdatePoupAntigoFromBc useCasePoupAntiga,
                                             UpdateIpcaTlFromBc useCaseIpcaTl,
-                                            UpdateTaxaLegalFromBc useCaseTaxaLegal) {
+                                            UpdateTaxaLegalFromBc useCaseTaxaLegal,
+                                            UpdateTj6899FromUfirRj updateTj6899FromUfirRj) {
         return new SchedulerConfig(
                 useCaseIgpdi,
                 useCaseIpcae,
@@ -421,7 +436,8 @@ public class CalculeiApplication {
                 useCaseSalario,
                 useCasePoupAntiga,
                 useCaseIpcaTl,
-                useCaseTaxaLegal);
+                useCaseTaxaLegal,
+                updateTj6899FromUfirRj);
     }
 
     @Bean

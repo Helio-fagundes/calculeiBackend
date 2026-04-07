@@ -1,6 +1,7 @@
 package application.calculei.adapters.scheduler;
 
 import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
+import application.calculei.usecase.Tj6899.UpdateTj6899FromUfirRj;
 import application.calculei.usecase.cdi.UpdateCdiFromBc;
 import application.calculei.usecase.igpdi.UpdateIgpdiFromBc;
 import application.calculei.usecase.igpm.UpdateIgpmFromBc;
@@ -45,10 +46,11 @@ public class SchedulerConfig {
     private final UpdatePoupAntigoFromBc poupAntigausecase;
     private final UpdateIpcaTlFromBc ipcaTlusecase;
     private final UpdateTaxaLegalFromBc taxaLegalusecase;
+    private final UpdateTj6899FromUfirRj  updateTj6899FromUfirRj;
 
     @Scheduled(cron = "0 */3 * * * *")
     public void atualizarMensais(){
-
+        updateTj6899FromUfirRj.update();
     }
 
     @Scheduled(cron = "0 */3 * * * *")
