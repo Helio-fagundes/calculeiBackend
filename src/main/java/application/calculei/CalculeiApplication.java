@@ -1,6 +1,7 @@
 package application.calculei;
 
 import application.calculei.adapters.gateway.cdi.CdiJpaRepository;
+import application.calculei.adapters.gateway.history_pdf_value.HistoryJpaRepository;
 import application.calculei.adapters.gateway.igpdi.IgpdiJpaRepository;
 import application.calculei.adapters.gateway.igpm.IgpmJpaRepository;
 import application.calculei.adapters.gateway.indice_bc.IndiceBcJpaRepository;
@@ -17,8 +18,12 @@ import application.calculei.adapters.gateway.tbf.TbfJpaRepository;
 import application.calculei.adapters.gateway.tr.TrJpaRepository;
 import application.calculei.adapters.gateway.ufir_Rj.UfirRjJpaRepository;
 import application.calculei.adapters.scheduler.SchedulerConfig;
+import application.calculei.domain.models.HistoryPdfValueDomain;
+import application.calculei.domain.repository.HistoryPdfValuePort;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.HistoryPdfValueEntity;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
+import application.calculei.infraestructure.repository.history_pdf_value.HistoryPdfValueRepository;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
 import application.calculei.infraestructure.repository.igpm.IgpmIndexRepository;
 import application.calculei.infraestructure.repository.indice_tj_L6899.TjL6899IndexRepository;
@@ -40,6 +45,7 @@ import application.calculei.usecase.Tj6899.UpdateTj6899FromUfirRj;
 import application.calculei.usecase.cdi.CalculateCdiAccumulatedValueBetweenDates;
 import application.calculei.usecase.cdi.UpdateCdiFromBc;
 import application.calculei.usecase.cdi.port.BuscarCdiFromBcPort;
+import application.calculei.usecase.history_pdf_value.HistoryPdfValueMethod;
 import application.calculei.usecase.igpdi.CalculateIgpdiAccumulatedValueBetweenDates;
 import application.calculei.usecase.igpdi.UpdateIgpdiFromBc;
 import application.calculei.usecase.igpdi.port.BuscarIgpdiFromBcPort;
@@ -79,6 +85,7 @@ import application.calculei.usecase.tbf.port.BuscarTbfFromBcPort;
 import application.calculei.usecase.tr.CalculateTrAccumulatedValueBetweenDates;
 import application.calculei.usecase.tr.UpdateTrFromBc;
 import application.calculei.usecase.tr.port.BuscarTrFromBcPort;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -373,6 +380,16 @@ public class CalculeiApplication {
     @Bean
     public CalculateCdiAccumulatedValueBetweenDates calculateCdiAccumulatedValueBetweenDates(CdiIndexRepository repo) {
         return new CalculateCdiAccumulatedValueBetweenDates(repo);
+    }
+
+    @Bean
+    public HistoryPdfValuePort historyPdfValuePort(HistoryPdfValueRepository repo) {
+        return new HistoryJpaRepository(repo);
+    }
+
+    @Bean
+    public HistoryPdfValueMethod historyPdfValueMethod(HistoryPdfValuePort repo) {
+        return new HistoryPdfValueMethod(repo);
     }
 
     @Bean
