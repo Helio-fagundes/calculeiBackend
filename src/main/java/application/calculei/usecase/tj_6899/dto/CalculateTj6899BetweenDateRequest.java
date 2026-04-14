@@ -1,4 +1,4 @@
-package application.calculei.usecase.Tj6899.dto;
+package application.calculei.usecase.tj_6899.dto;
 
 import java.time.LocalDate;
 

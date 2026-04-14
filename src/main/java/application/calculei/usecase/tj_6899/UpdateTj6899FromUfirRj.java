@@ -1,4 +1,4 @@
-package application.calculei.usecase.Tj6899;
+package application.calculei.usecase.tj_6899;
 
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.Indice_TJ_L6899;

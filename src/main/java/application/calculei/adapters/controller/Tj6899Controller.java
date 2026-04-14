@@ -1,8 +1,8 @@
 package application.calculei.adapters.controller;
 
-import application.calculei.usecase.Tj6899.CalculateTj6899UfirValueBetweenDates;
-import application.calculei.usecase.Tj6899.dto.CalculateTj6899BetweenDateRequest;
-import application.calculei.usecase.Tj6899.dto.CalculateTj6899BetweenDateResponse;
+import application.calculei.usecase.tj_6899.CalculateTj6899UfirValueBetweenDates;
+import application.calculei.usecase.tj_6899.dto.CalculateTj6899BetweenDateRequest;
+import application.calculei.usecase.tj_6899.dto.CalculateTj6899BetweenDateResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

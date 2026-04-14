@@ -1,10 +1,10 @@
-package application.calculei.usecase.Tj6899;
+package application.calculei.usecase.tj_6899;
 
 import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.infraestructure.entity.Indice_TJ_L6899;
 import application.calculei.infraestructure.repository.indice_tj_L6899.TjL6899IndexRepository;
-import application.calculei.usecase.Tj6899.dto.CalculateTj6899BetweenDateRequest;
-import application.calculei.usecase.Tj6899.dto.CalculateTj6899BetweenDateResponse;
+import application.calculei.usecase.tj_6899.dto.CalculateTj6899BetweenDateRequest;
+import application.calculei.usecase.tj_6899.dto.CalculateTj6899BetweenDateResponse;
 
 import java.math.BigDecimal;
 import java.util.List;

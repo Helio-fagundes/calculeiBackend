@@ -1,7 +1,6 @@
 package application.calculei.adapters.scheduler;
 
-import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
-import application.calculei.usecase.Tj6899.UpdateTj6899FromUfirRj;
+import application.calculei.usecase.tj_6899.UpdateTj6899FromUfirRj;
 import application.calculei.usecase.cdi.UpdateCdiFromBc;
 import application.calculei.usecase.igpdi.UpdateIgpdiFromBc;
 import application.calculei.usecase.igpm.UpdateIgpmFromBc;
