@@ -13,4 +13,5 @@ public interface SelicMensalIndexRepository extends JpaRepository<SelicMensal, L
     @Query("SELECT MAX(s.dataInit) FROM SelicMensal s")
     LocalDate findMaxDataInit();
     Boolean existsByDataInit(LocalDate dataInit);
+    SelicMensal findByDataInit(LocalDate dataInit);
 }

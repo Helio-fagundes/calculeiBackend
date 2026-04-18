@@ -24,6 +24,7 @@ import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
 import application.calculei.infraestructure.repository.history_pdf_value.HistoryPdfValueRepository;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
 import application.calculei.infraestructure.repository.igpm.IgpmIndexRepository;
+import application.calculei.infraestructure.repository.indice_tj_L11960_selic.TjL11960SelicIndexRepository;
 import application.calculei.infraestructure.repository.indice_tj_L6899.TjL6899IndexRepository;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.ipca.IpcaIndexRepository;
@@ -38,6 +39,7 @@ import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndex
 import application.calculei.infraestructure.repository.tbf.TbfIndexRepository;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
+import application.calculei.usecase.tj_11960.CalculateTj11960SelicValueBetweenDates;
 import application.calculei.usecase.tj_6899.CalculateTj6899UfirValueBetweenDates;
 import application.calculei.usecase.tj_6899.UpdateTj6899FromUfirRj;
 import application.calculei.usecase.cdi.CalculateCdiAccumulatedValueBetweenDates;
@@ -377,6 +379,12 @@ public class CalculeiApplication {
     @Bean
     public CalculateCdiAccumulatedValueBetweenDates calculateCdiAccumulatedValueBetweenDates(CdiIndexRepository repo) {
         return new CalculateCdiAccumulatedValueBetweenDates(repo);
+    }
+
+    @Bean
+    public CalculateTj11960SelicValueBetweenDates  calculateTj11960SelicValue(TjL11960SelicIndexRepository tjRepo,
+                                                                              SelicMensalIndexRepository selicRepo) {
+        return new CalculateTj11960SelicValueBetweenDates(tjRepo, selicRepo);
     }
 
     @Bean
