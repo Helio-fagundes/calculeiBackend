@@ -24,9 +24,8 @@ public class CalculateIpcaTlAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
-        DateUtils  dateUtils = new DateUtils();
         List<IPCA_Tl> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
-        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
+        Long dias = DateUtils.businessDays(request.dateInit(), request.dateFim());
         BigDecimal fatorAcumulado = BigDecimal.ONE;
 
         for (var dado : listEntity){

@@ -25,9 +25,8 @@ public class CalculateCdiAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("Data fim não pode ser menor que a data inicio");
         }
 
-        DateUtils  dateUtils = new DateUtils();
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
+        Long dias = DateUtils.businessDays(request.dateInit(), request.dateFim());
         List<CDI> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
 
         for (CDI entity : listEntity){

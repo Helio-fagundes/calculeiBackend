@@ -25,9 +25,8 @@ public class CalculateIgpdiAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("a data inicio não pode ser superior a data final.");
         }
 
-        DateUtils  dateUtils = new DateUtils();
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
+        Long dias = DateUtils.businessDays(request.dateInit(), request.dateFim());
         List<IGPDI> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
 
         for (IGPDI entity : listEntity){

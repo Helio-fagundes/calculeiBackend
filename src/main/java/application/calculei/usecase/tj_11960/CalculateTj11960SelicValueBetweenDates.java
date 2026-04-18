@@ -20,7 +20,6 @@ public class CalculateTj11960SelicValueBetweenDates {
 
     private final TjL11960SelicIndexRepository tjIndexRepository;
     private final SelicMensalIndexRepository selicIndexRepository;
-    private final DateUtils dateUtils;
 
     public CalculateTj11960SelicValueBetweenDates(
             TjL11960SelicIndexRepository tjIndexRepository,
@@ -28,7 +27,6 @@ public class CalculateTj11960SelicValueBetweenDates {
     ) {
         this.tjIndexRepository = tjIndexRepository;
         this.selicIndexRepository = selicIndexRepository;
-        this.dateUtils = new DateUtils();
     }
 
     public CalculateTj11960BetweenDateResponse execute(
@@ -36,7 +34,7 @@ public class CalculateTj11960SelicValueBetweenDates {
     ) {
         validateDates(request.dataInit(), request.dataFinal());
 
-        long businessDays = dateUtils.businessDays(
+        long businessDays = DateUtils.businessDays(
                 request.dataInit(),
                 request.dataFinal()
         );

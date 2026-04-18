@@ -24,10 +24,9 @@ public class CalculateSelicMensalAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
-        DateUtils dateUtils = new DateUtils();
         List<SelicMensal> listEntity = repository.findByDataInitBetween(request.dateInit().plusMonths(1), request.dateFim().minusMonths(1));
         BigDecimal fatorAcumulado = BigDecimal.ZERO;
-        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
+        Long dias = DateUtils.businessDays(request.dateInit(), request.dateFim());
 
         for (SelicMensal entity : listEntity) {
             fatorAcumulado = fatorAcumulado.add(entity.getFator());

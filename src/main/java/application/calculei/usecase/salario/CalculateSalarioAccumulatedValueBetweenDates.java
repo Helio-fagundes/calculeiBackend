@@ -23,10 +23,9 @@ public class CalculateSalarioAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior a data inicial.");
         }
 
-        DateUtils dateUtils = new DateUtils();
         List<Salario> listEntity = salarioIndexRepository.findByDataInitBetween(request.dateInit(), request.dateFim());
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
+        Long dias = DateUtils.businessDays(request.dateInit(), request.dateFim());
 
         for (Salario entity : listEntity){
             fatorAcumulado = fatorAcumulado.multiply(entity.getFator());

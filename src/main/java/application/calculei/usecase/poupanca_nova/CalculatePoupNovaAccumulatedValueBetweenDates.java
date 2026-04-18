@@ -23,10 +23,9 @@ public class CalculatePoupNovaAccumulatedValueBetweenDates {
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
-        DateUtils  dateUtils = new DateUtils();
         List<PoupNova> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim().minusMonths(1));
         BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
+        Long dias = DateUtils.businessDays(request.dateInit(), request.dateFim());
 
         for (var entity : listEntity){
             fatorAcumulado = fatorAcumulado.multiply(entity.getFator());

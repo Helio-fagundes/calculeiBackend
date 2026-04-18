@@ -23,9 +23,8 @@ public class CalculateTbfAccumulatedValueBetweenDates {
         if (request.dateFim().isBefore(request.dateInit())){
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
-        DateUtils dateUtils = new DateUtils();
         List<TBF> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
-        Long dias = dateUtils.businessDays(request.dateInit(), request.dateFim());
+        Long dias = DateUtils.businessDays(request.dateInit(), request.dateFim());
         BigDecimal valorAcumulado = BigDecimal.ONE;
 
         for (var entity : listEntity) {

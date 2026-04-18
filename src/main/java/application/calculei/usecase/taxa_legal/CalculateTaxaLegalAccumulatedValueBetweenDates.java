@@ -23,8 +23,7 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
             throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
         }
 
-        DateUtils dateUtils = new DateUtils();
-        Long dias = dateUtils.businessDays(request.dataInit(), request.dataFim());
+        Long dias = DateUtils.businessDays(request.dataInit(), request.dataFim());
         List<TaxaLegal> listEntity = repository.findByDataInitBetween(request.dataInit(), request.dataFim());
         BigDecimal fatorAcumulado = BigDecimal.ONE;
 
