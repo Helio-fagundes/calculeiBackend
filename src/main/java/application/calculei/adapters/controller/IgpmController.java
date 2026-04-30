@@ -21,6 +21,6 @@ public class IgpmController {
 
     @PostMapping("/calculate/between-dates")
     public CalculateIgpmBetweenDateResponse calculateBetweenDate(@Valid @RequestBody CalculateIgpmBetweenDateRequest request) {
-        return useCaseCalculateDays.calcular(request);
+        return useCaseCalculateDays.execute(request);
     }
 }

@@ -21,6 +21,6 @@ public class Tj6899Controller {
 
     @PostMapping("/calculate/between-dates")
     public CalculateTj6899BetweenDateResponse calculateTj6899BetweenDateResponse(@Valid @RequestBody CalculateTj6899BetweenDateRequest request){
-        return useCaseCalculateDays.calcular(request);
+        return useCaseCalculateDays.execute(request);
     }
 }

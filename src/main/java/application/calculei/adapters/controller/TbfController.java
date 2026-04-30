@@ -21,6 +21,6 @@ public class TbfController {
 
      @PostMapping("/calculate/between-dates")
     public CalculateTbfBetweenDateResponse calculateBetweenDate(@Valid @RequestBody CalculateTbfBetweenDateRequest request){
-         return useCaseCalculateDays.calcular(request);
+         return useCaseCalculateDays.execute(request);
      }
 }

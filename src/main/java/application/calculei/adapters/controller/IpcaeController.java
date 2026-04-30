@@ -21,6 +21,6 @@ public class IpcaeController {
 
     @PostMapping("/calculate/between-dates")
     public CalculateIpcaeBetweenDateResponse calculateBetweenDate(@Valid @RequestBody CalculateIpcaeBetweenDateRequest request){
-        return useCaseCalculateDays.calcular(request);
+        return useCaseCalculateDays.execute(request);
     }
 }

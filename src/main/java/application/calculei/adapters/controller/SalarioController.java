@@ -21,6 +21,6 @@ public class SalarioController {
 
     @PostMapping("/calculate/between-dates")
     public CalculateSalarioBetweenDateResponse calculateSalarioBetweenDateResponse(@Valid @RequestBody CalculateSalarioBetweenDateRequest request){
-        return calculateSalarioAccumulatedValueBetweenDates.calcular(request);
+        return calculateSalarioAccumulatedValueBetweenDates.execute(request);
     }
 }

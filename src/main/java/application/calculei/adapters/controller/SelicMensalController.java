@@ -21,6 +21,6 @@ public class SelicMensalController {
 
     @PostMapping("/calculate/between-dates")
     public CalculateSelicMensalBetweenDateResponse calculateBetweenDate(@Valid @RequestBody CalculateSelicMensalBetweenDateRequest request){
-        return useCaseCalculateDays.calcular(request);
+        return useCaseCalculateDays.execute(request);
     }
 }

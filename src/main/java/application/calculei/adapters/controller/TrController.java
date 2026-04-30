@@ -21,6 +21,6 @@ public class TrController {
 
     @PostMapping("/calculate/between-dates")
     public CalculateTrBetweenDateResponse calculateBetweenDate(@Valid @RequestBody CalculateTrBetweenDateRequest request){
-        return useCaseCalculateDays.calcular(request);
+        return useCaseCalculateDays.execute(request);
     }
 }

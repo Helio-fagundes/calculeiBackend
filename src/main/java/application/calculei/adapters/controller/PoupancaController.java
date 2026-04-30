@@ -26,11 +26,11 @@ public class PoupancaController {
 
     @PostMapping("/nova/calculate/between-dates")
     public CalculatePoupNovaBetweenDateResponse calculateBetweenDate(@Valid @RequestBody CalculatePoupNovaBetweenDateRequest request){
-        return useCaseCalculatePoupancaBetweenDates.calcular(request);
+        return useCaseCalculatePoupancaBetweenDates.execute(request);
     }
 
     @PostMapping("/antiga/calculate/between-dates")
     public CalculatePoupAntigoBetweenDateResponse calculateBetweenDateAntiga(@Valid @RequestBody CalculatePoupAntigoBetweenDateRequest request){
-        return useCaseCalculatePoupancaAntigaBetweenDates.calcular(request);
+        return useCaseCalculatePoupancaAntigaBetweenDates.execute(request);
     }
 }
