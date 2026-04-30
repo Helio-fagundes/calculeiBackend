@@ -1,59 +1,47 @@
 package application.calculei.usecase.poupanca_antiga;
 
-import application.calculei.infraestructure.entity.PoupAntiga;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.infraestructure.repository.poupanca_antiga.PoupAntigaIndexRepository;
-import application.calculei.usecase.poupanca_antiga.port.BuscarPoupAntigoFromBcPort;
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.port.BuscarPoupAntigoFromBcPort;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class UpdatePoupAntigoFromBc {
 
     private final BuscarPoupAntigoFromBcPort buscarPoupAntigoFromBcPort;
-    private final PoupAntigaIndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndexRepository repository;
 
-    public UpdatePoupAntigoFromBc(BuscarPoupAntigoFromBcPort buscarPoupAntigoFromBcPort, PoupAntigaIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdatePoupAntigoFromBc(BuscarPoupAntigoFromBcPort buscarPoupAntigoFromBcPort, IndexRepository repository) {
         this.buscarPoupAntigoFromBcPort = buscarPoupAntigoFromBcPort;
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update(){
-        LocalDate hoje = LocalDate.now();
-        LocalDate dataMax = repository.findMaxData();
-        LocalDate inicio = dataMax != null ? dataMax.plusDays(1) : LocalDate.of(1990, 1, 1);
+    public void execute(){
+        LocalDate dataMax = repository.findMaxDataInit();
 
-        if (inicio.isAfter(hoje)) return;
+        LocalDate startDate = dataMax != null
+                ? dataMax.plusDays(1)
+                : LocalDate.of(1990, 1, 1);
 
-        var indice = indicesBcIndexRepository.findBySerie("POUPANTIGA")
-                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
+        LocalDate today = LocalDate.now();
 
-        do {
+        if (startDate.isAfter(today)) return;
 
-            LocalDate fim = inicio.plusYears(5).minusDays(1);
-            if (fim.isAfter(hoje)) fim = hoje;
+        while (startDate.isBefore(today) || startDate.isEqual(today)) {
+            LocalDate fim = startDate.plusYears(5).minusDays(1);
+            if (fim.isAfter(today)) fim = today;
 
-            for (var dado : buscarPoupAntigoFromBcPort.buscar(inicio, fim)){
-                if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
-                    continue;
+            var dadosBrutosBc = buscarPoupAntigoFromBcPort.buscar(startDate, fim);
 
-                BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
+            List<Index> listEntity = dadosBrutosBc.stream()
+                    .map(dado -> Index.calculatePercentual(dado.data(), dado.valor()))
+                    .toList();
 
-                BigDecimal fator = percentual
-                        .divide(BigDecimal.valueOf(100), 10, BigDecimal.ROUND_HALF_UP)
-                        .add(BigDecimal.ONE);
-
-                PoupAntiga poupAntiga = new PoupAntiga();
-                poupAntiga.setDataInit(dado.data());
-                poupAntiga.setFator(fator);
-                poupAntiga.setIndiceBC(indice);
-
-                repository.save(poupAntiga);
+            if (!listEntity.isEmpty()) {
+                repository.saveAll(listEntity);
             }
-            inicio = inicio.plusYears(5);
-        }while (inicio.isBefore(hoje));
-
+            startDate = startDate.plusYears(5);
+        }
     }
 }

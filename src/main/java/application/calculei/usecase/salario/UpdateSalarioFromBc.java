@@ -1,56 +1,49 @@
 package application.calculei.usecase.salario;
 
-import application.calculei.infraestructure.entity.Salario;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
-import application.calculei.usecase.salario.port.BuscarSalarioFromBcPort;
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.port.BuscarSalarioFromBcPort;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class UpdateSalarioFromBc {
 
     private final BuscarSalarioFromBcPort buscarSalarioFromBcPort;
-    private final SalarioIndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndexRepository repository;
 
-    public UpdateSalarioFromBc(BuscarSalarioFromBcPort buscarSalarioFromBcPort, SalarioIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdateSalarioFromBc(
+            BuscarSalarioFromBcPort buscarSalarioFromBcPort,
+            IndexRepository repository
+    ) {
         this.buscarSalarioFromBcPort = buscarSalarioFromBcPort;
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update(){
+    public void execute(){
         LocalDate dataMax = repository.findMaxDataInit();
-        LocalDate inicio = dataMax != null ? dataMax.plusDays(1) : LocalDate.of(1986, 1, 1);
-        LocalDate hoje = LocalDate.now();
+        LocalDate startDate = dataMax != null
+                ? dataMax.plusDays(1)
+                : LocalDate.of(1986, 1, 1);
 
-        if (inicio.isAfter(hoje)) return;
+        LocalDate today = LocalDate.now();
 
-        var indice = indicesBcIndexRepository.findBySerie("SALARIO")
-                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
+        if (startDate.isAfter(today)) return;
 
-        do {
-            LocalDate fim = inicio.plusYears(5).minusDays(1);
-            if(fim.isAfter(hoje)) fim = hoje;
+        while (startDate.isBefore(today) || startDate.isEqual(today)) {
+            LocalDate fim = startDate.plusYears(5).minusDays(1);
+            if (fim.isAfter(today)) fim = today;
 
-            for (var dado : buscarSalarioFromBcPort.buscar(inicio, fim)){
-                if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
-                    continue;
+            var dadosBrutosBc = buscarSalarioFromBcPort.buscar(startDate, fim);
 
-                BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
+            List<Index> listEntity = dadosBrutosBc.stream()
+                    .map(dado -> Index.calculatePercentual(dado.data(), dado.valor()))
+                    .toList();
 
-                BigDecimal fator = percentual;
-
-
-                var salario = new Salario();
-                salario.setDataInit(dado.data());
-                salario.setFator(fator);
-                salario.setIndiceBC(indice);
-
-                repository.save(salario);
+            if (!listEntity.isEmpty()) {
+                repository.saveAll(listEntity);
             }
-            inicio = inicio.plusYears(5);
-        }while (inicio.isBefore(hoje));
+            startDate = startDate.plusYears(5);
+        }
     }
 }

@@ -1,50 +1,75 @@
 package application.calculei.usecase.igpm;
 
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.valueObject.DateUtils;
-import application.calculei.infraestructure.entity.IGPM;
-import application.calculei.infraestructure.repository.igpm.IgpmIndexRepository;
+import application.calculei.usecase.exceptions.DataNotFoundException;
+import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.igpm.dto.CalculateIgpmBetweenDateRequest;
 import application.calculei.usecase.igpm.dto.CalculateIgpmBetweenDateResponse;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
-import java.time.chrono.ChronoPeriod;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
 import java.util.List;
 
 public class CalculateIgpmAccumulatedValueBetweenDates {
 
-    private final IgpmIndexRepository repository;
+    private final IndexRepository repository;
 
-    public CalculateIgpmAccumulatedValueBetweenDates(IgpmIndexRepository repository) {
+    public CalculateIgpmAccumulatedValueBetweenDates(IndexRepository repository) {
         this.repository = repository;
     }
 
-    public CalculateIgpmBetweenDateResponse calcular(CalculateIgpmBetweenDateRequest request){
+    public CalculateIgpmBetweenDateResponse execute(CalculateIgpmBetweenDateRequest request){
 
-        if (request.dateFim().isBefore(request.dateInit())){
-            throw new IllegalArgumentException("a data inicio não pode ser superior a data final.");
+        validatedDate(request.startDate(), request.endDate());
+
+        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
+
+        if (listEntity.isEmpty()) {
+            throw new DataNotFoundException("Nenhum índice IGP-M encontrado para o período informado.");
         }
 
-        List<IGPM> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
-        BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long dias = DateUtils.businessDays(request.dateInit(), request.dateFim());
+        BigDecimal accumulatedValue = acumulatedFactor(listEntity);
 
-        for (IGPM entity : listEntity){
-            fatorAcumulado = fatorAcumulado.multiply(entity.getFator());
+        BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedValue);
+
+        BigDecimal accumulatedPercentual = calculateAccumulatedPercentage(accumulatedValue);
+
+        long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
+
+        return new CalculateIgpmBetweenDateResponse(
+                request.startDate(),
+                request.endDate(),
+                businessDays,
+                finalValue,
+                accumulatedPercentual
+        );
+    }
+
+    private void validatedDate(LocalDate startDate, LocalDate endDate){
+        if (endDate.isBefore(startDate)){
+            throw new InvalidPeriodException(startDate, endDate);
         }
+    }
 
-        BigDecimal valorFinal =
-                BigDecimal.valueOf(request.valor())
-                        .multiply(fatorAcumulado)
-                        .setScale(2, BigDecimal.ROUND_HALF_UP);
+    private BigDecimal acumulatedFactor(List<Index> indexes){
+        return indexes.stream()
+                .map(Index::getFator)
+                .reduce(BigDecimal.ONE, BigDecimal::multiply);
+    }
 
-        BigDecimal percentualAcumulado = fatorAcumulado
+    private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedFactor) {
+        return BigDecimal.valueOf(amount)
+                .multiply(accumulatedFactor)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
+        return accumulatedFactor
                 .subtract(BigDecimal.ONE)
                 .multiply(BigDecimal.valueOf(100))
-                .setScale(6, BigDecimal.ROUND_HALF_UP);
-
-        return new CalculateIgpmBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
+                .setScale(6, RoundingMode.HALF_UP);
     }
 }

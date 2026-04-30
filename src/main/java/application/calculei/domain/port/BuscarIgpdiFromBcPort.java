@@ -1,10 +1,10 @@
-package application.calculei.usecase.ipca15.port;
+package application.calculei.domain.port;
 
 import application.calculei.usecase.dto.DadoBancoCentral;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public interface BuscarIpca15FromBcPort {
+public interface BuscarIgpdiFromBcPort {
     List<DadoBancoCentral> buscar(LocalDate dataInicial);
 }

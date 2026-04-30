@@ -4,7 +4,6 @@ import application.calculei.usecase.tj_11960.CalculateTj11960SelicValueBetweenDa
 import application.calculei.usecase.tj_11960.dto.CalculateTj11960BetweenDateRequest;
 import application.calculei.usecase.tj_11960.dto.CalculateTj11960BetweenDateResponse;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

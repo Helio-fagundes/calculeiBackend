@@ -3,12 +3,11 @@ package application.calculei.infraestructure.bancoCentral.tbf;
 import application.calculei.infraestructure.bancoCentral.dto.BcResponse;
 import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.dto.DadoBancoCentral;
-import application.calculei.usecase.port.BuscarUrlBySeriePort;
-import application.calculei.usecase.tbf.port.BuscarTbfFromBcPort;
+import application.calculei.domain.port.BuscarUrlBySeriePort;
+import application.calculei.domain.port.BuscarTbfFromBcPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,18 +18,19 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class BcTbfApi implements BuscarTbfFromBcPort {
-
     private final RestTemplate restTemplate;
     private final BuscarUrlBySeriePort buscarUrl;
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @Override
     public List<DadoBancoCentral> buscar(LocalDate dataInicial, LocalDate dataFinal) {
         String indice = "TBF";
         String url = buscarUrl.buscarUrl(indice);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
         if (dataInicial != null && dataFinal != null) {
-            url += "&dataInicial=" + dataInicial.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                    + "&dataFinal=" + dataFinal.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            url += "&dataInicial=" + dataInicial.format(dateFormatter)
+                    + "&dataFinal=" + dataFinal.format(dateFormatter);
         }
 
         try {
@@ -40,7 +40,7 @@ public class BcTbfApi implements BuscarTbfFromBcPort {
 
             return List.of(response).stream()
                     .map(d -> new DadoBancoCentral(LocalDate.parse(d.data(),
-                            DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                            dateFormatter),
                             d.valor()))
                     .toList();
 

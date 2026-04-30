@@ -7,6 +7,8 @@ import application.calculei.usecase.history_pdf_value.dto.HistoryPdfValueRequest
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -24,8 +26,8 @@ public class HistoryJpaRepository implements HistoryPdfValuePort {
                 .map(entity -> {
                     try {
                         return new ObjectMapper().readValue(entity.getJson(), JsonNode.class);
-                    } catch (Exception e) {
-                        throw new RuntimeException("Erro ao converter JSON", e);
+                    } catch (IOException e) {
+                        throw new UncheckedIOException("Erro ao converter JSON", e);
                     }
                 });
     }

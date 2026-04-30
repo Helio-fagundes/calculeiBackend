@@ -1,56 +1,46 @@
 package application.calculei.usecase.selic.mensal;
 
-import application.calculei.infraestructure.entity.SelicMensal;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.infraestructure.repository.selic.SelicMensalIndexRepository;
-import application.calculei.usecase.selic.mensal.port.BuscarSelicMensalFromBcPort;
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.port.BuscarSelicMensalFromBcPort;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class UpdateSelicMensalFromBc {
 
     private final BuscarSelicMensalFromBcPort buscarSelicMensalFromBcPort;
-    private final SelicMensalIndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndexRepository repository;
 
-    public UpdateSelicMensalFromBc(BuscarSelicMensalFromBcPort buscarSelicMensalFromBcPort, SelicMensalIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdateSelicMensalFromBc(BuscarSelicMensalFromBcPort buscarSelicMensalFromBcPort, IndexRepository repository) {
         this.buscarSelicMensalFromBcPort = buscarSelicMensalFromBcPort;
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update(){
+    public void execute() {
         LocalDate dataMax = repository.findMaxDataInit();
-        LocalDate inicio = dataMax != null ? dataMax.plusDays(1) : LocalDate.of(1986, 1, 1);
-        LocalDate hoje = LocalDate.now();
+        LocalDate startDate = dataMax != null
+                ? dataMax.plusDays(1)
+                : LocalDate.of(1986, 1, 1);
 
-        if (inicio.isAfter(hoje)) return;
+        LocalDate today = LocalDate.now();
 
-        var indice = indicesBcIndexRepository.findBySerie("SELIC_MENSAL")
-                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
+        if (startDate.isAfter(today)) return;
 
-        do {
-            LocalDate fim = inicio.plusYears(5).minusDays(1);
-            if(fim.isAfter(hoje)) fim = hoje;
+        while (startDate.isBefore(today) || startDate.isEqual(today)) {
+            LocalDate fim = startDate.plusYears(5).minusDays(1);
+            if (fim.isAfter(today)) fim = today;
 
-            for (var dado : buscarSelicMensalFromBcPort.buscar(inicio, fim)){
+            var dadosBrutosBc = buscarSelicMensalFromBcPort.buscar(startDate, fim);
 
-                if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
-                    continue;
+            List<Index> listEntity = dadosBrutosBc.stream()
+                    .map(dado -> Index.calculatePercentual(dado.data(), dado.valor()))
+                    .toList();
 
-                BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
-
-                BigDecimal fator = percentual;
-
-                SelicMensal selicMensal = new SelicMensal();
-                selicMensal.setDataInit(dado.data());
-                selicMensal.setFator(fator);
-                selicMensal.setIndiceBC(indice);
-
-                repository.save(selicMensal);
+            if (!listEntity.isEmpty()) {
+                repository.saveAll(listEntity);
             }
-            inicio = inicio.plusYears(5);
-        }while (inicio.isBefore(hoje));
+            startDate = startDate.plusYears(5);
+        }
     }
 }

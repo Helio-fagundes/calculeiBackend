@@ -1,4 +1,4 @@
-package application.calculei.usecase.selic.mensal.port;
+package application.calculei.domain.port;
 
 import application.calculei.usecase.dto.DadoBancoCentral;
 

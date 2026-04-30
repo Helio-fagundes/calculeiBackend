@@ -6,6 +6,10 @@ import application.calculei.infraestructure.entity.TaxaLegal;
 
 public class TaxaLegalMapperEntity {
 
+    private TaxaLegalMapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static Index toDomain(TaxaLegal entity){
         return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }

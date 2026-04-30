@@ -1,10 +1,10 @@
 package application.calculei.infraestructure.bancoCentral.ipca15;
 
+import application.calculei.domain.port.BuscarIpca15FromBcPort;
 import application.calculei.infraestructure.bancoCentral.dto.BcResponse;
 import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.dto.DadoBancoCentral;
-import application.calculei.usecase.ipca15.port.BuscarIpca15FromBcPort;
-import application.calculei.usecase.port.BuscarUrlBySeriePort;
+import application.calculei.domain.port.BuscarUrlBySeriePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
@@ -18,17 +18,18 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class BcIpca15Api implements BuscarIpca15FromBcPort {
-
     private final RestTemplate restTemplate;
     private final BuscarUrlBySeriePort buscarUrl;
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @Override
     public List<DadoBancoCentral> buscar(LocalDate dataInicial) {
         String indice = "IPCA15";
         String url = buscarUrl.buscarUrl(indice);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
         if (dataInicial != null){
-            url += "dataInicial="+ dataInicial.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            url += "dataInicial="+ dataInicial.format(dateFormatter);
         }
 
         try {
@@ -39,7 +40,7 @@ public class BcIpca15Api implements BuscarIpca15FromBcPort {
             return List.of(response)
                     .stream()
                     .map(d -> new DadoBancoCentral(LocalDate.parse(d.data(),
-                            DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                            dateFormatter),
                             d.valor()))
                     .toList();
 

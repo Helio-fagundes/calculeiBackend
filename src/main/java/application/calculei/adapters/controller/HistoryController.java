@@ -2,7 +2,6 @@ package application.calculei.adapters.controller;
 
 import application.calculei.usecase.history_pdf_value.HistoryPdfValueMethod;
 import application.calculei.usecase.history_pdf_value.dto.HistoryPdfValueRequest;
-import application.calculei.usecase.history_pdf_value.dto.HistoryPdfValueResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

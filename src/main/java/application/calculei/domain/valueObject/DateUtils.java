@@ -2,7 +2,11 @@ package application.calculei.domain.valueObject;
 
 import java.time.LocalDate;
 
-public class DateUtils {
+public final class DateUtils {
+
+    private DateUtils() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static Long businessDays(LocalDate dataInicial, LocalDate dataFinal) {
         int daysInit = Math.min(dataInicial.getDayOfMonth(), 30);

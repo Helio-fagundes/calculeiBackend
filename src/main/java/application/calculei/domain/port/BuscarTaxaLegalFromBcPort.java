@@ -1,4 +1,4 @@
-package application.calculei.usecase.taxa_legal.port;
+package application.calculei.domain.port;
 
 import application.calculei.usecase.dto.DadoBancoCentral;
 

@@ -4,5 +4,5 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.time.LocalDate;
 
-public record HistoryPdfValueRequest(LocalDate data, String token, JsonNode json) {
+public record HistoryPdfValueRequest(LocalDate date, String token, JsonNode json) {
 }

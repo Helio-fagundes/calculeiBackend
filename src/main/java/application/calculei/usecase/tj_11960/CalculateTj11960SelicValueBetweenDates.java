@@ -1,10 +1,10 @@
 package application.calculei.usecase.tj_11960;
 
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.valueObject.DateUtils;
-import application.calculei.infraestructure.entity.Indice_TJ_L11960_Selic;
-import application.calculei.infraestructure.entity.SelicMensal;
-import application.calculei.infraestructure.repository.indice_tj_L11960_selic.TjL11960SelicIndexRepository;
-import application.calculei.infraestructure.repository.selic.SelicMensalIndexRepository;
+import application.calculei.usecase.exceptions.DataNotFoundException;
+import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.tj_11960.dto.CalculateTj11960BetweenDateRequest;
 import application.calculei.usecase.tj_11960.dto.CalculateTj11960BetweenDateResponse;
 
@@ -18,97 +18,60 @@ public class CalculateTj11960SelicValueBetweenDates {
     private static final LocalDate CUT_OFF_DATE = LocalDate.of(2021, 12, 1);
     private static final int SCALE = 10;
 
-    private final TjL11960SelicIndexRepository tjIndexRepository;
-    private final SelicMensalIndexRepository selicIndexRepository;
+    private final IndexRepository tjRepository;
+    private final IndexRepository selicRepository;
 
-    public CalculateTj11960SelicValueBetweenDates(
-            TjL11960SelicIndexRepository tjIndexRepository,
-            SelicMensalIndexRepository selicIndexRepository
-    ) {
-        this.tjIndexRepository = tjIndexRepository;
-        this.selicIndexRepository = selicIndexRepository;
+    public CalculateTj11960SelicValueBetweenDates(IndexRepository tjRepository, IndexRepository selicRepository) {
+        this.tjRepository = tjRepository;
+        this.selicRepository = selicRepository;
     }
 
-    public CalculateTj11960BetweenDateResponse execute(
-            CalculateTj11960BetweenDateRequest request
-    ) {
-        validateDates(request.dataInit(), request.dataFinal());
+    public CalculateTj11960BetweenDateResponse execute(CalculateTj11960BetweenDateRequest request) {
+        validate(request.startDate(), request.endDate());
 
-        long businessDays = DateUtils.businessDays(
-                request.dataInit(),
-                request.dataFinal()
-        );
+        BigDecimal accumulatedFactor = calculateHybridFactor(request.startDate(), request.endDate());
 
-        BigDecimal accumulatedFactor = calculateAccumulatedFactor(
-                request.dataInit(),
-                request.dataFinal()
-        );
-
-        BigDecimal finalValue = calculateFinalValue(
-                request.valor(),
-                accumulatedFactor
-        );
+        BigDecimal finalValue = applyFactor(request.amount(), accumulatedFactor);
+        long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
         return new CalculateTj11960BetweenDateResponse(
-                request.dataInit(),
-                request.dataFinal(),
-                businessDays,
-                finalValue,
-                accumulatedFactor
+                request.startDate(), request.endDate(), businessDays, finalValue, accumulatedFactor
         );
     }
 
-    private BigDecimal calculateAccumulatedFactor(LocalDate startDate, LocalDate endDate) {
+    private BigDecimal calculateHybridFactor(LocalDate startDate, LocalDate endDate) {
+        LocalDate normStart = startDate.withDayOfMonth(1);
+        LocalDate normEnd = endDate.withDayOfMonth(1);
 
-        LocalDate normalizedStart = startDate.withDayOfMonth(1);
-        LocalDate normalizedEnd = endDate.withDayOfMonth(1);
-
-        if (normalizedEnd.isBefore(CUT_OFF_DATE)) {
-            return calculateTjFactor(normalizedStart, normalizedEnd);
+        if (normEnd.isBefore(CUT_OFF_DATE)) {
+            return fetchTjFactor(normStart);
         }
 
-        if (!normalizedStart.isBefore(CUT_OFF_DATE)) {
-            return calculateSelicFactor(normalizedStart, normalizedEnd);
+        if (!normStart.isBefore(CUT_OFF_DATE)) {
+            return calculateSelicFactor(normStart, normEnd);
         }
 
-        BigDecimal tjFactor = calculateTjFactor(
-                normalizedStart,
-                CUT_OFF_DATE.minusMonths(1)
-        );
+        BigDecimal tjPart = fetchTjFactor(normStart);
+        BigDecimal selicPart = calculateSelicFactor(CUT_OFF_DATE, normEnd);
 
-        BigDecimal selicFactor = calculateSelicFactor(
-                CUT_OFF_DATE,
-                normalizedEnd
-        );
-
-        return tjFactor.multiply(selicFactor)
-                .setScale(SCALE, RoundingMode.HALF_UP);
+        return tjPart.multiply(selicPart).setScale(SCALE, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal calculateTjFactor(LocalDate startDate, LocalDate endDate) {
-        validateDates(startDate, endDate);
-
-        Indice_TJ_L11960_Selic startIndex = tjIndexRepository.findByDataInit(startDate);
-        validateIndex(startIndex, startDate);
-
-        return startIndex.getFator().setScale(SCALE, RoundingMode.HALF_UP);
+    private BigDecimal fetchTjFactor(LocalDate date) {
+        Index index = tjRepository.findDataInit(date);
+        if (index == null) throw new DataNotFoundException("Índice TJ não encontrado para: " + date);
+        return index.getFator();
     }
 
     private BigDecimal calculateSelicFactor(LocalDate startDate, LocalDate endDate) {
+        List<Index> selicIndexes = selicRepository.findByDataInitBetween(startDate, endDate);
 
-        validateDates(startDate, endDate);
-
-        List<SelicMensal> indexes = selicIndexRepository
-                .findByDataInitBetween(startDate, endDate);
-
-        if (indexes.isEmpty()) {
-            throw new RuntimeException(
-                    "Nenhum índice SELIC encontrado entre: " + startDate + " e " + endDate
-            );
+        if (selicIndexes.isEmpty()) {
+            throw new DataNotFoundException("Nenhum índice SELIC encontrado entre " + startDate + " e " + endDate);
         }
 
-        BigDecimal accumulatedRate = indexes.stream()
-                .map(SelicMensal::getFator)
+        BigDecimal accumulatedRate = selicIndexes.stream()
+                .map(Index::getFator)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return BigDecimal.ONE.add(
@@ -116,23 +79,15 @@ public class CalculateTj11960SelicValueBetweenDates {
         );
     }
 
-    private BigDecimal calculateFinalValue(Double initialValue, BigDecimal factor) {
-        return BigDecimal.valueOf(initialValue)
+    private BigDecimal applyFactor(Double amount, BigDecimal factor) {
+        return BigDecimal.valueOf(amount)
                 .multiply(factor)
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
-    private void validateDates(LocalDate startDate, LocalDate endDate) {
-        if (endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException(
-                    "Data final deve ser maior ou igual à data inicial."
-            );
-        }
-    }
-
-    private void validateIndex(Indice_TJ_L11960_Selic index, LocalDate date) {
-        if (index == null) {
-            throw new RuntimeException("Índice não encontrado para a data: " + date);
+    private void validate(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            throw new InvalidPeriodException(startDate, endDate);
         }
     }
 }

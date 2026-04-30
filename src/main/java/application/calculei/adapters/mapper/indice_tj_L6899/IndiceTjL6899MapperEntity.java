@@ -6,6 +6,10 @@ import application.calculei.infraestructure.entity.Indice_TJ_L6899;
 
 public class IndiceTjL6899MapperEntity {
 
+    private IndiceTjL6899MapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static Index toDomain(Indice_TJ_L6899 entity){
         return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }

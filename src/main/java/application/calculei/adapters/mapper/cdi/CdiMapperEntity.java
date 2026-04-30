@@ -4,7 +4,11 @@ import application.calculei.domain.models.Index;
 import application.calculei.infraestructure.entity.CDI;
 import application.calculei.infraestructure.entity.IndiceBC;
 
-public class CdiMapperEntity {
+public final class CdiMapperEntity {
+
+    private CdiMapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static Index toDomain(CDI entity){
         return new Index(entity.getId(), entity.getFator(), entity.getDataInit());

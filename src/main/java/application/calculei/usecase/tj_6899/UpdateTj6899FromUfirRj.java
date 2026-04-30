@@ -1,89 +1,96 @@
 package application.calculei.usecase.tj_6899;
 
-import application.calculei.infraestructure.entity.IndiceBC;
-import application.calculei.infraestructure.entity.Indice_TJ_L6899;
-import application.calculei.infraestructure.entity.UfirRJ;
-import application.calculei.infraestructure.repository.indice_tj_L6899.TjL6899IndexRepository;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
+import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateTj6899FromUfirRj {
 
-    private final UfirRjIndexRepository  ufirRepository;
-    private final TjL6899IndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndexRepository tjRepository;
+    private final IndexRepository ufirRepository;
 
-    public UpdateTj6899FromUfirRj(UfirRjIndexRepository ufirRepository, TjL6899IndexRepository repository,  IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdateTj6899FromUfirRj(IndexRepository tjRepository, IndexRepository ufirRepository) {
+        this.tjRepository = tjRepository;
         this.ufirRepository = ufirRepository;
-        this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update() {
+    public void execute() {
+        LocalDate ultimaDataUfir = fetchLastDate(ufirRepository);
+        LocalDate ultimaDataTj = fetchLastDate(tjRepository);
 
-        LocalDate ultimaUfir = ufirRepository.findMaxDataInit();
-        LocalDate ultimaTj = repository.findMaxDataInit();
-        int anoUfir = ultimaUfir.getYear();
-        int anoTj = ultimaTj.getYear();
+        if (ultimaDataUfir.getYear() <= ultimaDataTj.getYear()) return;
 
-        if (anoUfir <= anoTj) {
-            return;
+        BigDecimal fatorTransicao = calculateTransitionFactor(ultimaDataUfir.getYear());
+
+        updatePreviousYearFactors(ultimaDataUfir.getYear() - 1, fatorTransicao);
+        createNewYearEntries(ultimaDataUfir.getYear());
+    }
+
+    private LocalDate fetchLastDate(IndexRepository repo) {
+        return repo.findByLastUpdate()
+                .map(Index::getDataInit)
+                .orElseThrow(() -> new DataNotFoundException("Não foi possível encontrar datas base."));
+    }
+
+    private BigDecimal calculateTransitionFactor(int currentYear) {
+        Index ufirAtual = fetchUfirOfYear(currentYear);
+        Index ufirAnterior = fetchUfirOfYear(currentYear - 1);
+
+        return ufirAtual.getFator().divide(ufirAnterior.getFator(), 8, RoundingMode.HALF_UP);
+    }
+
+    private Index fetchUfirOfYear(int year) {
+        LocalDate dataBusca = LocalDate.of(year, 1, 1);
+        Index ufir = ufirRepository.findDataInit(dataBusca);
+
+        if (ufir == null) {
+            throw new DataNotFoundException("UFIR não encontrada para o ano: " + year);
         }
+        return ufir;
+    }
 
-        int anoAnterior = anoUfir - 1;
-
-        UfirRJ ufirAtual = ufirRepository.findByDataInit(
-                LocalDate.of(anoUfir, 1, 1)
-        );
-
-        UfirRJ ufirAnterior = ufirRepository.findByDataInit(
-                LocalDate.of(anoAnterior, 1, 1)
-        );
-
-        BigDecimal fator = ufirAtual.getFator()
-                .divide(ufirAnterior.getFator(), 8, RoundingMode.HALF_UP);
+    private void updatePreviousYearFactors(int year, BigDecimal factor) {
+        List<Index> indicesToUpdate = new ArrayList<>();
 
         for (int mes = 1; mes <= 12; mes++) {
+            LocalDate data = LocalDate.of(year, mes, 1);
+            Index index = tjRepository.findDataInit(data); // Retorna Index ou null
 
-            LocalDate dataInit = LocalDate.of(anoAnterior, mes, 1);
-
-            List<Indice_TJ_L6899> lista = repository.findByDataInit(dataInit);
-
-            if (lista.isEmpty()){
-                throw new RuntimeException("Nenhuma indice encontrada");
-            }
-
-            Indice_TJ_L6899 indice = lista.get(0);
-
-            if (indice.getFator().compareTo(BigDecimal.ONE) == 0) {
-                indice.setFator(fator);
-                repository.save(indice);
+            if (index != null && index.getFator().compareTo(BigDecimal.ONE) == 0) {
+                index.setFator(factor);
+                indicesToUpdate.add(index);
             }
         }
 
+        if (!indicesToUpdate.isEmpty()) {
+            tjRepository.saveAll(indicesToUpdate);
+        }
+    }
+
+    private void createNewYearEntries(int year) {
+        List<Index> newEntries = new ArrayList<>();
+
         for (int mes = 1; mes <= 12; mes++) {
+            LocalDate dataBusca = LocalDate.of(year, mes, 1);
 
-            LocalDate novaData = LocalDate.of(anoUfir, mes, 1);
+            if (tjRepository.findDataInit(dataBusca) == null) {
 
-            boolean exists = repository.existsByDataInit(novaData);
+                Index novoIndice = new Index();
+                novoIndice.setDataInit(dataBusca);
+                novoIndice.setFator(BigDecimal.ONE);
 
-            if (!exists) {
-                Indice_TJ_L6899 novo = new Indice_TJ_L6899();
-                novo.setDataInit(novaData);
-                novo.setFator(BigDecimal.ONE);
-
-                IndiceBC indiceBC = indicesBcIndexRepository.findById(19L)
-                        .orElseThrow(() -> new RuntimeException("IndiceBC não encontrado"));
-
-                novo.setIndiceBC(indiceBC);
-
-                repository.save(novo);
+                newEntries.add(novoIndice);
             }
+        }
+
+        if (!newEntries.isEmpty()) {
+            tjRepository.saveAll(newEntries);
         }
     }
 }

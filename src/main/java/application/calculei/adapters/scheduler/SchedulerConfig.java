@@ -43,7 +43,7 @@ public class SchedulerConfig {
 
     @Scheduled(cron = "0 */3 * * * *")
     public void atualizarMensais(){
-        updateTj6899FromUfirRj.update();
+
     }
 
     @Scheduled(cron = "0 */3 * * * *")

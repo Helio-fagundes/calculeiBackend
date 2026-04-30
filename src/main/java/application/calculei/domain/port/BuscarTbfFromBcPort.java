@@ -1,11 +1,10 @@
-package application.calculei.usecase.cdi.port;
+package application.calculei.domain.port;
 
 import application.calculei.usecase.dto.DadoBancoCentral;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public interface BuscarCdiFromBcPort {
-
+public interface BuscarTbfFromBcPort {
     List<DadoBancoCentral> buscar(LocalDate dataInicial, LocalDate dataFinal);
 }

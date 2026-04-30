@@ -1,58 +1,48 @@
 package application.calculei.usecase.ipcae;
 
-import application.calculei.infraestructure.entity.IPCAE;
-import application.calculei.infraestructure.entity.IndiceBC;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.infraestructure.repository.ipca_e.IpcaeIndexRepository;
-import application.calculei.usecase.dto.DadoBancoCentral;
-import application.calculei.usecase.ipcae.port.BuscarIpcaeFromBcPort;
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.port.BuscarIpcaeFromBcPort;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
 public class UpdateIpcaeFromBc {
 
-    private final IpcaeIndexRepository repository;
+    private final IndexRepository repository;
     private final BuscarIpcaeFromBcPort buscarIpcaeFromBcPort;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
 
-    public UpdateIpcaeFromBc(IpcaeIndexRepository repository, BuscarIpcaeFromBcPort buscarIpcaeFromBcPort, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdateIpcaeFromBc(IndexRepository repository, BuscarIpcaeFromBcPort buscarIpcaeFromBcPort) {
         this.repository = repository;
         this.buscarIpcaeFromBcPort = buscarIpcaeFromBcPort;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update(){
-        LocalDate lastDate = repository.findMaxDateInit();
-        List<DadoBancoCentral> dados;
+    public void execute() {
+        LocalDate dateMax = repository.findMaxDataInit();
 
-        if (lastDate == null){
-            dados = buscarIpcaeFromBcPort.buscar(null);
-        } else {
-            dados = buscarIpcaeFromBcPort.buscar(lastDate.plusMonths(1));
-        }
+        LocalDate startDate = dateMax != null
+                ? dateMax.plusMonths(1)
+                : LocalDate.of(2023, 1, 1);
 
-        IndiceBC indice = indicesBcIndexRepository.findBySerie("IPCAE")
-                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
+        LocalDate today = LocalDate.now();
 
-        for(var dado : dados){
-            if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
-                continue;
+        if (startDate.isAfter(today)) return;
 
-            BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
+        while (startDate.isBefore(today) || startDate.isEqual(today)) {
+            LocalDate fim = startDate.plusYears(5).minusDays(1);
+            if (fim.isAfter(today)) fim = today;
 
-            BigDecimal fator = percentual
-                    .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
-                    .add(BigDecimal.ONE);
+            var dadosBrutosBc = buscarIpcaeFromBcPort.buscar(startDate, fim);
 
-            IPCAE ipcae = new IPCAE();
-            ipcae.setDataInit(dado.data());
-            ipcae.setFator(fator);
-            ipcae.setIndiceBC(indice);
+            List<Index> listEntity = dadosBrutosBc.stream()
+                    .map(dado -> Index.calculatePercentual(dado.data(), dado.valor()))
+                    .toList();
 
-            repository.save(ipcae);
+            if (!listEntity.isEmpty()) {
+                repository.saveAll(listEntity);
+            }
+
+            startDate = startDate.plusYears(5);
         }
     }
 }

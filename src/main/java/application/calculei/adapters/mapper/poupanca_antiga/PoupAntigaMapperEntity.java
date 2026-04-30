@@ -6,6 +6,10 @@ import application.calculei.infraestructure.entity.PoupAntiga;
 
 public class PoupAntigaMapperEntity {
 
+    private PoupAntigaMapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static Index toDomain(PoupAntiga entity){
         return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }

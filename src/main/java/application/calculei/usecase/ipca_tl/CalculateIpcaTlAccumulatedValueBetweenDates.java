@@ -1,47 +1,70 @@
 package application.calculei.usecase.ipca_tl;
 
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.valueObject.DateUtils;
-import application.calculei.infraestructure.entity.IPCA_Tl;
-import application.calculei.infraestructure.repository.ipca_tl.IpcaTlIndexRepository;
+
+import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.ipca_tl.dto.CalculateIpcaTlBetweenDateRequest;
 import application.calculei.usecase.ipca_tl.dto.CalculateIpcaTlBetweenDateResponse;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
 import java.util.List;
 
 public class CalculateIpcaTlAccumulatedValueBetweenDates {
 
-    private final IpcaTlIndexRepository repository;
+    private final IndexRepository repository;
 
-    public CalculateIpcaTlAccumulatedValueBetweenDates(IpcaTlIndexRepository repository) {
+    public CalculateIpcaTlAccumulatedValueBetweenDates(IndexRepository repository) {
         this.repository = repository;
     }
 
-    public CalculateIpcaTlBetweenDateResponse calcular(CalculateIpcaTlBetweenDateRequest request){
-        if (request.dateFim().isBefore(request.dateInit())){
-            throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
+    public CalculateIpcaTlBetweenDateResponse execute(CalculateIpcaTlBetweenDateRequest request){
+        validatedDate(request.startDate(), request.endDate());
+
+        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
+
+        BigDecimal accumulatedValue = accumulatedFactor(listEntity);
+
+        BigDecimal valueFinal = calculateFinalValue(request.amount(), accumulatedValue);
+
+        BigDecimal accumulatedPercentual = calculateAccumulatedPercentage(accumulatedValue);
+
+        long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
+
+        return new CalculateIpcaTlBetweenDateResponse(
+                request.startDate(),
+                request.endDate(),
+                businessDays,
+                valueFinal,
+                accumulatedPercentual
+        );
+    }
+
+    private void validatedDate(LocalDate startDate, LocalDate endDate){
+        if (endDate.isBefore(startDate)){
+            throw new InvalidPeriodException(startDate, endDate);
         }
+    }
 
-        List<IPCA_Tl> listEntity = repository.findByDataInitBetween(request.dateInit(), request.dateFim());
-        Long dias = DateUtils.businessDays(request.dateInit(), request.dateFim());
-        BigDecimal fatorAcumulado = BigDecimal.ONE;
+    private BigDecimal accumulatedFactor(List<Index>  listEntity){
+        return listEntity.stream()
+                .map(Index::getFator)
+                .reduce(BigDecimal.ONE, BigDecimal::multiply);
+    }
 
-        for (var dado : listEntity){
-            fatorAcumulado = fatorAcumulado.multiply(dado.getFator());
-        }
+    private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedFactor) {
+        return BigDecimal.valueOf(amount)
+                .multiply(accumulatedFactor)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
 
-        BigDecimal valorFinal = BigDecimal
-                .valueOf(request.valor())
-                .multiply(fatorAcumulado)
-                .setScale(2, BigDecimal.ROUND_HALF_UP);
-
-        BigDecimal percentualAcumulado = fatorAcumulado
+    private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
+        return accumulatedFactor
                 .subtract(BigDecimal.ONE)
-                .divide(BigDecimal.valueOf(100))
-                .setScale(6, BigDecimal.ROUND_HALF_UP);
-
-        return new CalculateIpcaTlBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
+                .multiply(BigDecimal.valueOf(100))
+                .setScale(6, RoundingMode.HALF_UP);
     }
 }

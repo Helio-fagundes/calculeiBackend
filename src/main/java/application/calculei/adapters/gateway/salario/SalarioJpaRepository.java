@@ -9,7 +9,7 @@ import application.calculei.infraestructure.repository.salario.SalarioIndexRepos
 
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Optional;
 

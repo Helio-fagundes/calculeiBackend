@@ -1,48 +1,70 @@
 package application.calculei.usecase.tj_6899;
 
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.valueObject.DateUtils;
-import application.calculei.infraestructure.entity.Indice_TJ_L6899;
-import application.calculei.infraestructure.repository.indice_tj_L6899.TjL6899IndexRepository;
+import application.calculei.usecase.exceptions.DataNotFoundException;
+import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.tj_6899.dto.CalculateTj6899BetweenDateRequest;
 import application.calculei.usecase.tj_6899.dto.CalculateTj6899BetweenDateResponse;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 
 public class CalculateTj6899UfirValueBetweenDates {
 
-    private final TjL6899IndexRepository repository;
+    private final IndexRepository repository;
 
-    public CalculateTj6899UfirValueBetweenDates(TjL6899IndexRepository repository) {
+    public CalculateTj6899UfirValueBetweenDates(IndexRepository repository) {
         this.repository = repository;
     }
 
-    public CalculateTj6899BetweenDateResponse calcular(CalculateTj6899BetweenDateRequest request){
-        if (request.dataFinal().isBefore(request.dataInit())){
-            throw new IllegalArgumentException("A data final deve ser posterior à data inicial.");
-        }
+    public CalculateTj6899BetweenDateResponse execute(CalculateTj6899BetweenDateRequest request) {
 
-        Long dias = DateUtils.businessDays(request.dataInit(), request.dataFinal());
-        List<Indice_TJ_L6899> valorDataInicial = repository.findByDataInit(request.dataInit().withDayOfMonth(1));
-        List<Indice_TJ_L6899> valorDataFinal = repository.findByDataInit(request.dataFinal().withDayOfMonth(1));
+        validate(request.startDate(), request.endDate());
 
-        if (!valorDataInicial.isEmpty() || !valorDataFinal.isEmpty()) {
-            BigDecimal valorInicial = valorDataInicial.get(0).getFator();
-            BigDecimal valorFinal = valorDataFinal.get(0).getFator();
+        Index indexInicial = fetchIndexOrThrow(request.startDate());
+        Index indexFinal = fetchIndexOrThrow(request.endDate());
 
-            BigDecimal percentualAcumulado = valorInicial
-                    .divide(valorFinal, 6, BigDecimal.ROUND_HALF_UP)
-                    .setScale(6, BigDecimal.ROUND_HALF_UP);
+        BigDecimal accumulatedPercentage = calculateAccumulatedPercentage(indexInicial, indexFinal);
 
-            BigDecimal valorAcumulado = BigDecimal
-                    .valueOf(request.valor())
-                    .multiply(percentualAcumulado)
-                    .setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedPercentage);
 
-            return new CalculateTj6899BetweenDateResponse(request.dataInit(), request.dataFinal(), dias, valorAcumulado, percentualAcumulado);
-        } else {
-            throw new IllegalArgumentException("Não foram encontrados valores para as datas fornecidas.");
+        long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
+
+        return new CalculateTj6899BetweenDateResponse(
+                request.startDate(),
+                request.endDate(),
+                businessDays,
+                finalValue,
+                accumulatedPercentage
+        );
+    }
+
+    private void validate(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            throw new InvalidPeriodException(startDate, endDate);
         }
     }
- }
 
+    private Index fetchIndexOrThrow(LocalDate date) {
+        LocalDate firstDayOfMonth = date.withDayOfMonth(1);
+        try {
+            return repository.findDataInit(firstDayOfMonth);
+        }catch (DataNotFoundException e) {
+            throw new DataNotFoundException("Índice de TJ 6899 UFIR não encontrado para a data: " + firstDayOfMonth);
+        }
+    }
+
+    private BigDecimal calculateAccumulatedPercentage(Index inicial, Index finalIndex) {
+        return inicial.getFator()
+                .divide(finalIndex.getFator(), 6, RoundingMode.HALF_UP);
+    }
+
+    private BigDecimal calculateFinalValue(double baseValue, BigDecimal percentage) {
+        return BigDecimal.valueOf(baseValue)
+                .multiply(percentage)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+}

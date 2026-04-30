@@ -6,6 +6,10 @@ import application.calculei.infraestructure.entity.TBF;
 
 public class TbfMapperEntity {
 
+    private TbfMapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static Index toDomain(TBF entity){
         return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }

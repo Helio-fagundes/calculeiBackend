@@ -1,60 +1,40 @@
 package application.calculei.usecase.igpdi;
 
-import application.calculei.infraestructure.entity.IGPDI;
-import application.calculei.infraestructure.entity.IndiceBC;
-import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.usecase.dto.DadoBancoCentral;
-import application.calculei.usecase.igpdi.port.BuscarIgpdiFromBcPort;
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.port.BuscarIgpdiFromBcPort;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
 public class UpdateIgpdiFromBc {
 
     private final BuscarIgpdiFromBcPort buscarIgpdiFromBcPort;
-    private final IgpdiIndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndexRepository repository;
 
-    public UpdateIgpdiFromBc(BuscarIgpdiFromBcPort buscarIgpdiFromBcPort, IgpdiIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdateIgpdiFromBc(
+            BuscarIgpdiFromBcPort buscarIgpdiFromBcPort,
+            IndexRepository repository
+    ) {
         this.buscarIgpdiFromBcPort = buscarIgpdiFromBcPort;
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update(){
+    public void execute(){
 
-        LocalDate lastDate = repository.findMaxDataInit();
-        List<DadoBancoCentral> dados;
+        LocalDate startDate = repository
+                .findByLastUpdate()
+                .map(index -> index.getDataInit().plusMonths(1))
+                .orElse(null);
 
-        if (lastDate == null){
-            dados = buscarIgpdiFromBcPort.buscar(null);
-        } else {
-            dados = buscarIgpdiFromBcPort.buscar(lastDate.plusMonths(1));
-        }
+        var bruteDate = buscarIgpdiFromBcPort.buscar(startDate);
 
-        IndiceBC indice = indicesBcIndexRepository.findBySerie("IGPDI")
-                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
+        List<Index> listEntity = bruteDate.stream()
+                .map(dado -> Index.calculatePercentual(dado.data(), dado.valor()))
+                .toList();
 
-        for (var dado : dados){
-
-            if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
-                continue;
-
-            BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
-
-            BigDecimal fator = percentual
-                    .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
-                    .add(BigDecimal.ONE);
-
-            IGPDI igpdi = new IGPDI();
-            igpdi.setDataInit(dado.data());
-            igpdi.setFator(fator);
-            igpdi.setIndiceBC(indice);
-
-            repository.save(igpdi);
+        if (!listEntity.isEmpty()) {
+            repository.saveAll(listEntity);
         }
     }
 }

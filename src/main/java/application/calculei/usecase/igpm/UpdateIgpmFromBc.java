@@ -1,59 +1,38 @@
 package application.calculei.usecase.igpm;
 
-import application.calculei.infraestructure.entity.IGPM;
-import application.calculei.infraestructure.entity.IndiceBC;
-import application.calculei.infraestructure.repository.igpm.IgpmIndexRepository;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.usecase.dto.DadoBancoCentral;
-import application.calculei.usecase.igpm.port.BuscarIgpmFromBcPort;
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import application.calculei.domain.port.BuscarIgpmFromBcPort;
+
+
 import java.time.LocalDate;
 import java.util.List;
 
 public class UpdateIgpmFromBc {
 
     private final BuscarIgpmFromBcPort buscarIgpmFromBcPort;
-    private final IgpmIndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndexRepository repository;
 
-    public UpdateIgpmFromBc(BuscarIgpmFromBcPort buscarIgpmFromBcPort, IgpmIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdateIgpmFromBc(BuscarIgpmFromBcPort buscarIgpmFromBcPort, IndexRepository repository) {
         this.buscarIgpmFromBcPort = buscarIgpmFromBcPort;
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update(){
-        LocalDate lastDate = repository.findMaxDataInit();
-        List<DadoBancoCentral> dados;
+    public void execute() {
 
-        if (lastDate == null){
-            dados = buscarIgpmFromBcPort.buscar(null);
-        } else {
-            dados = buscarIgpmFromBcPort.buscar(lastDate.plusMonths(1));
-        }
+        LocalDate startDate = repository.findByLastUpdate()
+                .map(index -> index.getDataInit().plusMonths(1))
+                .orElse(null);
 
-        IndiceBC indice = indicesBcIndexRepository.findBySerie("IGPM")
-                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
+        var bruteDate = buscarIgpmFromBcPort.buscar(startDate);
 
-        for (var dado : dados){
+        List<Index> listEntity = bruteDate.stream()
+                .map(dado -> Index.calculatePercentual(dado.data(), dado.valor()))
+                .toList();
 
-            if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
-                continue;
-
-            BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
-
-            BigDecimal fator = percentual
-                    .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
-                    .add(BigDecimal.ONE);
-
-            IGPM igpm = new IGPM();
-            igpm.setDataInit(dado.data());
-            igpm.setFator(fator);
-            igpm.setIndiceBC(indice);
-
-            repository.save(igpm);
+        if (!listEntity.isEmpty()) {
+            repository.saveAll(listEntity);
         }
     }
 }

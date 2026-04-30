@@ -1,7 +1,7 @@
 package application.calculei.infraestructure.adapters;
 
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.usecase.port.BuscarUrlBySeriePort;
+import application.calculei.domain.port.BuscarUrlBySeriePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

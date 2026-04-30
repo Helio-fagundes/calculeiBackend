@@ -6,6 +6,10 @@ import application.calculei.infraestructure.entity.TR;
 
 public class TrMapperEntity {
 
+    private TrMapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static Index toDomain(TR entity){
         return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }

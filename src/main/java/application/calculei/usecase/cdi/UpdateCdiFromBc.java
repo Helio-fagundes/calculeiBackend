@@ -1,59 +1,50 @@
 package application.calculei.usecase.cdi;
 
-import application.calculei.infraestructure.entity.CDI;
-import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.usecase.cdi.port.BuscarCdiFromBcPort;
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.port.BuscarCdiFromBcPort;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
 
 public class UpdateCdiFromBc {
 
     private final BuscarCdiFromBcPort buscarCdiFromBcPort;
-    private final CdiIndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndexRepository repository;
 
-    public UpdateCdiFromBc(BuscarCdiFromBcPort buscarCdiFromBcPort, CdiIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdateCdiFromBc(
+            BuscarCdiFromBcPort buscarCdiFromBcPort,
+            IndexRepository repository
+    ) {
         this.buscarCdiFromBcPort = buscarCdiFromBcPort;
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update(){
+    public void execute(){
         LocalDate dataMax = repository.findMaxDataInit();
-        LocalDate inicio = dataMax != null ? dataMax.plusDays(1) : LocalDate.of(1986, 1, 1);
+
+        LocalDate inicio = dataMax != null
+                ? dataMax.plusDays(1)
+                : LocalDate.of(1986, 1, 1);
+
         LocalDate hoje = LocalDate.now();
 
         if (inicio.isAfter(hoje)) return;
 
-        var indice = indicesBcIndexRepository.findBySerie("CDI")
-                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
-
         while (inicio.isBefore(hoje) || inicio.isEqual(hoje)) {
             LocalDate fim = inicio.plusYears(5).minusDays(1);
-
             if (fim.isAfter(hoje)) fim = hoje;
 
-            for (var dado : buscarCdiFromBcPort.buscar(inicio, fim)) {
+            var dadosBrutosBc = buscarCdiFromBcPort.buscar(inicio, fim);
 
-                if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
-                    continue;
+            List<Index> listEntity = dadosBrutosBc.stream()
+                    .map(dado -> Index.calculatePercentual(dado.data(), dado.valor()))
+                    .toList();
 
-                BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
-
-                BigDecimal fator = percentual
-                        .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
-                        .add(BigDecimal.ONE);
-
-                var cdi = new CDI();
-                cdi.setDataInit(dado.data());
-                cdi.setFator(fator);
-                cdi.setIndiceBC(indice);
-
-                repository.save(cdi);
+            if (!listEntity.isEmpty()) {
+                repository.saveAll(listEntity);
             }
+
             inicio = inicio.plusYears(5);
         }
     }

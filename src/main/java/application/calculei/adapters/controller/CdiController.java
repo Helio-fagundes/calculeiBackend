@@ -18,6 +18,6 @@ public class CdiController {
 
     @PostMapping("/calculate/between-dates")
     public CalculateCdiBetweenDateResponse calculateBetweenDate(@Valid @RequestBody CalculateCdiBetweenDateRequest request){
-        return useCaseCalculateDays.calcular(request);
+        return useCaseCalculateDays.execute(request);
     }
 }

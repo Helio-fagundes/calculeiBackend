@@ -1,58 +1,46 @@
 package application.calculei.usecase.tbf;
 
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.infraestructure.repository.tbf.TbfIndexRepository;
-import application.calculei.usecase.tbf.port.BuscarTbfFromBcPort;
+import application.calculei.domain.models.Index;
+import application.calculei.domain.port.BuscarTbfFromBcPort;
+import application.calculei.domain.repository.IndexRepository;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class UpdateTbfFromBc {
 
     private final BuscarTbfFromBcPort buscarTbfFromBcPort;
-    private final TbfIndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndexRepository repository;
 
-    public UpdateTbfFromBc(BuscarTbfFromBcPort buscarTbfFromBcPort, TbfIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdateTbfFromBc(BuscarTbfFromBcPort buscarTbfFromBcPort, IndexRepository repository) {
         this.buscarTbfFromBcPort = buscarTbfFromBcPort;
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update(){
+    public void execute(){
         LocalDate lastDate = repository.findMaxDataInit();
-        LocalDate hoje = LocalDate.now();
-        LocalDate inicio = lastDate != null ? lastDate.plusMonths(1) : LocalDate.of(1995, 1, 1);
+        LocalDate startDate = lastDate != null
+                ? lastDate.plusMonths(1)
+                : LocalDate.of(1995, 1, 1);
 
-        if (inicio.isAfter(hoje)) return;
+        LocalDate today = LocalDate.now();
 
-        var indice = indicesBcIndexRepository.findBySerie("TBF")
-                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
+        if (startDate.isAfter(today)) return;
 
-        do{
-            LocalDate fim = inicio.plusYears(5).minusDays(1);
+        while (startDate.isBefore(today) || startDate.isEqual(today)) {
+            LocalDate fim = startDate.plusYears(5).minusDays(1);
+            if (fim.isAfter(today)) fim = today;
 
-            if(fim.isAfter(hoje)) fim = hoje;
+            var dadosBrutosBc = buscarTbfFromBcPort.buscar(startDate, fim);
 
-            for (var dado : buscarTbfFromBcPort.buscar(inicio, fim)){
+            List<Index> listEntity = dadosBrutosBc.stream()
+                    .map(dado -> Index.calculatePercentual(dado.data(), dado.valor()))
+                    .toList();
 
-                if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
-                    continue;
-
-                BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
-
-                BigDecimal fator = percentual
-                        .divide(BigDecimal.valueOf(100), 10, BigDecimal.ROUND_HALF_UP)
-                        .add(BigDecimal.ONE);
-
-                var tbf = new application.calculei.infraestructure.entity.TBF();
-                tbf.setDataInit(dado.data());
-                tbf.setFator(fator);
-                tbf.setIndiceBC(indice);
-
-                repository.save(tbf);
+            if (!listEntity.isEmpty()) {
+                repository.saveAll(listEntity);
             }
-            inicio = inicio.plusYears(5);
-        }while (inicio.isBefore(hoje));
+            startDate = startDate.plusYears(5);
+        }
     }
 }

@@ -3,7 +3,11 @@ package application.calculei.adapters.mapper.history_pdf_value;
 import application.calculei.domain.models.HistoryPdfValueDomain;
 import application.calculei.infraestructure.entity.HistoryPdfValueEntity;
 
-public class HistoryPdfValueMapperEntity {
+public final class HistoryPdfValueMapperEntity {
+
+    private HistoryPdfValueMapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static HistoryPdfValueDomain toDomain(HistoryPdfValueEntity entity) {
         return new HistoryPdfValueDomain(entity.getId(), entity.getDate(), entity.getJson(), entity.getToken());

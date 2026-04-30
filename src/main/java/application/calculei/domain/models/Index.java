@@ -1,6 +1,7 @@
 package application.calculei.domain.models;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 public class Index {
@@ -13,6 +14,10 @@ public class Index {
         this.id = id;
         this.fator = fator;
         this.dataInit = dataInit;
+    }
+
+    public Index() {
+
     }
 
     public Long getId() {
@@ -37,5 +42,14 @@ public class Index {
 
     public void setDataInit(LocalDate dataInit) {
         this.dataInit = dataInit;
+    }
+
+    public static Index calculatePercentual(LocalDate date, String value) {
+        BigDecimal percentual = new BigDecimal(value.replace(",", "."));
+        BigDecimal factor = percentual
+                .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
+                .add(BigDecimal.ONE);
+
+        return new Index(null, factor, date);
     }
 }

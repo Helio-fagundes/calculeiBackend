@@ -1,59 +1,51 @@
 package application.calculei.usecase.ipca_tl;
 
-import application.calculei.infraestructure.entity.IPCA_Tl;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.infraestructure.repository.ipca_tl.IpcaTlIndexRepository;
-import application.calculei.usecase.dto.DadoBancoCentral;
-import application.calculei.usecase.ipca_tl.port.BuscarIpcaTlFromBcPort;
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.port.BuscarIpcaTlFromBcPort;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 public class UpdateIpcaTlFromBc {
 
     private final BuscarIpcaTlFromBcPort buscarIpcaTlFromBcPort;
-    private final IpcaTlIndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndexRepository repository;
 
-    public UpdateIpcaTlFromBc(BuscarIpcaTlFromBcPort buscarIpcaTlFromBcPort, IpcaTlIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdateIpcaTlFromBc(
+            BuscarIpcaTlFromBcPort buscarIpcaTlFromBcPort,
+            IndexRepository repository
+    ) {
         this.buscarIpcaTlFromBcPort = buscarIpcaTlFromBcPort;
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update() {
-        LocalDate dateMax = repository.findMaxDateInit();
-        LocalDate hoje = LocalDate.now();
-        LocalDate dataInicio = dateMax != null ? dateMax.plusDays(1) : LocalDate.of(2023, 1, 1);
+    public void execute() {
+        LocalDate dateMax = repository.findMaxDataInit();
 
-        if (dataInicio.isAfter(hoje)) return;
+        LocalDate startDate = dateMax != null
+                ? dateMax.plusDays(1)
+                : LocalDate.of(2023, 1, 1);
 
-        var indice = indicesBcIndexRepository.findBySerie("IPCA_TL")
-                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
+        LocalDate today = LocalDate.now();
 
-        do {
-            LocalDate fim = dataInicio.plusYears(5).minusDays(1);
-            if (fim.isAfter(hoje)) fim = hoje;
+        if (startDate.isAfter(today)) return;
 
-            for (var dado : buscarIpcaTlFromBcPort.buscar(dataInicio, fim)) {
-                if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
-                    continue;
+        while (startDate.isBefore(today) || startDate.isEqual(today)) {
+            LocalDate fim = startDate.plusYears(5).minusDays(1);
+            if (fim.isAfter(today)) fim = today;
 
-                BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
+            var dadosBrutosBc = buscarIpcaTlFromBcPort.buscar(startDate, fim);
 
-                BigDecimal fator = percentual
-                        .divide(BigDecimal.valueOf(100), 10, BigDecimal.ROUND_HALF_UP)
-                        .add(BigDecimal.ONE);
+            List<Index> listEntity = dadosBrutosBc.stream()
+                    .map(dado -> Index.calculatePercentual(dado.data(), dado.valor()))
+                    .toList();
 
-                var ipcaTl = new IPCA_Tl();
-                ipcaTl.setDataInit(dado.data());
-                ipcaTl.setFator(fator);
-                ipcaTl.setIndiceBC(indice);
-
-                repository.save(ipcaTl);
+            if (!listEntity.isEmpty()) {
+                repository.saveAll(listEntity);
             }
-            dataInicio.plusYears(5);
-        } while (dataInicio.isBefore(hoje));
+
+            startDate = startDate.plusYears(5);
+        }
     }
 }

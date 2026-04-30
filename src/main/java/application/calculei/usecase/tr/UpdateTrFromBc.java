@@ -1,58 +1,50 @@
 package application.calculei.usecase.tr;
 
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.TR;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
-import application.calculei.usecase.tr.port.BuscarTrFromBcPort;
+import application.calculei.domain.port.BuscarTrFromBcPort;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class UpdateTrFromBc {
 
     private final BuscarTrFromBcPort buscarTrFromBc;
-    private final TrIndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndexRepository repository;
 
-    public UpdateTrFromBc(BuscarTrFromBcPort buscarTrFromBc, TrIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public UpdateTrFromBc(BuscarTrFromBcPort buscarTrFromBc, IndexRepository repository) {
         this.buscarTrFromBc = buscarTrFromBc;
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
-    public void update(){
+    public void execute() {
         LocalDate dataMax = repository.findMaxDataInit();
-        LocalDate inicio = dataMax != null ? dataMax.plusDays(1) : LocalDate.of(1990, 1, 1);
-        LocalDate hoje = LocalDate.now();
+        LocalDate startDate = dataMax != null
+                ? dataMax.plusDays(1)
+                : LocalDate.of(1990, 1, 1);
 
-        if (inicio.isAfter(hoje)) return;
+        LocalDate today = LocalDate.now();
 
-        var indice = indicesBcIndexRepository.findBySerie("TR")
-                .orElseThrow(() -> new RuntimeException("Indice BC não encontrado"));
+        if (startDate.isAfter(today)) return;
 
-        do {
-            LocalDate fim = inicio.plusYears(5).minusDays(1);
-            if(fim.isAfter(hoje)) fim = hoje;
+        while (startDate.isBefore(today) || startDate.isEqual(today)) {
+            LocalDate fim = startDate.plusYears(5).minusDays(1);
+            if (fim.isAfter(today)) fim = today;
 
-            for (var dado : buscarTrFromBc.buscar(inicio, fim)){
+            var dadosBrutosBc = buscarTrFromBc.buscar(startDate, fim);
 
-                if (Boolean.TRUE.equals(repository.existsByDataInit(dado.data())))
-                    continue;
+            List<Index> listEntity = dadosBrutosBc.stream()
+                    .map(dado -> Index.calculatePercentual(dado.data(), dado.valor()))
+                    .toList();
 
-                BigDecimal percentual = new BigDecimal(dado.valor().replace(",", "."));
-
-                BigDecimal fator = percentual
-                        .divide(BigDecimal.valueOf(100), 10, BigDecimal.ROUND_HALF_UP)
-                        .add(BigDecimal.ONE);
-
-                TR tr = new TR();
-                tr.setDataInit(dado.data());
-                tr.setFator(fator);
-                tr.setIndiceBC(indice);
-
-                repository.save(tr);
+            if (!listEntity.isEmpty()) {
+                repository.saveAll(listEntity);
             }
-            inicio = inicio.plusYears(5);
-        }while (inicio.isBefore(hoje));
+            startDate = startDate.plusYears(5);
+        }
     }
 }

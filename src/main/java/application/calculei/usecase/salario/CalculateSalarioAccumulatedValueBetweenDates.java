@@ -1,46 +1,75 @@
 package application.calculei.usecase.salario;
 
+import application.calculei.domain.models.Index;
+import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.valueObject.DateUtils;
-import application.calculei.infraestructure.entity.Salario;
-import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
+import application.calculei.usecase.exceptions.DataNotFoundException;
+import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.salario.dto.CalculateSalarioBetweenDateRequest;
 import application.calculei.usecase.salario.dto.CalculateSalarioBetweenDateResponse;
 
 import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 
 public class CalculateSalarioAccumulatedValueBetweenDates {
 
-    private final SalarioIndexRepository salarioIndexRepository;
+    private final IndexRepository repository;
 
-    public CalculateSalarioAccumulatedValueBetweenDates(SalarioIndexRepository salarioIndexRepository) {
-        this.salarioIndexRepository = salarioIndexRepository;
+    public CalculateSalarioAccumulatedValueBetweenDates(IndexRepository repository) {
+        this.repository = repository;
     }
 
-    public CalculateSalarioBetweenDateResponse calcular(CalculateSalarioBetweenDateRequest request){
-        if (request.dateFim().isBefore(request.dateInit())){
-            throw new IllegalArgumentException("A data final deve ser posterior a data inicial.");
+    public CalculateSalarioBetweenDateResponse execute(CalculateSalarioBetweenDateRequest request){
+
+        validatedDate(request.startDate(), request.endDate());
+
+        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
+
+        if (listEntity.isEmpty()) {
+            throw new DataNotFoundException("Nenhum índice de Salário encontrado para o período informado.");
         }
 
-        List<Salario> listEntity = salarioIndexRepository.findByDataInitBetween(request.dateInit(), request.dateFim());
-        BigDecimal fatorAcumulado = BigDecimal.ONE;
-        Long dias = DateUtils.businessDays(request.dateInit(), request.dateFim());
+        BigDecimal accumulatedFactor = calculateAccumulatedValue(listEntity);
 
-        for (Salario entity : listEntity){
-            fatorAcumulado = fatorAcumulado.multiply(entity.getFator());
+        BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedFactor);
+
+        BigDecimal percentualAccumulated = calculateAccumulatedPercentage(accumulatedFactor);
+
+        long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
+
+        return new CalculateSalarioBetweenDateResponse(
+                request.startDate(),
+                request.endDate(),
+                businessDays,
+                finalValue,
+                percentualAccumulated
+        );
+    }
+
+    private void validatedDate(LocalDate startDate, LocalDate endDate){
+        if (endDate.isBefore(startDate)){
+            throw new InvalidPeriodException(startDate, endDate);
         }
+    }
 
-        BigDecimal valorFinal =
-                BigDecimal.valueOf(request.valor())
-                        .multiply(fatorAcumulado)
-                        .setScale(2, BigDecimal.ROUND_HALF_UP);
+    private BigDecimal calculateAccumulatedValue(List<Index> listEntity){
+        return listEntity.stream()
+                .map(Index::getFator)
+                .reduce(BigDecimal.ONE, BigDecimal::multiply);
+    }
 
-        BigDecimal percentualAcumulado = fatorAcumulado
+    private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedValue){
+        return BigDecimal.valueOf(amount)
+                .multiply(accumulatedValue)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
+        return accumulatedFactor
                 .subtract(BigDecimal.ONE)
                 .multiply(BigDecimal.valueOf(100))
-                .setScale(6, BigDecimal.ROUND_HALF_UP);
-
-        return new CalculateSalarioBetweenDateResponse(request.dateInit(), request.dateFim(), dias, valorFinal, percentualAcumulado);
+                .setScale(6, RoundingMode.HALF_UP);
     }
 }

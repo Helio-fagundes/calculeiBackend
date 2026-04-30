@@ -6,6 +6,10 @@ import application.calculei.infraestructure.entity.IndiceBC;
 
 public class IgpdiMapperEntity {
 
+    private IgpdiMapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static Index toDomain(IGPDI entity){
         return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }

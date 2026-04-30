@@ -6,6 +6,10 @@ import application.calculei.infraestructure.entity.UfirRJ;
 
 public class UfirRjMapperEntity {
 
+    private UfirRjMapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static Index toDomain(UfirRJ entity){
         return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }

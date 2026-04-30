@@ -6,6 +6,10 @@ import application.calculei.infraestructure.entity.IndiceBC;
 
 public class IpcaMapperEntity {
 
+    private IpcaMapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static Index toDomain(IPCA entity){
         return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }

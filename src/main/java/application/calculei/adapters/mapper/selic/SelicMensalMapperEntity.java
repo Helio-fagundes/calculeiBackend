@@ -6,6 +6,10 @@ import application.calculei.infraestructure.entity.SelicMensal;
 
 public class SelicMensalMapperEntity {
 
+    private SelicMensalMapperEntity() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static Index toDomain(SelicMensal entity){
         return new Index(entity.getId(), entity.getFator(), entity.getDataInit());
     }

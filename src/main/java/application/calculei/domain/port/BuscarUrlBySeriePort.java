@@ -1,4 +1,4 @@
-package application.calculei.usecase.port;
+package application.calculei.domain.port;
 
 import application.calculei.infraestructure.entity.IndiceBC;
 
