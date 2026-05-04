@@ -13,4 +13,6 @@ public interface IpcaIndexRepository extends JpaRepository<IPCA, Long> {
     @Query("SELECT MAX(x.dataInit) FROM IPCA x")
     LocalDate findMaxDataInit();
     Boolean existsByDataInit(LocalDate dataInit);
+
+    IPCA findByDataInit(LocalDate dataInit);
 }

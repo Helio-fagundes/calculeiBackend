@@ -1,11 +1,15 @@
 package application.calculei.adapters.gateway.taxa_legal;
 
+import application.calculei.adapters.mapper.ipca_e.IpcaeMapperEntity;
 import application.calculei.adapters.mapper.taxa_legal.TaxaLegalMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.TaxaLegal;
+import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndexRepository;
+import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -15,14 +19,14 @@ import java.util.Optional;
 public class TaxaLegalJpaRepository implements IndexRepository {
 
     private final TaxaLegalIndexRepository repository;
+    private final IndicesBcIndexRepository  indicesBcIndexRepository;
 
-    public TaxaLegalJpaRepository(TaxaLegalIndexRepository repository) {
+    public TaxaLegalJpaRepository(
+            TaxaLegalIndexRepository repository,
+            IndicesBcIndexRepository indicesBcIndexRepository
+    ) {
         this.repository = repository;
-    }
-
-    @Override
-    public Optional<IndiceBC> findBySerie(String serie) {
-        return Optional.empty();
+        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
     @Override
@@ -47,5 +51,57 @@ public class TaxaLegalJpaRepository implements IndexRepository {
     public List<Index> findByDataLessThanEqual(LocalDate dataInit) {
         List<TaxaLegal> listEntity = repository.findByDataInitLessThanEqual(dataInit);
         return listEntity.stream().map(TaxaLegalMapperEntity::toDomain).toList();
+    }
+
+    @Override
+    public void saveAll(List<Index> listEntity) {
+
+        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("TAXA_LEGAL")
+                .orElseThrow(() -> new RuntimeException("Índice Taxa_Legal não encontrado na base de dados."));
+
+        List<LocalDate> dateToSave = listEntity
+                .stream()
+                .map(Index::getDataInit)
+                .toList();
+
+        List<LocalDate> dateExist = repository.findByDataInitBetween(
+                        dateToSave.stream().min(LocalDate::compareTo).orElseThrow(),
+                        dateToSave.stream().max(LocalDate::compareTo).orElseThrow())
+                .stream()
+                .map(TaxaLegal::getDataInit)
+                .toList();
+
+        List<TaxaLegal> entity = listEntity
+                .stream()
+                .filter(index -> !dateExist.contains(index.getDataInit()))
+                .map(index -> {
+                    TaxaLegal taxaLegal = new TaxaLegal();
+                    taxaLegal.setDataInit(index.getDataInit());
+                    taxaLegal.setFator(index.getFator());
+                    taxaLegal.setIndiceBC(indiceBC);
+                    return taxaLegal;
+                })
+                .toList();
+
+        if (!entity.isEmpty()) {
+            repository.saveAll(entity);
+        }
+    }
+
+    @Override
+    public LocalDate findMaxDataInit() {
+        return repository.findAll().stream()
+                .map(TaxaLegal::getDataInit)
+                .max(LocalDate::compareTo)
+                .orElseThrow(() -> new RuntimeException("Nenhuma data encontrada para o indice Taxa_Legal"));
+    }
+
+    @Override
+    public Index findDataInit(LocalDate dataInit) {
+        TaxaLegal taxaLegal = repository.findByDataInit(dataInit);
+        if (taxaLegal == null) {
+            throw new DataNotFoundException("Índice Taxa_Legal não encontrado para a data: " + dataInit);
+        }
+        return TaxaLegalMapperEntity.toDomain(taxaLegal);
     }
 }

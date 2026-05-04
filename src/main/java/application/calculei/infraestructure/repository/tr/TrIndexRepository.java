@@ -13,4 +13,6 @@ public interface TrIndexRepository extends JpaRepository<TR, Long> {
     @Query("SELECT MAX(t.dataInit) FROM TR t")
     LocalDate findMaxDataInit();
     Boolean existsByDataInit(LocalDate dataInit);
+
+    TR findByDataInit(LocalDate dataInit);
 }

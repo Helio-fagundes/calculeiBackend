@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface CdiIndexRepository extends JpaRepository<CDI, Long> {
     List<CDI> findByDataInitBetween(LocalDate dataInit, LocalDate fim);
@@ -13,4 +14,5 @@ public interface CdiIndexRepository extends JpaRepository<CDI, Long> {
     @Query("SELECT MAX(c.dataInit) FROM CDI c")
     LocalDate findMaxDataInit();
     Boolean existsByDataInit(LocalDate dataInit);
+    CDI findByDataInit(LocalDate dataInit);
 }

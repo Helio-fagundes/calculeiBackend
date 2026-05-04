@@ -13,4 +13,6 @@ public interface SalarioIndexRepository extends JpaRepository<Salario, Long> {
     @Query("SELECT MAX(s.dataInit) FROM Salario s")
     LocalDate findMaxDataInit();
     Boolean existsByDataInit(LocalDate dataInit);
+
+    Salario findByDataInit(LocalDate dataInit);
 }

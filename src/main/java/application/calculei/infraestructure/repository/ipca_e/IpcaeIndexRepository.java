@@ -11,6 +11,8 @@ public interface IpcaeIndexRepository extends JpaRepository<IPCAE, Long> {
     List<IPCAE> findByDataInitBetween(LocalDate inicio, LocalDate fim);
     List<IPCAE> findByDataInitLessThanEqual(LocalDate dataInit);
     @Query("SELECT MAX(x.dataInit) FROM IPCAE x")
-    LocalDate findMaxDateInit();
+    LocalDate findMaxDataInit();
     Boolean existsByDataInit(LocalDate dataInit);
+
+    IPCAE findByDataInit(LocalDate dataInit);
 }

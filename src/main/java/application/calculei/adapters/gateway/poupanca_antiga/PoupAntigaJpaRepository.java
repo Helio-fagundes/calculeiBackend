@@ -1,11 +1,15 @@
 package application.calculei.adapters.gateway.poupanca_antiga;
 
+import application.calculei.adapters.mapper.ipca_e.IpcaeMapperEntity;
 import application.calculei.adapters.mapper.poupanca_antiga.PoupAntigaMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.PoupAntiga;
+import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.poupanca_antiga.PoupAntigaIndexRepository;
+import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -15,14 +19,14 @@ import java.util.Optional;
 public class PoupAntigaJpaRepository implements IndexRepository {
 
     private final PoupAntigaIndexRepository repository;
+    public final IndicesBcIndexRepository  indicesBcIndexRepository;
 
-    public PoupAntigaJpaRepository(PoupAntigaIndexRepository repository) {
+    public PoupAntigaJpaRepository(
+            PoupAntigaIndexRepository repository,
+            IndicesBcIndexRepository indicesBcIndexRepository
+    ) {
         this.repository = repository;
-    }
-
-    @Override
-    public Optional<IndiceBC> findBySerie(String serie) {
-        return Optional.empty();
+        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
     @Override
@@ -47,5 +51,57 @@ public class PoupAntigaJpaRepository implements IndexRepository {
     public List<Index> findByDataLessThanEqual(LocalDate dataInit) {
         List<PoupAntiga> listEntity = repository.findByDataInitLessThanEqual(dataInit);
         return listEntity.stream().map(PoupAntigaMapperEntity::toDomain).toList();
+    }
+
+    @Override
+    public void saveAll(List<Index> listEntity) {
+
+        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("POUPANTIGA")
+                .orElseThrow(() -> new RuntimeException("Índice Poupança antiga não encontrado na base de dados."));
+
+        List<LocalDate> dateToSave = listEntity
+                .stream()
+                .map(Index::getDataInit)
+                .toList();
+
+        List<LocalDate> dateExist = repository.findByDataInitBetween(
+                        dateToSave.stream().min(LocalDate::compareTo).orElseThrow(),
+                        dateToSave.stream().max(LocalDate::compareTo).orElseThrow())
+                .stream()
+                .map(PoupAntiga::getDataInit)
+                .toList();
+
+        List<PoupAntiga> entity = listEntity
+                .stream()
+                .filter(index -> !dateExist.contains(index.getDataInit()))
+                .map(index -> {
+                    PoupAntiga poupAntiga = new PoupAntiga();
+                    poupAntiga.setDataInit(index.getDataInit());
+                    poupAntiga.setFator(index.getFator());
+                    poupAntiga.setIndiceBC(indiceBC);
+                    return poupAntiga;
+                })
+                .toList();
+
+        if (!entity.isEmpty()) {
+            repository.saveAll(entity);
+        }
+    }
+
+    @Override
+    public LocalDate findMaxDataInit() {
+        return repository.findAll().stream()
+                .map(PoupAntiga::getDataInit)
+                .max(LocalDate::compareTo)
+                .orElseThrow(() -> new RuntimeException("Nenhuma data encontrada para o indice Poupança antiga."));
+    }
+
+    @Override
+    public Index findDataInit(LocalDate dataInit) {
+        PoupAntiga poupAntiga = repository.findByDataInit(dataInit);
+        if (poupAntiga == null) {
+            throw new DataNotFoundException("Índice Poupança antiga não encontrado para a data: " + dataInit);
+        }
+        return PoupAntigaMapperEntity.toDomain(poupAntiga);
     }
 }

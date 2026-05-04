@@ -7,6 +7,7 @@ import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.CDI;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
+import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -23,11 +24,6 @@ public class CdiJpaRepository implements IndexRepository {
             IndicesBcIndexRepository indicesBcIndexRepository) {
         this.repository = repository;
         this.indicesBcIndexRepository = indicesBcIndexRepository;
-    }
-
-    @Override
-    public Optional<IndiceBC> findBySerie(String serie) {
-        return Optional.empty();
     }
 
     @Override
@@ -91,11 +87,18 @@ public class CdiJpaRepository implements IndexRepository {
 
     @Override
     public LocalDate findMaxDataInit() {
-        return null;
+        return repository.findAll().stream()
+                .map(CDI::getDataInit)
+                .max(LocalDate::compareTo)
+                .orElseThrow(() -> new RuntimeException("Não foi possível encontrar a data máxima de atualização do índice CDI."));
     }
 
     @Override
     public Index findDataInit(LocalDate dataInit) {
-        return null;
+        CDI entity = repository.findByDataInit(dataInit);
+        if (entity == null) {
+            throw new DataNotFoundException("Índice CDI não encontrado para a data: " + dataInit);
+        }
+        return CdiMapperEntity.toDomain(entity);
     }
 }

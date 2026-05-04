@@ -1,11 +1,15 @@
 package application.calculei.adapters.gateway.salario;
 
+import application.calculei.adapters.mapper.ipca_e.IpcaeMapperEntity;
 import application.calculei.adapters.mapper.salario.SalarioMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.Salario;
+import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
+import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -16,14 +20,14 @@ import java.util.Optional;
 public class SalarioJpaRepository implements IndexRepository {
 
     private final SalarioIndexRepository repository;
+    private final IndicesBcIndexRepository  indicesBcIndexRepository;
 
-    public SalarioJpaRepository(SalarioIndexRepository repository) {
+    public SalarioJpaRepository(
+            SalarioIndexRepository repository,
+            IndicesBcIndexRepository indicesBcIndexRepository
+    ) {
         this.repository = repository;
-    }
-
-    @Override
-    public Optional<IndiceBC> findBySerie(String serie) {
-        return Optional.empty();
+        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
     @Override
@@ -48,5 +52,57 @@ public class SalarioJpaRepository implements IndexRepository {
     public List<Index> findByDataLessThanEqual(LocalDate dataInit) {
         List<Salario> listEntity = repository.findByDataInitLessThanEqual(dataInit);
         return listEntity.stream().map(SalarioMapperEntity::toDomain).toList();
+    }
+
+    @Override
+    public void saveAll(List<Index> listEntity) {
+
+        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("SALARIO")
+                .orElseThrow(() -> new RuntimeException("Índice Salario não encontrado na base de dados."));
+
+        List<LocalDate> dateToSave = listEntity
+                .stream()
+                .map(Index::getDataInit)
+                .toList();
+
+        List<LocalDate> dateExist = repository.findByDataInitBetween(
+                        dateToSave.stream().min(LocalDate::compareTo).orElseThrow(),
+                        dateToSave.stream().max(LocalDate::compareTo).orElseThrow())
+                .stream()
+                .map(Salario::getDataInit)
+                .toList();
+
+        List<Salario> entity = listEntity
+                .stream()
+                .filter(index -> !dateExist.contains(index.getDataInit()))
+                .map(index -> {
+                    Salario salario = new Salario();
+                    salario.setDataInit(index.getDataInit());
+                    salario.setFator(index.getFator());
+                    salario.setIndiceBC(indiceBC);
+                    return salario;
+                })
+                .toList();
+
+        if (!entity.isEmpty()) {
+            repository.saveAll(entity);
+        }
+    }
+
+    @Override
+    public LocalDate findMaxDataInit() {
+        return repository.findAll().stream()
+                .map(Salario::getDataInit)
+                .max(LocalDate::compareTo)
+                .orElseThrow(() -> new RuntimeException("Nenhuma data encontrada para o indice Salario"));
+    }
+
+    @Override
+    public Index findDataInit(LocalDate dataInit) {
+        Salario salario = repository.findByDataInit(dataInit);
+        if (salario == null) {
+            throw new DataNotFoundException("Índice Salario não encontrado para a data: " + dataInit);
+        }
+        return SalarioMapperEntity.toDomain(salario);
     }
 }

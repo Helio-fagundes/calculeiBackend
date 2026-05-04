@@ -17,7 +17,6 @@ public class IndiceBcJpaRepository implements IndexRepository {
         this.repository = repository;
     }
 
-    @Override
     public Optional<IndiceBC> findBySerie(String serie) {
         return repository.findBySerie(serie);
     }
@@ -40,5 +39,20 @@ public class IndiceBcJpaRepository implements IndexRepository {
     @Override
     public List<Index> findByDataLessThanEqual(LocalDate dataInit) {
         return List.of();
+    }
+
+    @Override
+    public void saveAll(List<Index> listEntity) {
+
+    }
+
+    @Override
+    public LocalDate findMaxDataInit() {
+        return null;
+    }
+
+    @Override
+    public Index findDataInit(LocalDate dataInit) {
+        return null;
     }
 }

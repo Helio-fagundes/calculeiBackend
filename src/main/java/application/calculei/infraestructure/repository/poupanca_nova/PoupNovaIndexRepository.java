@@ -1,5 +1,6 @@
 package application.calculei.infraestructure.repository.poupanca_nova;
 
+import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.PoupNova;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,8 @@ public interface PoupNovaIndexRepository extends JpaRepository<PoupNova, Long> {
     List<PoupNova> findByDataInitBetween(LocalDate inicio, LocalDate fim);
     List<PoupNova> findByDataInitLessThanEqual(LocalDate dataInit);
     @Query("SELECT MAX(p.dataInit) FROM PoupNova p")
-    LocalDate findMaxData();
+    LocalDate findMaxDataInit();
      Boolean existsByDataInit(LocalDate dataInit);
+
+    PoupNova findByDataInit(LocalDate dataInit);
 }

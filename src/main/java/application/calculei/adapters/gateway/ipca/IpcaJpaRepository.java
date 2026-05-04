@@ -5,7 +5,10 @@ import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.IPCA;
 import application.calculei.infraestructure.entity.IndiceBC;
+import application.calculei.infraestructure.entity.Indice_TJ_L11960_Selic;
+import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.ipca.IpcaIndexRepository;
+import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -15,14 +18,13 @@ import java.util.Optional;
 public class IpcaJpaRepository implements IndexRepository {
 
     private final IpcaIndexRepository repository;
+    private final IndicesBcIndexRepository  indicesBcIndexRepository;
 
-    public IpcaJpaRepository(IpcaIndexRepository repository) {
+    public IpcaJpaRepository(
+            IpcaIndexRepository repository,
+            IndicesBcIndexRepository indicesBcIndexRepository) {
         this.repository = repository;
-    }
-
-    @Override
-    public Optional<IndiceBC> findBySerie(String serie) {
-        return Optional.empty();
+        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
     @Override
@@ -47,5 +49,57 @@ public class IpcaJpaRepository implements IndexRepository {
     public List<Index> findByDataLessThanEqual(LocalDate dataInit) {
         List<IPCA> listEntity = repository.findByDataInitLessThanEqual(dataInit);
         return listEntity.stream().map(IpcaMapperEntity::toDomain).toList();
+    }
+
+    @Override
+    public void saveAll(List<Index> listEntity) {
+
+        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("IPCA")
+                .orElseThrow(() -> new RuntimeException("Índice IPCA não encontrado na base de dados."));
+
+        List<LocalDate> dateToSave = listEntity
+                .stream()
+                .map(Index::getDataInit)
+                .toList();
+
+        List<LocalDate> dateExist = repository.findByDataInitBetween(
+                        dateToSave.stream().min(LocalDate::compareTo).orElseThrow(),
+                        dateToSave.stream().max(LocalDate::compareTo).orElseThrow())
+                .stream()
+                .map(IPCA::getDataInit)
+                .toList();
+
+        List<IPCA> entity = listEntity
+                .stream()
+                .filter(index -> !dateExist.contains(index.getDataInit()))
+                .map(index -> {
+                    IPCA ipca = new IPCA();
+                    ipca.setDataInit(index.getDataInit());
+                    ipca.setFator(index.getFator());
+                    ipca.setIndiceBC(indiceBC);
+                    return ipca;
+                })
+                .toList();
+
+        if (!entity.isEmpty()) {
+            repository.saveAll(entity);
+        }
+    }
+
+    @Override
+    public LocalDate findMaxDataInit() {
+        return repository.findAll().stream()
+                .map(IPCA::getDataInit)
+                .max(LocalDate::compareTo)
+                .orElseThrow(() -> new RuntimeException("Nenhuma data encontrada para o índice IPCA."));
+    }
+
+    @Override
+    public Index findDataInit(LocalDate dataInit) {
+        IPCA ipca = repository.findByDataInit(dataInit);
+        if (ipca == null) {
+            throw new DataNotFoundException("Índice IPCA não encontrado para a data: " + dataInit);
+        }
+        return IpcaMapperEntity.toDomain(ipca);
     }
 }

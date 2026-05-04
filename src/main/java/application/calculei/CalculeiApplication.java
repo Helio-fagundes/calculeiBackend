@@ -91,88 +91,112 @@ public class CalculeiApplication {
     public IndexRepository indexRepositoryCdi(
             CdiIndexRepository repo,
             IndicesBcIndexRepository indicesBcIndexRepository) {
-        return new CdiJpaRepository(repo,  indicesBcIndexRepository);
+        return new CdiJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryTaxaLegal(TaxaLegalIndexRepository repo){
-        return new TaxaLegalJpaRepository(repo);
+    public IndexRepository indexRepositoryTaxaLegal(
+            TaxaLegalIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new TaxaLegalJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryTj6899(UfirRjIndexRepository repo){
-        return new UfirRjJpaRepository(repo);
+    public IndexRepository indexRepositoryTj6899(
+            UfirRjIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new UfirRjJpaRepository(repo,  indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryIpcaTl(IpcaTlIndexRepository repo){
-        return new IpcatlJpaRepository(repo);
+    public IndexRepository indexRepositoryIpcaTl(
+            IpcaTlIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new IpcatlJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryTj11960(TjL11960SelicIndexRepository repo){
-        return new IndiceTjJpaRepository(repo);
+    public IndexRepository indexRepositoryTj11960(
+            TjL11960SelicIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new IndiceTjJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryIpca(IpcaIndexRepository repo){
-        return new IpcaJpaRepository(repo);
+    public IndexRepository indexRepositoryIpca(
+            IpcaIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new IpcaJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositorySalario(SalarioIndexRepository repo){
-        return new SalarioJpaRepository(repo);
+    public IndexRepository indexRepositorySalario(
+            SalarioIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new SalarioJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryPoupAntiga(PoupAntigaIndexRepository repo){
-        return new PoupAntigaJpaRepository(repo);
+    public IndexRepository indexRepositoryPoupAntiga(
+            PoupAntigaIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new PoupAntigaJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryTr(TrIndexRepository repo){
-        return new TrJpaRepository(repo) {
-        };
+    public IndexRepository indexRepositoryTr(
+            TrIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new TrJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryPoupNova(PoupNovaIndexRepository repo){
-        return new PoupNovaJpaRepository(repo) {
-        };
+    public IndexRepository indexRepositoryPoupNova(
+            PoupNovaIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new PoupNovaJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositorySelic(SelicMensalIndexRepository repo){
-        return new SelicMensalJpaRepository(repo) {
-        };
+    public IndexRepository indexRepositorySelic(
+            SelicMensalIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new SelicMensalJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryIgpdi(IgpdiIndexRepository repo){
-        return new IgpdiJpaRepository(repo);
+    public IndexRepository indexRepositoryIgpdi(
+            IgpdiIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new IgpdiJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryIpcae(IpcaeIndexRepository repo){
-        return new IpcaeJpaRepository(repo) {
-        };
+    public IndexRepository indexRepositoryIpcae(
+            IpcaeIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new IpcaeJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryIpca15(Ipca15IndexRepository repo){
-        return new Ipca15JpaRepository(repo) {
-        };
+    public IndexRepository indexRepositoryIpca15(
+            Ipca15IndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new Ipca15JpaRepository(repo,  indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryTbf(TbfIndexRepository repo){
-        return new TbfJpaRepository(repo) {
-        };
+    public IndexRepository indexRepositoryTbf(
+            TbfIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new TbfJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
-    public IndexRepository indexRepositoryIgpm(IgpmIndexRepository repo){
-        return new IgpmJpaRepository(repo);
+    public IndexRepository indexRepositoryIgpm(
+            IgpmIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository){
+        return new IgpmJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean

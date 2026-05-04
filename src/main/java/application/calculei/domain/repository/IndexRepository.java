@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IndexRepository {
-    Optional<IndiceBC> findBySerie(String serie);
     List<Index> findAll();
     Optional<Index> findByLastUpdate();
     List<Index> findByDataInitBetween(LocalDate dataInit, LocalDate dataFim);

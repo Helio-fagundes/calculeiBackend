@@ -13,4 +13,5 @@ public interface IgpdiIndexRepository extends JpaRepository<IGPDI, Long> {
     @Query("SELECT MAX(x.dataInit) FROM IGPDI x")
     LocalDate findMaxDataInit();
     Boolean existsByDataInit(LocalDate dataInit);
+    IGPDI findByDataInit(LocalDate dataInit);
 }

@@ -14,4 +14,5 @@ public interface IgpmIndexRepository extends JpaRepository<IGPM, Long> {
     @Query("SELECT MAX(x.dataInit) FROM IGPM x")
     LocalDate findMaxDataInit();
     Boolean existsByDataInit(LocalDate dataInit);
+    IGPM findByDataInit(LocalDate dataInit);
 }

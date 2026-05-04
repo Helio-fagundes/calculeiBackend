@@ -11,6 +11,8 @@ public interface TaxaLegalIndexRepository extends JpaRepository<TaxaLegal, Long>
     List<TaxaLegal> findByDataInitBetween(LocalDate inicio, LocalDate fim);
     List<TaxaLegal> findByDataInitLessThanEqual(LocalDate dataInit);
     @Query("SELECT MAX(x.dataInit) FROM TaxaLegal x")
-    LocalDate findMaxDateInit();
+    LocalDate findMaxDataInit();
     Boolean existsByDataInit(LocalDate dataInit);
+
+    TaxaLegal findByDataInit(LocalDate dataInit);
 }

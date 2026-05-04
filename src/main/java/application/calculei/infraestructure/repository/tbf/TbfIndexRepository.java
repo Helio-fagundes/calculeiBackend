@@ -13,4 +13,6 @@ public interface TbfIndexRepository extends JpaRepository<TBF, Long> {
     @Query("SELECT MAX(t.dataInit) FROM TBF t")
     LocalDate findMaxDataInit();
     Boolean existsByDataInit(LocalDate dataInit);
+
+    TBF findByDataInit(LocalDate dataInit);
 }
