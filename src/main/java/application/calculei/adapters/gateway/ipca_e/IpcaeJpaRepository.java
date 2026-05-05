@@ -3,7 +3,6 @@ package application.calculei.adapters.gateway.ipca_e;
 import application.calculei.adapters.mapper.ipca_e.IpcaeMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.infraestructure.entity.IPCA15;
 import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;

@@ -7,15 +7,12 @@ import application.calculei.adapters.gateway.igpm.IgpmJpaRepository;
 import application.calculei.adapters.gateway.indice_bc.IndiceBcJpaRepository;
 import application.calculei.adapters.gateway.indice_tj_L11960_selic.IndiceTjJpaRepository;
 import application.calculei.adapters.gateway.ipca.IpcaJpaRepository;
-import application.calculei.adapters.gateway.ipca_15.Ipca15JpaRepository;
 import application.calculei.adapters.gateway.ipca_e.IpcaeJpaRepository;
-import application.calculei.adapters.gateway.ipca_tl.IpcatlJpaRepository;
 import application.calculei.adapters.gateway.poupanca_antiga.PoupAntigaJpaRepository;
 import application.calculei.adapters.gateway.poupanca_nova.PoupNovaJpaRepository;
 import application.calculei.adapters.gateway.salario.SalarioJpaRepository;
 import application.calculei.adapters.gateway.selic.SelicMensalJpaRepository;
 import application.calculei.adapters.gateway.taxa_legal.TaxaLegalJpaRepository;
-import application.calculei.adapters.gateway.tbf.TbfJpaRepository;
 import application.calculei.adapters.gateway.tr.TrJpaRepository;
 import application.calculei.adapters.gateway.ufir_Rj.UfirRjJpaRepository;
 import application.calculei.adapters.scheduler.SchedulerConfig;
@@ -29,15 +26,12 @@ import application.calculei.infraestructure.repository.igpm.IgpmIndexRepository;
 import application.calculei.infraestructure.repository.indice_tj_L11960_selic.TjL11960SelicIndexRepository;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.ipca.IpcaIndexRepository;
-import application.calculei.infraestructure.repository.ipca_15.Ipca15IndexRepository;
 import application.calculei.infraestructure.repository.ipca_e.IpcaeIndexRepository;
-import application.calculei.infraestructure.repository.ipca_tl.IpcaTlIndexRepository;
 import application.calculei.infraestructure.repository.poupanca_antiga.PoupAntigaIndexRepository;
 import application.calculei.infraestructure.repository.poupanca_nova.PoupNovaIndexRepository;
 import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
 import application.calculei.infraestructure.repository.selic.SelicMensalIndexRepository;
 import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndexRepository;
-import application.calculei.infraestructure.repository.tbf.TbfIndexRepository;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
 import application.calculei.usecase.tj_11960.CalculateTj11960SelicValueBetweenDates;
@@ -52,10 +46,6 @@ import application.calculei.usecase.igpm.CalculateIgpmAccumulatedValueBetweenDat
 import application.calculei.usecase.igpm.UpdateIgpmFromBc;
 import application.calculei.usecase.ipca.CalculateIpcaAccumulatedValueBetweenDates;
 import application.calculei.usecase.ipca.UpdateIpcaFromBc;
-import application.calculei.usecase.ipca15.CalculateIpca15AccumulatedValueBetweenDates;
-import application.calculei.usecase.ipca15.UpdateIpca15FromBc;
-import application.calculei.usecase.ipca_tl.CalculateIpcaTlAccumulatedValueBetweenDates;
-import application.calculei.usecase.ipca_tl.UpdateIpcaTlFromBc;
 import application.calculei.usecase.ipcae.CalculateIpcaeAccumulatedValueBetweenDates;
 import application.calculei.usecase.ipcae.UpdateIpcaeFromBc;
 import application.calculei.usecase.poupanca_antiga.CalculatePoupAntigoAccumulatedValueBetweenDates;
@@ -68,8 +58,6 @@ import application.calculei.usecase.selic.mensal.CalculateSelicMensalAccumulated
 import application.calculei.usecase.selic.mensal.UpdateSelicMensalFromBc;
 import application.calculei.usecase.taxa_legal.CalculateTaxaLegalAccumulatedValueBetweenDates;
 import application.calculei.usecase.taxa_legal.UpdateTaxaLegalFromBc;
-import application.calculei.usecase.tbf.CalculateTbfAccumulatedValueBetweenDates;
-import application.calculei.usecase.tbf.UpdateTbfFromBc;
 import application.calculei.usecase.tr.CalculateTrAccumulatedValueBetweenDates;
 import application.calculei.usecase.tr.UpdateTrFromBc;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -106,13 +94,6 @@ public class CalculeiApplication {
             UfirRjIndexRepository repo,
             IndicesBcIndexRepository indicesBcIndexRepository){
         return new UfirRjJpaRepository(repo,  indicesBcIndexRepository);
-    }
-
-    @Bean
-    public IndexRepository indexRepositoryIpcaTl(
-            IpcaTlIndexRepository repo,
-            IndicesBcIndexRepository indicesBcIndexRepository){
-        return new IpcatlJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
@@ -179,20 +160,6 @@ public class CalculeiApplication {
     }
 
     @Bean
-    public IndexRepository indexRepositoryIpca15(
-            Ipca15IndexRepository repo,
-            IndicesBcIndexRepository indicesBcIndexRepository){
-        return new Ipca15JpaRepository(repo,  indicesBcIndexRepository);
-    }
-
-    @Bean
-    public IndexRepository indexRepositoryTbf(
-            TbfIndexRepository repo,
-            IndicesBcIndexRepository indicesBcIndexRepository){
-        return new TbfJpaRepository(repo, indicesBcIndexRepository);
-    }
-
-    @Bean
     public IndexRepository indexRepositoryIgpm(
             IgpmIndexRepository repo,
             IndicesBcIndexRepository indicesBcIndexRepository){
@@ -225,16 +192,6 @@ public class CalculeiApplication {
         return new UpdateTaxaLegalFromBc(
                 buscarTaxaLegalFromBcPort,
                 repository);
-    }
-
-    @Bean
-    public UpdateIpcaTlFromBc updateIpcaTlFromBc(
-            BuscarIpcaTlFromBcPort buscarIpcaTlFromBcPort,
-            @Qualifier("indexRepositoryIpcaTl") IndexRepository repository){
-        return new UpdateIpcaTlFromBc(
-                buscarIpcaTlFromBcPort,
-                repository
-        );
     }
 
     @Bean
@@ -278,14 +235,6 @@ public class CalculeiApplication {
     }
 
     @Bean
-    public UpdateIpca15FromBc updateIpca15FromBc(
-            BuscarIpca15FromBcPort buscarIpca15FromBcPort,
-            @Qualifier("indexRepositoryIpca15") IndexRepository indexRepository) {
-
-        return new UpdateIpca15FromBc(buscarIpca15FromBcPort, indexRepository);
-    }
-
-    @Bean
     public UpdateCdiFromBc updateCdiFromBc(
             BuscarCdiFromBcPort buscarCdiFromBcPort,
             @Qualifier("indexRepositoryCdi") IndexRepository indexRepository
@@ -312,15 +261,6 @@ public class CalculeiApplication {
     }
 
     @Bean
-    public UpdateTbfFromBc updateTbfFromBc(
-            BuscarTbfFromBcPort buscarTbfFromBcPort,
-            @Qualifier("indexRepositoryTbf") IndexRepository repository) {
-        return new UpdateTbfFromBc(
-                buscarTbfFromBcPort,
-                repository);
-    }
-
-    @Bean
     public UpdatePoupAntigoFromBc updatePoupAntigoFromBc(
             BuscarPoupAntigoFromBcPort buscarPoupAntigoFromBcPort,
             @Qualifier("indexRepositoryPoupAntiga") IndexRepository repository){
@@ -343,33 +283,27 @@ public class CalculeiApplication {
     @Bean
     public SchedulerConfig schedulerConfigd(UpdateIgpdiFromBc useCaseIgpdi,
                                             UpdateIpcaeFromBc useCaseIpcae,
-                                            UpdateIpca15FromBc useCaseIpca15,
                                             UpdateIgpmFromBc useCaseIgpm,
                                             UpdateIpcaFromBc useCaseIpca,
                                             UpdateCdiFromBc useCaseCdi,
                                             UpdateSelicMensalFromBc useCaseSelic,
                                             UpdateTrFromBc useCaseTr,
-                                            UpdateTbfFromBc useCaseTbf,
                                             UpdatePoupNovaFromBc useCasePoupNova,
                                             UpdateSalarioFromBc useCaseSalario,
                                             UpdatePoupAntigoFromBc useCasePoupAntiga,
-                                            UpdateIpcaTlFromBc useCaseIpcaTl,
                                             UpdateTaxaLegalFromBc useCaseTaxaLegal,
                                             UpdateTj6899FromUfirRj updateTj6899FromUfirRj) {
         return new SchedulerConfig(
                 useCaseIgpdi,
                 useCaseIpcae,
-                useCaseIpca15,
                 useCaseIgpm,
                 useCaseIpca,
                 useCaseCdi,
                 useCaseSelic,
                 useCaseTr,
-                useCaseTbf,
                 useCasePoupNova,
                 useCaseSalario,
                 useCasePoupAntiga,
-                useCaseIpcaTl,
                 useCaseTaxaLegal,
                 updateTj6899FromUfirRj);
     }
@@ -384,12 +318,6 @@ public class CalculeiApplication {
     public CalculateTaxaLegalAccumulatedValueBetweenDates calculateTaxaLegalAccumulatedValueBetweenDates(
             @Qualifier("indexRepositoryTaxaLegal") IndexRepository repo) {
         return new CalculateTaxaLegalAccumulatedValueBetweenDates(repo);
-    }
-
-    @Bean
-    public CalculateIpcaTlAccumulatedValueBetweenDates calculateIpcaTlAccumulatedValueBetweenDates(
-            @Qualifier("indexRepositoryIpcaTl") IndexRepository repo) {
-        return new CalculateIpcaTlAccumulatedValueBetweenDates(repo);
     }
 
     @Bean
@@ -429,12 +357,6 @@ public class CalculeiApplication {
     }
 
     @Bean
-    public CalculateIpca15AccumulatedValueBetweenDates calculateIpca15AccumulatedValueBetweenDates(
-            @Qualifier("indexRepositoryIpca15") IndexRepository repo) {
-        return new CalculateIpca15AccumulatedValueBetweenDates(repo);
-    }
-
-    @Bean
     public CalculateIgpmAccumulatedValueBetweenDates calculateIgpmAccumulatedValueBetweenDates(
             @Qualifier("indexRepositoryIgpm") IndexRepository repo) {
         return new CalculateIgpmAccumulatedValueBetweenDates(repo);
@@ -456,12 +378,6 @@ public class CalculeiApplication {
     public CalculateTrAccumulatedValueBetweenDates calculateTrAccumulatedValueBetweenDates(
             @Qualifier("indexRepositoryTr") IndexRepository repo) {
         return new CalculateTrAccumulatedValueBetweenDates(repo);
-    }
-
-    @Bean
-    public CalculateTbfAccumulatedValueBetweenDates calculateTbfAccumulatedValueBetweenDates(
-            @Qualifier("indexRepositoryTbf") IndexRepository repo) {
-        return new CalculateTbfAccumulatedValueBetweenDates(repo);
     }
 
     @Bean

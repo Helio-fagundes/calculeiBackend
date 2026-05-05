@@ -49,8 +49,8 @@ public class CalculateCdiAccumulatedValueBetweenDates {
     }
 
     private void validateDates(LocalDate startDate, LocalDate endDate){
-        if (startDate.isBefore(endDate)){
-            throw new InvalidPeriodException(startDate, endDate);
+        if (endDate.isBefore(startDate)){
+            throw new InvalidPeriodException(endDate, startDate);
         }
     }
 

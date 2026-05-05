@@ -20,7 +20,7 @@ import java.util.List;
 public class BcIpgdiApi implements BuscarIgpdiFromBcPort {
 
     private final RestTemplate restTemplate;
-    private static BuscarUrlBySeriePort buscarUrl;
+    private final BuscarUrlBySeriePort buscarUrl;
     private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @Override
