@@ -38,7 +38,6 @@ public class SchedulerConfig {
     @Scheduled(cron = "0 */3 * * * *")
     public void atualizarMensais(){
         igpmusecase.execute();
-        poupAntigausecase.execute();
         selicmensalusecase.execute();
         taxaLegalusecase.execute();
         updateTj6899FromUfirRj.execute();
@@ -49,6 +48,7 @@ public class SchedulerConfig {
         cdiusecase.execute();
         ipcausecase.execute();
         igpdiusecase.execute();
+        poupAntigausecase.execute();
     }
 
     @Scheduled(cron = "0 */3 * * * *")

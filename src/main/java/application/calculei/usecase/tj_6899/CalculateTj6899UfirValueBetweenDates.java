@@ -53,13 +53,13 @@ public class CalculateTj6899UfirValueBetweenDates {
         try {
             return repository.findDataInit(firstDayOfMonth);
         }catch (DataNotFoundException e) {
-            throw new DataNotFoundException("Índice de TJ 6899 UFIR não encontrado para a data: " + firstDayOfMonth);
+            throw new DataNotFoundException("Índice deTJ 6899 UFIR não encontrado para a data: " + firstDayOfMonth);
         }
     }
 
     private BigDecimal calculateAccumulatedPercentage(Index inicial, Index finalIndex) {
-        return inicial.getFator()
-                .divide(finalIndex.getFator(), 6, RoundingMode.HALF_UP);
+        return finalIndex.getFator()
+                .divide(inicial.getFator(), 8, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(double baseValue, BigDecimal percentage) {

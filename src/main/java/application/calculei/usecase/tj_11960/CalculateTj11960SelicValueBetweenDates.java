@@ -48,11 +48,11 @@ public class CalculateTj11960SelicValueBetweenDates {
         }
 
         if (!normStart.isBefore(CUT_OFF_DATE)) {
-            return calculateSelicFactor(normStart, normEnd);
+            return calculateSelicFactor(normStart, normEnd, false);
         }
 
         BigDecimal tjPart = fetchTjFactor(normStart);
-        BigDecimal selicPart = calculateSelicFactor(CUT_OFF_DATE, normEnd);
+        BigDecimal selicPart = calculateSelicFactor(CUT_OFF_DATE, normEnd, true);
 
         return tjPart.multiply(selicPart).setScale(SCALE, RoundingMode.HALF_UP);
     }
@@ -63,14 +63,20 @@ public class CalculateTj11960SelicValueBetweenDates {
         return index.getFator();
     }
 
-    private BigDecimal calculateSelicFactor(LocalDate startDate, LocalDate endDate) {
-        List<Index> selicIndexes = selicRepository.findByDataInitBetween(startDate, endDate);
+    // Adicionado o parâmetro boolean isHybrid
+    private BigDecimal calculateSelicFactor(LocalDate startDate, LocalDate endDate, boolean isHybrid) {
+
+        List<Index> selicIndexes = selicRepository.findByDataInitBetween(
+                startDate.minusDays(10), endDate.plusDays(10)
+        );
 
         if (selicIndexes.isEmpty()) {
             throw new DataNotFoundException("Nenhum índice SELIC encontrado entre " + startDate + " e " + endDate);
         }
 
         BigDecimal accumulatedRate = selicIndexes.stream()
+                .filter(index -> !index.getDataInit().isBefore(startDate))
+                .filter(index -> isHybrid ? !index.getDataInit().isAfter(endDate) : index.getDataInit().isBefore(endDate))
                 .map(Index::getFator)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 

@@ -31,7 +31,7 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
             throw new DataNotFoundException("Nenhum índice de Taxa Legal encontrado para o período informado.");
         }
 
-        BigDecimal accumulatedValue = calculateAccumulatedValue(listEntity);
+        BigDecimal accumulatedValue = calculateAccumulatedValue(listEntity, request.startDate(), request.endDate());
 
         BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedValue);
 
@@ -55,10 +55,13 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
         }
     }
 
-    private BigDecimal calculateAccumulatedValue(List<Index> listEntity){
-        return listEntity.stream()
-                .map(Index::getFator)
-                .reduce(BigDecimal.ONE, BigDecimal::multiply);
+    private BigDecimal calculateAccumulatedValue(List<Index> listEntity, LocalDate startDate, LocalDate endDate) {
+        BigDecimal sumOfRates = listEntity.stream()
+                .filter(index -> !index.getDataInit().isBefore(startDate))
+                .filter(index -> index.getDataInit().isBefore(endDate))
+                .map(index -> index.getFator().subtract(BigDecimal.ONE))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return BigDecimal.ONE.add(sumOfRates);
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedValue){

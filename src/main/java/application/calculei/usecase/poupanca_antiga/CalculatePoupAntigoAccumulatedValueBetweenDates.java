@@ -31,7 +31,7 @@ public class CalculatePoupAntigoAccumulatedValueBetweenDates {
             throw new DataNotFoundException("Nenhum índice de Poupança Antiga encontrado para o período informado.");
         }
 
-        BigDecimal accumulatedValue = calculateAccumulatedValue(listEntity);
+        BigDecimal accumulatedValue = calculateAccumulatedValue(listEntity, request.startDate());
 
         BigDecimal valueFinal = calculateFinalValue(request.amount(), accumulatedValue);
 
@@ -54,8 +54,12 @@ public class CalculatePoupAntigoAccumulatedValueBetweenDates {
         }
     }
 
-    private BigDecimal calculateAccumulatedValue(List<Index> listEntity){
+    private BigDecimal calculateAccumulatedValue(List<Index> listEntity, LocalDate startDate){
+        int anniversaryDay = startDate.getDayOfMonth();
+
         return listEntity.stream()
+                .filter(index -> index.getDataInit().isAfter(startDate))
+                .filter(index -> index.getDataInit().getDayOfMonth() == anniversaryDay)
                 .map(Index::getFator)
                 .reduce(BigDecimal.ONE, BigDecimal::multiply);
     }
