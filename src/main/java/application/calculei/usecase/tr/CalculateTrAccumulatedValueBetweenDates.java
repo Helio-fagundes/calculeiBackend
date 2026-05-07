@@ -26,7 +26,7 @@ public class CalculateTrAccumulatedValueBetweenDates {
 
         List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
 
-       BigDecimal accumulatedValue = calculateAccumulatedValue(listEntity);
+       BigDecimal accumulatedValue = calculateAccumulatedValue(listEntity, request.endDate());
 
        BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedValue);
 
@@ -39,7 +39,7 @@ public class CalculateTrAccumulatedValueBetweenDates {
                 request.endDate(),
                 businessDays,
                 finalValue,
-                accumulatedValue
+                accumulatedPercentage
         );
     }
 
@@ -49,8 +49,9 @@ public class CalculateTrAccumulatedValueBetweenDates {
         }
     }
 
-    private BigDecimal calculateAccumulatedValue(List<Index> listEntity){
+    private BigDecimal calculateAccumulatedValue(List<Index> listEntity, LocalDate endDate){
         return listEntity.stream()
+                .filter(index -> index.getDataInit().isBefore(endDate))
                 .map(Index::getFator)
                 .reduce(BigDecimal.ONE, BigDecimal::multiply);
     }

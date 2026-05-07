@@ -63,9 +63,7 @@ public class CalculateTj11960SelicValueBetweenDates {
         return index.getFator();
     }
 
-    // Adicionado o parâmetro boolean isHybrid
     private BigDecimal calculateSelicFactor(LocalDate startDate, LocalDate endDate, boolean isHybrid) {
-
         List<Index> selicIndexes = selicRepository.findByDataInitBetween(
                 startDate.minusDays(10), endDate.plusDays(10)
         );

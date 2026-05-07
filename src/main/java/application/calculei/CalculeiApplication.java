@@ -34,6 +34,7 @@ import application.calculei.infraestructure.repository.selic.SelicMensalIndexRep
 import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndexRepository;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
+import application.calculei.usecase.index_monetary_correction.IndexMonetaryCorrection;
 import application.calculei.usecase.tj_11960.CalculateTj11960SelicValueBetweenDates;
 import application.calculei.usecase.tj_6899.CalculateTj6899UfirValueBetweenDates;
 import application.calculei.usecase.tj_6899.UpdateTj6899FromUfirRj;
@@ -395,6 +396,11 @@ public class CalculeiApplication {
     @Bean
     public HistoryPdfValueMethod historyPdfValueMethod(HistoryPdfValuePort repo) {
         return new HistoryPdfValueMethod(repo);
+    }
+
+    @Bean
+    public IndexMonetaryCorrection indexMonetaryCorrection() {
+        return new IndexMonetaryCorrection();
     }
 
 }
