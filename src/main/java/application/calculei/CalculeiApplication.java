@@ -35,7 +35,7 @@ import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndex
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
 import application.calculei.usecase.index_monetary_correction.IndexMonetaryCorrection;
-import application.calculei.usecase.simple_interest.CalculateSimpleInterestSix;
+import application.calculei.usecase.simple_interest.CalculateSimpleInterest;
 import application.calculei.usecase.tj_11960.CalculateTj11960SelicValueBetweenDates;
 import application.calculei.usecase.tj_6899.CalculateTj6899UfirValueBetweenDates;
 import application.calculei.usecase.tj_6899.UpdateTj6899FromUfirRj;
@@ -390,8 +390,8 @@ public class CalculeiApplication {
     }
 
     @Bean
-    public CalculateSimpleInterestSix calculateSimpleInterestSix() {
-        return new CalculateSimpleInterestSix();
+    public CalculateSimpleInterest calculateSimpleInterestSix() {
+        return new CalculateSimpleInterest();
     }
 
     @Bean

@@ -1,6 +1,6 @@
 package application.calculei.adapters.controller;
 
-import application.calculei.usecase.simple_interest.CalculateSimpleInterestSix;
+import application.calculei.usecase.simple_interest.CalculateSimpleInterest;
 import application.calculei.usecase.simple_interest.dto.SimpleInterestDto;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -11,16 +11,16 @@ import java.math.BigDecimal;
 @RequestMapping("/simple-interest")
 public class SimpleInterestController {
 
-    private final CalculateSimpleInterestSix calculateSimpleInterestSix;
+    private final CalculateSimpleInterest calculateSimpleInterest;
 
     public SimpleInterestController(
-            CalculateSimpleInterestSix calculateSimpleInterestSix
+            CalculateSimpleInterest calculateSimpleInterest
     ) {
-        this.calculateSimpleInterestSix = calculateSimpleInterestSix;
+        this.calculateSimpleInterest = calculateSimpleInterest;
     }
 
     @PostMapping("/{interest}")
     public SimpleInterestDto execute(@RequestBody @Valid SimpleInterestDto request, @PathVariable BigDecimal interest) {
-        return calculateSimpleInterestSix.execute(request, interest);
+        return calculateSimpleInterest.execute(request, interest);
     }
 }
