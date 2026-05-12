@@ -1,7 +1,6 @@
 package application.calculei.domain.repository;
 
 import application.calculei.domain.models.Index;
-import application.calculei.infraestructure.entity.IndiceBC;
 
 import java.time.LocalDate;
 import java.util.List;

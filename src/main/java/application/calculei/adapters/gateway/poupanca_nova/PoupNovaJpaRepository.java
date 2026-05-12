@@ -1,10 +1,8 @@
 package application.calculei.adapters.gateway.poupanca_nova;
 
-import application.calculei.adapters.mapper.ipca_e.IpcaeMapperEntity;
 import application.calculei.adapters.mapper.pouponca_nova.PoupNovaMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.PoupNova;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;

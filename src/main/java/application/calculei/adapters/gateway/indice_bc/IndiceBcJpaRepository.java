@@ -43,7 +43,6 @@ public class IndiceBcJpaRepository implements IndexRepository {
 
     @Override
     public void saveAll(List<Index> listEntity) {
-
     }
 
     @Override

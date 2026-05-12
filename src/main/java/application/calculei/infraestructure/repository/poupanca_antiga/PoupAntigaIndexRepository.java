@@ -1,6 +1,5 @@
 package application.calculei.infraestructure.repository.poupanca_antiga;
 
-import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.PoupAntiga;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

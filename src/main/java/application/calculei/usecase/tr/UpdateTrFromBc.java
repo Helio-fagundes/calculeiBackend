@@ -2,12 +2,8 @@ package application.calculei.usecase.tr;
 
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.infraestructure.entity.TR;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
-import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.domain.port.BuscarTrFromBcPort;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 

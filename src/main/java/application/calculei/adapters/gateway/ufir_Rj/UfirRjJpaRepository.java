@@ -1,10 +1,8 @@
 package application.calculei.adapters.gateway.ufir_Rj;
 
-import application.calculei.adapters.mapper.ipca_e.IpcaeMapperEntity;
 import application.calculei.adapters.mapper.ufir_rj.UfirRjMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.UfirRJ;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;

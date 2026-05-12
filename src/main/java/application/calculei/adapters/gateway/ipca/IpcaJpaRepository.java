@@ -5,7 +5,6 @@ import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.infraestructure.entity.IPCA;
 import application.calculei.infraestructure.entity.IndiceBC;
-import application.calculei.infraestructure.entity.Indice_TJ_L11960_Selic;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.ipca.IpcaIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;

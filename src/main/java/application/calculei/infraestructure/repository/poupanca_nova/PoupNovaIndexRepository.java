@@ -1,6 +1,5 @@
 package application.calculei.infraestructure.repository.poupanca_nova;
 
-import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.PoupNova;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
