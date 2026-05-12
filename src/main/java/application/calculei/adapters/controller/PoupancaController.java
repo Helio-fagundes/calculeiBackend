@@ -3,6 +3,9 @@ package application.calculei.adapters.controller;
 import application.calculei.usecase.poupanca_antiga.CalculatePoupAntigoAccumulatedValueBetweenDates;
 import application.calculei.usecase.poupanca_antiga.dto.CalculatePoupAntigoBetweenDateRequest;
 import application.calculei.usecase.poupanca_antiga.dto.CalculatePoupAntigoBetweenDateResponse;
+import application.calculei.usecase.poupanca_antiga_nova.CalculatePoupNovaAndAntigaAccumulatedValueByPeriod;
+import application.calculei.usecase.poupanca_antiga_nova.dto.CalculateIndexPoupBetweenDateRequest;
+import application.calculei.usecase.poupanca_antiga_nova.dto.CalculateIndexPoupBetweenDateResponse;
 import application.calculei.usecase.poupanca_nova.CalculatePoupNovaAccumulatedValueBetweenDates;
 import application.calculei.usecase.poupanca_nova.dto.CalculatePoupNovaBetweenDateRequest;
 import application.calculei.usecase.poupanca_nova.dto.CalculatePoupNovaBetweenDateResponse;
@@ -18,10 +21,16 @@ public class PoupancaController {
 
     private final CalculatePoupNovaAccumulatedValueBetweenDates useCaseCalculatePoupancaBetweenDates;
     private final CalculatePoupAntigoAccumulatedValueBetweenDates useCaseCalculatePoupancaAntigaBetweenDates;
+    private final CalculatePoupNovaAndAntigaAccumulatedValueByPeriod  useCaseCalculatePoupancaAndAntigaBetweenDates;
 
-    public PoupancaController(CalculatePoupNovaAccumulatedValueBetweenDates useCaseCalculatePoupancaBetweenDates, CalculatePoupAntigoAccumulatedValueBetweenDates useCaseCalculatePoupancaAntigaBetweenDates) {
+    public PoupancaController(
+            CalculatePoupNovaAccumulatedValueBetweenDates useCaseCalculatePoupancaBetweenDates,
+            CalculatePoupAntigoAccumulatedValueBetweenDates useCaseCalculatePoupancaAntigaBetweenDates,
+            CalculatePoupNovaAndAntigaAccumulatedValueByPeriod useCaseCalculatePoupancaAndAntigaBetweenDates
+    ) {
         this.useCaseCalculatePoupancaBetweenDates = useCaseCalculatePoupancaBetweenDates;
         this.useCaseCalculatePoupancaAntigaBetweenDates = useCaseCalculatePoupancaAntigaBetweenDates;
+        this.useCaseCalculatePoupancaAndAntigaBetweenDates = useCaseCalculatePoupancaAndAntigaBetweenDates;
     }
 
     @PostMapping("/nova/calculate/between-dates")
@@ -32,5 +41,10 @@ public class PoupancaController {
     @PostMapping("/antiga/calculate/between-dates")
     public CalculatePoupAntigoBetweenDateResponse calculateBetweenDateAntiga(@Valid @RequestBody CalculatePoupAntigoBetweenDateRequest request){
         return useCaseCalculatePoupancaAntigaBetweenDates.execute(request);
+    }
+
+    @PostMapping("/antiga-nova/calculate/between-dates")
+    public CalculateIndexPoupBetweenDateResponse  calculateBetweenDate(@Valid @RequestBody CalculateIndexPoupBetweenDateRequest request){
+        return useCaseCalculatePoupancaAndAntigaBetweenDates.execute(request);
     }
 }

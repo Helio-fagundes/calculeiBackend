@@ -58,7 +58,6 @@ public class CalculatePoupAntigoAccumulatedValueBetweenDates {
         int anniversaryDay = startDate.getDayOfMonth();
 
         return listEntity.stream()
-                .filter(index -> index.getDataInit().isAfter(startDate))
                 .filter(index -> index.getDataInit().getDayOfMonth() == anniversaryDay)
                 .map(Index::getFator)
                 .reduce(BigDecimal.ONE, BigDecimal::multiply);

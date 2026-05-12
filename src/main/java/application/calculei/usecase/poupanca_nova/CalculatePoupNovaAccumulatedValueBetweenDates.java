@@ -25,7 +25,7 @@ public class CalculatePoupNovaAccumulatedValueBetweenDates {
 
         validatedDate(request.startDate(), request.endDate());
 
-        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate().minusMonths(1));
+        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
 
         if (listEntity.isEmpty()) {
             throw new DataNotFoundException("Nenhum índice de Poupança Nova encontrado para o período informado.");

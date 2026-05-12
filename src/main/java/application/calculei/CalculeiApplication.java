@@ -35,6 +35,7 @@ import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndex
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
 import application.calculei.usecase.index_monetary_correction.IndexMonetaryCorrection;
+import application.calculei.usecase.poupanca_antiga_nova.CalculatePoupNovaAndAntigaAccumulatedValueByPeriod;
 import application.calculei.usecase.simple_interest.CalculateInterestByPeriod;
 import application.calculei.usecase.simple_interest.CalculateSimpleInterest;
 import application.calculei.usecase.tj_11960.CalculateTj11960SelicValueBetweenDates;
@@ -389,6 +390,13 @@ public class CalculeiApplication {
             @Qualifier("indexRepositorySelic") IndexRepository selicRepo) {
         return new CalculateTj11960SelicValueBetweenDates(tj11960Repo, selicRepo);
     }
+
+    @Bean
+    public CalculatePoupNovaAndAntigaAccumulatedValueByPeriod  calculatePoupNovaAndAntigaAccumulatedValueByPeriod(
+            @Qualifier("indexRepositoryPoupAntiga") IndexRepository poupAntigaRepo,
+            @Qualifier("indexRepositoryPoupNova") IndexRepository poupNovaRepo) {
+        return new CalculatePoupNovaAndAntigaAccumulatedValueByPeriod(poupAntigaRepo, poupNovaRepo);
+     }
 
     @Bean
     public CalculateSimpleInterest calculateSimpleInterestSix() {
