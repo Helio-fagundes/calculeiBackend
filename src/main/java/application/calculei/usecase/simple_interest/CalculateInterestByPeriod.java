@@ -7,7 +7,6 @@ import application.calculei.usecase.simple_interest.dto.SimpleInterestDto;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 public class CalculateInterestByPeriod {
 
