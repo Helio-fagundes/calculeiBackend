@@ -1,5 +1,6 @@
 package application.calculei.adapters.scheduler;
 
+import application.calculei.usecase.selic.diario.UpdateSelicDiarioFromBc;
 import application.calculei.usecase.tj_6899.UpdateTj6899FromUfirRj;
 import application.calculei.usecase.cdi.UpdateCdiFromBc;
 import application.calculei.usecase.igpdi.UpdateIgpdiFromBc;
@@ -34,6 +35,7 @@ public class SchedulerConfig {
     private final UpdatePoupAntigoFromBc poupAntigausecase;
     private final UpdateTaxaLegalFromBc taxaLegalusecase;
     private final UpdateTj6899FromUfirRj  updateTj6899FromUfirRj;
+    private final UpdateSelicDiarioFromBc updateSelicDiario;
 
     @Scheduled(cron = "0 */3 * * * *")
     public void atualizarMensais(){
@@ -53,6 +55,6 @@ public class SchedulerConfig {
 
     @Scheduled(cron = "0 */3 * * * *")
     public void atualizarDiarios(){
-
+        updateSelicDiario.execute();
     }
 }

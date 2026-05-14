@@ -11,6 +11,7 @@ import application.calculei.adapters.gateway.ipca_e.IpcaeJpaRepository;
 import application.calculei.adapters.gateway.poupanca_antiga.PoupAntigaJpaRepository;
 import application.calculei.adapters.gateway.poupanca_nova.PoupNovaJpaRepository;
 import application.calculei.adapters.gateway.salario.SalarioJpaRepository;
+import application.calculei.adapters.gateway.selic.SelicDiarioJpaRepository;
 import application.calculei.adapters.gateway.selic.SelicMensalJpaRepository;
 import application.calculei.adapters.gateway.taxa_legal.TaxaLegalJpaRepository;
 import application.calculei.adapters.gateway.tr.TrJpaRepository;
@@ -30,12 +31,15 @@ import application.calculei.infraestructure.repository.ipca_e.IpcaeIndexReposito
 import application.calculei.infraestructure.repository.poupanca_antiga.PoupAntigaIndexRepository;
 import application.calculei.infraestructure.repository.poupanca_nova.PoupNovaIndexRepository;
 import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
+import application.calculei.infraestructure.repository.selic.SelicDiarioIndexRepository;
 import application.calculei.infraestructure.repository.selic.SelicMensalIndexRepository;
 import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndexRepository;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
 import application.calculei.usecase.index_monetary_correction.IndexMonetaryCorrection;
 import application.calculei.usecase.poupanca_antiga_nova.CalculatePoupNovaAndAntigaAccumulatedValueByPeriod;
+import application.calculei.usecase.selic.diario.CalculateSelicDiarioAccumulatedValueBetweenDates;
+import application.calculei.usecase.selic.diario.UpdateSelicDiarioFromBc;
 import application.calculei.usecase.simple_interest.CalculateInterestByPeriod;
 import application.calculei.usecase.simple_interest.CalculateSimpleInterest;
 import application.calculei.usecase.tj_11960.CalculateTj11960SelicValueBetweenDates;
@@ -64,6 +68,7 @@ import application.calculei.usecase.taxa_legal.CalculateTaxaLegalAccumulatedValu
 import application.calculei.usecase.taxa_legal.UpdateTaxaLegalFromBc;
 import application.calculei.usecase.tr.CalculateTrAccumulatedValueBetweenDates;
 import application.calculei.usecase.tr.UpdateTrFromBc;
+import application.calculei.usecase.ufir.UfirUseCase;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -84,6 +89,21 @@ public class CalculeiApplication {
             CdiIndexRepository repo,
             IndicesBcIndexRepository indicesBcIndexRepository) {
         return new CdiJpaRepository(repo, indicesBcIndexRepository);
+    }
+
+    @Bean
+    public IndexRepository indexRepositoryUfir(
+            UfirRjIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository
+    ){
+        return new UfirRjJpaRepository(repo, indicesBcIndexRepository);
+    }
+
+    @Bean
+    public IndexRepository indexRepositorySelicDiario(
+            SelicDiarioIndexRepository repo,
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new SelicDiarioJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
@@ -283,6 +303,14 @@ public class CalculeiApplication {
         );
     }
 
+    @Bean
+    public UpdateSelicDiarioFromBc  updateSelicDiarioFromBc(
+            BuscarSelicDiarioFromBcPort  buscarSelicDiarioFromBcPort,
+            @Qualifier("indexRepositorySelicDiario") IndexRepository repository
+    ){
+        return new UpdateSelicDiarioFromBc(buscarSelicDiarioFromBcPort, repository);
+    }
+
 
     @Bean
     public SchedulerConfig schedulerConfigd(UpdateIgpdiFromBc useCaseIgpdi,
@@ -296,7 +324,8 @@ public class CalculeiApplication {
                                             UpdateSalarioFromBc useCaseSalario,
                                             UpdatePoupAntigoFromBc useCasePoupAntiga,
                                             UpdateTaxaLegalFromBc useCaseTaxaLegal,
-                                            UpdateTj6899FromUfirRj updateTj6899FromUfirRj) {
+                                            UpdateTj6899FromUfirRj updateTj6899FromUfirRj,
+                                            UpdateSelicDiarioFromBc updateSelicDiarioFromBc) {
         return new SchedulerConfig(
                 useCaseIgpdi,
                 useCaseIpcae,
@@ -309,7 +338,8 @@ public class CalculeiApplication {
                 useCaseSalario,
                 useCasePoupAntiga,
                 useCaseTaxaLegal,
-                updateTj6899FromUfirRj);
+                updateTj6899FromUfirRj,
+                updateSelicDiarioFromBc);
     }
 
     @Bean
@@ -379,6 +409,13 @@ public class CalculeiApplication {
     }
 
     @Bean
+    public CalculateSelicDiarioAccumulatedValueBetweenDates  calculateSelicDiarioAccumulatedValueBetweenDates(
+            @Qualifier("indexRepositorySelicDiario") IndexRepository selicRepo)
+    {
+        return new CalculateSelicDiarioAccumulatedValueBetweenDates(selicRepo);
+     }
+
+    @Bean
     public CalculateTrAccumulatedValueBetweenDates calculateTrAccumulatedValueBetweenDates(
             @Qualifier("indexRepositoryTr") IndexRepository repo) {
         return new CalculateTrAccumulatedValueBetweenDates(repo);
@@ -389,6 +426,11 @@ public class CalculeiApplication {
             @Qualifier("indexRepositoryTj11960") IndexRepository tj11960Repo,
             @Qualifier("indexRepositorySelic") IndexRepository selicRepo) {
         return new CalculateTj11960SelicValueBetweenDates(tj11960Repo, selicRepo);
+    }
+
+    @Bean
+    public UfirUseCase ufirUseCase( @Qualifier("indexRepositoryUfir") IndexRepository repository) {
+        return new UfirUseCase(repository);
     }
 
     @Bean
