@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.indice_tj_L6899;
 import application.calculei.adapters.mapper.ufir_rj.UfirRjMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.UfirRJ;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
@@ -17,13 +18,11 @@ import java.util.Optional;
 public class IndiceTjJpaRepository implements IndexRepository {
 
     private final UfirRjIndexRepository repository;
-    private final IndicesBcIndexRepository  indicesBcIndexRepository;
+    private final IndiceBcPort  indiceBcPort;
 
-    public IndiceTjJpaRepository(
-            UfirRjIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository) {
+    public IndiceTjJpaRepository(UfirRjIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -53,7 +52,7 @@ public class IndiceTjJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("TJ6899")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("TJ6899")
                 .orElseThrow(() -> new RuntimeException("Índice Tj6899 não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

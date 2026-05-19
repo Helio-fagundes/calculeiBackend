@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.ufir_Rj;
 import application.calculei.adapters.mapper.ufir_rj.UfirRjMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.UfirRJ;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
@@ -17,14 +18,11 @@ import java.util.Optional;
 public class UfirRjJpaRepository implements IndexRepository {
 
     private final UfirRjIndexRepository repository;
-    private final IndicesBcIndexRepository  indicesBcIndexRepository;
+    private final IndiceBcPort indiceBcPort;
 
-    public UfirRjJpaRepository(
-            UfirRjIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository
-    ) {
+    public UfirRjJpaRepository(UfirRjIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -54,7 +52,7 @@ public class UfirRjJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("UFIR")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("UFIR")
                 .orElseThrow(() -> new RuntimeException("Índice UFIR não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

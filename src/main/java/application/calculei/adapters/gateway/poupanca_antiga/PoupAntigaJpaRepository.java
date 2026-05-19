@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.poupanca_antiga;
 import application.calculei.adapters.mapper.poupanca_antiga.PoupAntigaMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.PoupAntiga;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
@@ -17,14 +18,11 @@ import java.util.Optional;
 public class PoupAntigaJpaRepository implements IndexRepository {
 
     private final PoupAntigaIndexRepository repository;
-    public final IndicesBcIndexRepository  indicesBcIndexRepository;
+    public final IndiceBcPort  indiceBcPort;
 
-    public PoupAntigaJpaRepository(
-            PoupAntigaIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository
-    ) {
+    public PoupAntigaJpaRepository(PoupAntigaIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -54,7 +52,7 @@ public class PoupAntigaJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("POUPANTIGA")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("POUPANTIGA")
                 .orElseThrow(() -> new RuntimeException("Índice Poupança antiga não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

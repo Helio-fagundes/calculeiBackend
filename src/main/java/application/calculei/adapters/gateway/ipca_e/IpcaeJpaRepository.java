@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.ipca_e;
 import application.calculei.adapters.mapper.ipca_e.IpcaeMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
@@ -17,14 +18,11 @@ import java.util.Optional;
 public class IpcaeJpaRepository implements IndexRepository {
 
     private final IpcaeIndexRepository repository;
-    private final IndicesBcIndexRepository  indicesBcIndexRepository;
+    private final IndiceBcPort indiceBcPort;
 
-    public IpcaeJpaRepository(
-            IpcaeIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository
-    ) {
+     public IpcaeJpaRepository(IpcaeIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -54,7 +52,7 @@ public class IpcaeJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("IPCAE")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("IPCAE")
                 .orElseThrow(() -> new RuntimeException("Índice IPCA_E não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

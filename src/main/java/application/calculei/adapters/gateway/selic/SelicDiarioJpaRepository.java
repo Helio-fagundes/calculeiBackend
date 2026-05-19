@@ -1,12 +1,11 @@
 package application.calculei.adapters.gateway.selic;
 
 import application.calculei.adapters.mapper.selic.SelicDiarioMapperEntity;
-import application.calculei.adapters.mapper.selic.SelicMensalMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.SelicDiario;
-import application.calculei.infraestructure.entity.SelicMensal;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.selic.SelicDiarioIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
@@ -19,11 +18,11 @@ import java.util.Optional;
 public class SelicDiarioJpaRepository implements IndexRepository {
 
     private final SelicDiarioIndexRepository repository;
-    private final IndicesBcIndexRepository  indicesBcIndexRepository;
+    private final IndiceBcPort  indiceBcPort;
 
-    public SelicDiarioJpaRepository(SelicDiarioIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
+    public SelicDiarioJpaRepository(SelicDiarioIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -53,7 +52,7 @@ public class SelicDiarioJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("SELIC_DIARIO")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("SELIC_DIARIO")
                 .orElseThrow(() -> new RuntimeException("Índice Selic diario não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

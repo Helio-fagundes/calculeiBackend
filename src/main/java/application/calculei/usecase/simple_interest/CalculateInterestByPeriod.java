@@ -19,7 +19,9 @@ public class CalculateInterestByPeriod {
             .divide(BigDecimal.valueOf(360), 10, RoundingMode.HALF_UP);
 
     public SimpleInterestDto execute(SimpleInterestDto request) {
-        validate(request.startDate(), request.endDate());
+        validateDates(request.startDate(), request.endDate());
+
+        validateFactor(request.amount());
 
         BigDecimal totalInterestPercentage = calculateHybridPercentage(
                 request.startDate(),
@@ -68,9 +70,23 @@ public class CalculateInterestByPeriod {
         return BigDecimal.valueOf(totalDays).multiply(dailyRate);
     }
 
-    private void validate(LocalDate startDate, LocalDate endDate) {
-        if (startDate.isAfter(endDate)) {
-            throw new InvalidPeriodException(startDate, endDate);
+    private void validateFactor(BigDecimal fator) {
+        if (fator.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O Fator deve ser maior que zero");
+        }
+    }
+
+    private void validateDates(LocalDate startDate, LocalDate endDate){
+        if (endDate.isBefore(startDate)){
+            throw new InvalidPeriodException(endDate, startDate);
+        }
+
+        if (startDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("A data de início não pode ser posterior à data atual.");
+        }
+
+        if (endDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("A data de término não pode ser posterior à data atual.");
         }
     }
 }

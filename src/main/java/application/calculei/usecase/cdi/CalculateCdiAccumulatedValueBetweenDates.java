@@ -25,6 +25,8 @@ public class CalculateCdiAccumulatedValueBetweenDates {
 
         validateDates(request.startDate(), request.endDate());
 
+        validateFactor(BigDecimal.valueOf(request.amount()));
+
         List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
 
         if (listEntity.isEmpty()) {
@@ -48,9 +50,23 @@ public class CalculateCdiAccumulatedValueBetweenDates {
                 );
     }
 
+    private void validateFactor(BigDecimal fator) {
+        if (fator.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O Fator deve ser maior que zero");
+        }
+    }
+
     private void validateDates(LocalDate startDate, LocalDate endDate){
         if (endDate.isBefore(startDate)){
             throw new InvalidPeriodException(endDate, startDate);
+        }
+
+        if (startDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("A data de início não pode ser posterior à data atual.");
+        }
+
+        if (endDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("A data de término não pode ser posterior à data atual.");
         }
     }
 

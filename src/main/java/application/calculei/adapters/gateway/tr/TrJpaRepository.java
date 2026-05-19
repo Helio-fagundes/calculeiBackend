@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.tr;
 import application.calculei.adapters.mapper.tr.TrMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.TR;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
@@ -18,14 +19,11 @@ import java.util.Optional;
 public class TrJpaRepository implements IndexRepository {
 
     private final TrIndexRepository repository;
-    private final IndicesBcIndexRepository  indicesBcIndexRepository;
+    private final IndiceBcPort  indiceBcPort;
 
-    public TrJpaRepository(
-            TrIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository
-    ) {
+    public TrJpaRepository(TrIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -55,7 +53,7 @@ public class TrJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("TR")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("TR")
                 .orElseThrow(() -> new RuntimeException("Índice TR não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

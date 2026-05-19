@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.ipca;
 import application.calculei.adapters.mapper.ipca.IpcaMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IPCA;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
@@ -17,13 +18,11 @@ import java.util.Optional;
 public class IpcaJpaRepository implements IndexRepository {
 
     private final IpcaIndexRepository repository;
-    private final IndicesBcIndexRepository  indicesBcIndexRepository;
+    private final IndiceBcPort  indiceBcPort;
 
-    public IpcaJpaRepository(
-            IpcaIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository) {
+    public IpcaJpaRepository(IpcaIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -53,7 +52,7 @@ public class IpcaJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("IPCA")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("IPCA")
                 .orElseThrow(() -> new RuntimeException("Índice IPCA não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

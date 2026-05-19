@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.salario;
 import application.calculei.adapters.mapper.salario.SalarioMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.Salario;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
@@ -18,14 +19,11 @@ import java.util.Optional;
 public class SalarioJpaRepository implements IndexRepository {
 
     private final SalarioIndexRepository repository;
-    private final IndicesBcIndexRepository  indicesBcIndexRepository;
+    private final IndiceBcPort indiceBcPort;
 
-    public SalarioJpaRepository(
-            SalarioIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository
-    ) {
+    public SalarioJpaRepository(SalarioIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -55,7 +53,7 @@ public class SalarioJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("SALARIO")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("SALARIO")
                 .orElseThrow(() -> new RuntimeException("Índice Salario não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

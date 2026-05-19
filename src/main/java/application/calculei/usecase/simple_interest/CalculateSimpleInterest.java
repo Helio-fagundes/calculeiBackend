@@ -1,10 +1,12 @@
 package application.calculei.usecase.simple_interest;
 
 import application.calculei.domain.valueObject.DateUtils;
+import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.simple_interest.dto.SimpleInterestDto;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 
 public class CalculateSimpleInterest {
 
@@ -13,6 +15,10 @@ public class CalculateSimpleInterest {
     public SimpleInterestDto execute(SimpleInterestDto request, BigDecimal interest) {
 
         long totalDays = DateUtils.businessDays(request.startDate(), request.endDate());
+
+        validateDates(request.startDate(), request.endDate());
+
+        validateFactor(interest);
 
         BigDecimal days = new BigDecimal(totalDays);
 
@@ -41,5 +47,25 @@ public class CalculateSimpleInterest {
         return interestPorcentage
                 .divide(BigDecimal.valueOf(DAYS_IN_COMMERCIAL_MONTH), 10, RoundingMode.HALF_UP)
                 .divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
+    }
+
+    private void validateFactor(BigDecimal fator) {
+        if (fator.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O Fator deve ser maior que zero");
+        }
+    }
+
+    private void validateDates(LocalDate startDate, LocalDate endDate){
+        if (endDate.isBefore(startDate)){
+            throw new InvalidPeriodException(endDate, startDate);
+        }
+
+        if (startDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("A data de início não pode ser posterior à data atual.");
+        }
+
+        if (endDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("A data de término não pode ser posterior à data atual.");
+        }
     }
 }

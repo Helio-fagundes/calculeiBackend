@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.igpm;
 import application.calculei.adapters.mapper.igpm.IgpmMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IGPM;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.igpm.IgpmIndexRepository;
@@ -17,13 +18,11 @@ import java.util.Optional;
 public class IgpmJpaRepository implements IndexRepository {
 
     private final IgpmIndexRepository repository;
-    private final IndicesBcIndexRepository indicesBcIndexRepository;
+    private final IndiceBcPort  indiceBcPort;
 
-    public IgpmJpaRepository(
-            IgpmIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository) {
+    public IgpmJpaRepository(IgpmIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -53,7 +52,7 @@ public class IgpmJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("IGPM")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("IGPM")
                 .orElseThrow(() -> new RuntimeException("Índice IGPM não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

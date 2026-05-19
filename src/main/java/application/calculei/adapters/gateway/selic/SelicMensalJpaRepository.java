@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.selic;
 import application.calculei.adapters.mapper.selic.SelicMensalMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.SelicMensal;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
@@ -17,14 +18,11 @@ import java.util.Optional;
 public class SelicMensalJpaRepository implements IndexRepository {
 
     private final SelicMensalIndexRepository repository;
-    private final IndicesBcIndexRepository  indicesBcIndexRepository;
+    private final IndiceBcPort indiceBcPort;
 
-    public SelicMensalJpaRepository(
-            SelicMensalIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository
-    ) {
+    public SelicMensalJpaRepository(SelicMensalIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -54,7 +52,7 @@ public class SelicMensalJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("SELIC_MENSAL")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("SELIC_MENSAL")
                 .orElseThrow(() -> new RuntimeException("Índice Selic não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

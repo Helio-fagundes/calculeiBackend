@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.cdi;
 import application.calculei.adapters.mapper.cdi.CdiMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.CDI;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
@@ -17,13 +18,13 @@ import java.util.Optional;
 public class CdiJpaRepository implements IndexRepository {
 
     private final CdiIndexRepository repository;
-    private final IndicesBcIndexRepository  indicesBcIndexRepository;
+    private final IndiceBcPort  indiceBcPort;
 
     public CdiJpaRepository(
             CdiIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository) {
+            IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class CdiJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("CDI")
+        IndiceBC indiceBC = indiceBcPort.findBySerie("CDI")
                 .orElseThrow(() -> new RuntimeException("Índice CDI não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

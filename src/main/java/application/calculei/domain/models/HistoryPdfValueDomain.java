@@ -28,23 +28,12 @@ public class HistoryPdfValueDomain {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public String getJson() {
         return json;
-    }
-
-    public void setJson(String json) {
-        this.json = json;
     }
 
     public String getToken() {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

@@ -3,6 +3,7 @@ package application.calculei.adapters.gateway.igpdi;
 import application.calculei.adapters.mapper.igpdi.IgpdiMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IGPDI;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
@@ -17,13 +18,11 @@ import java.util.Optional;
 public class IgpdiJpaRepository implements IndexRepository {
 
     private final IgpdiIndexRepository repository;
-    private final IndicesBcIndexRepository  indicesBcIndexRepository;
+    private final IndiceBcPort  indiceBcPort;
 
-    public IgpdiJpaRepository(
-            IgpdiIndexRepository repository,
-            IndicesBcIndexRepository indicesBcIndexRepository) {
+    public IgpdiJpaRepository(IgpdiIndexRepository repository, IndiceBcPort indiceBcPort) {
         this.repository = repository;
-        this.indicesBcIndexRepository = indicesBcIndexRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     @Override
@@ -53,8 +52,8 @@ public class IgpdiJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indice = indicesBcIndexRepository.findBySerie("IGPDI")
-                .orElseThrow(() -> new RuntimeException("Indice IGPDI não encontrado na base de dados"));
+        IndiceBC indice = indiceBcPort.findBySerie("IGPDI")
+                .orElseThrow(() -> new RuntimeException("Índice IGPDI não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity
                 .stream()
