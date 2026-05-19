@@ -75,9 +75,9 @@ public class CalculateSelicMensalAccumulatedValueBetweenDates {
                 .reduce(BigDecimal.ONE, BigDecimal::multiply);
     }
 
-    private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedValue){
+    private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedFactor) {
         return BigDecimal.valueOf(amount)
-                .multiply(accumulatedValue)
+                .multiply(accumulatedFactor)
                 .setScale(2, RoundingMode.HALF_UP);
     }
 

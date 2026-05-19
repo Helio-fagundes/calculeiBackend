@@ -16,24 +16,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/selic")
 public class SelicController {
 
-    private final CalculateSelicMensalAccumulatedValueBetweenDates useCaseCalculateDays;
-    private final CalculateSelicDiarioAccumulatedValueBetweenDates  useCaseCalculateMonths;
+    private final CalculateSelicMensalAccumulatedValueBetweenDates useCaseCalculateMonths;
+    private final CalculateSelicDiarioAccumulatedValueBetweenDates  useCaseCalculateDays;
 
     public SelicController(
-            CalculateSelicMensalAccumulatedValueBetweenDates useCaseCalculateDays,
-            CalculateSelicDiarioAccumulatedValueBetweenDates useCaseCalculateMonths
+            CalculateSelicMensalAccumulatedValueBetweenDates useCaseCalculateMonths,
+            CalculateSelicDiarioAccumulatedValueBetweenDates useCaseCalculateDays
     ) {
         this.useCaseCalculateDays = useCaseCalculateDays;
         this.useCaseCalculateMonths = useCaseCalculateMonths;
     }
 
     @PostMapping("/mensal/calculate/between-dates")
-    public CalculateSelicMensalBetweenDateResponse calculateBetweenDate(@Valid @RequestBody CalculateSelicMensalBetweenDateRequest request){
-        return useCaseCalculateDays.execute(request);
+    public CalculateSelicMensalBetweenDateResponse calculateBetweenDate(@RequestBody @Valid CalculateSelicMensalBetweenDateRequest request){
+        return useCaseCalculateMonths.execute(request);
     }
 
     @PostMapping("/diario/calculate/between-dates")
     public CalculateSelicDiarioBetweenDateResponse calculateDiarioBetweenDate(@Valid @RequestBody CalculateSelicDiarioBetweenDateRequest request){
-        return useCaseCalculateMonths.execute(request);
+        return useCaseCalculateDays.execute(request);
     }
 }

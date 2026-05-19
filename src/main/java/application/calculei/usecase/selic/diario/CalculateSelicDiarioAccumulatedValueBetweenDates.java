@@ -84,6 +84,6 @@ public class CalculateSelicDiarioAccumulatedValueBetweenDates {
     private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor) {
         return accumulatedFactor.subtract(BigDecimal.ONE)
                 .multiply(BigDecimal.valueOf(100))
-                .setScale(2, RoundingMode.HALF_UP);
+                .setScale(6, RoundingMode.HALF_UP);
     }
 }
