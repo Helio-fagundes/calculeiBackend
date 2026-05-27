@@ -17,6 +17,6 @@ public class UfirUseCase {
     public BigDecimal getLastUfirValue(){
         return repository.findByLastUpdate()
                 .map(Index::getFator)
-                .orElseThrow(() -> new DataNotFoundException("UFIR value not found"));
+                .orElseThrow(() -> new DataNotFoundException("Valor Ufir não encontrado"));
     }
 }

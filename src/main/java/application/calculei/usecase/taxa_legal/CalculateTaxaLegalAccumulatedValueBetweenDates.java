@@ -5,6 +5,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
+import application.calculei.usecase.exceptions.InvalidValueException;
 import application.calculei.usecase.taxa_legal.dto.CalculateTaxaLegalBetweenDateRequest;
 import application.calculei.usecase.taxa_legal.dto.CalculateTaxaLegalBetweenDateResponse;
 
@@ -53,7 +54,7 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
 
     private void validateFactor(BigDecimal fator) {
         if (fator.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("O Fator deve ser maior que zero");
+            throw new InvalidValueException();
         }
     }
 
@@ -63,11 +64,11 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
         }
 
         if (startDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("A data de início não pode ser posterior à data atual.");
+            throw new InvalidPeriodException("inicio");
         }
 
         if (endDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("A data de término não pode ser posterior à data atual.");
+            throw new InvalidPeriodException("término");
         }
     }
 

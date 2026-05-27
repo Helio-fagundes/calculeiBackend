@@ -5,6 +5,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
+import application.calculei.usecase.exceptions.InvalidValueException;
 import application.calculei.usecase.tj_11960.dto.CalculateTj11960BetweenDateRequest;
 import application.calculei.usecase.tj_11960.dto.CalculateTj11960BetweenDateResponse;
 
@@ -61,7 +62,7 @@ public class CalculateTj11960SelicValueBetweenDates {
 
     private BigDecimal fetchTjFactor(LocalDate date) {
         Index index = tjRepository.findDataInit(date);
-        if (index == null) throw new DataNotFoundException("Índice TJ não encontrado para: " + date);
+        if (index == null) throw new DataNotFoundException("Índice TJ11960 não encontrado para: " + date);
         return index.getFator();
     }
 
@@ -93,7 +94,7 @@ public class CalculateTj11960SelicValueBetweenDates {
 
     private void validateFactor(BigDecimal fator) {
         if (fator.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("O Fator deve ser maior que zero");
+            throw new InvalidValueException();
         }
     }
 
@@ -103,11 +104,11 @@ public class CalculateTj11960SelicValueBetweenDates {
         }
 
         if (startDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("A data de início não pode ser posterior à data atual.");
+            throw new InvalidPeriodException("inicio");
         }
 
         if (endDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("A data de término não pode ser posterior à data atual.");
+            throw new InvalidPeriodException("término");
         }
     }
 }

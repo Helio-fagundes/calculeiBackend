@@ -7,6 +7,8 @@ import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
 import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
+import application.calculei.usecase.exceptions.InvalidValueException;
+import application.calculei.usecase.exceptions.ValueNullOrEmptyException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -52,7 +54,7 @@ public class CalculateCdiAccumulatedValueBetweenDates {
 
     private void validateFactor(BigDecimal fator) {
         if (fator.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("O Fator deve ser maior que zero");
+            throw new InvalidValueException();
         }
     }
 
@@ -62,11 +64,11 @@ public class CalculateCdiAccumulatedValueBetweenDates {
         }
 
         if (startDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("A data de início não pode ser posterior à data atual.");
+            throw new InvalidPeriodException("início");
         }
 
         if (endDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("A data de término não pode ser posterior à data atual.");
+            throw new InvalidPeriodException("término");
         }
     }
 

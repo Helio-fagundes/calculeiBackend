@@ -5,6 +5,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.valueObject.DateUtils;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
+import application.calculei.usecase.exceptions.InvalidValueException;
 import application.calculei.usecase.tj_6899.dto.CalculateTj6899BetweenDateRequest;
 import application.calculei.usecase.tj_6899.dto.CalculateTj6899BetweenDateResponse;
 
@@ -46,7 +47,7 @@ public class CalculateTj6899UfirValueBetweenDates {
 
     private void validateFactor(BigDecimal fator) {
         if (fator.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("O Fator deve ser maior que zero");
+            throw new InvalidValueException();
         }
     }
 
@@ -56,11 +57,11 @@ public class CalculateTj6899UfirValueBetweenDates {
         }
 
         if (startDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("A data de início não pode ser posterior à data atual.");
+            throw new InvalidPeriodException("inicio");
         }
 
         if (endDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("A data de término não pode ser posterior à data atual.");
+            throw new InvalidPeriodException("término");
         }
     }
 
@@ -69,7 +70,7 @@ public class CalculateTj6899UfirValueBetweenDates {
         try {
             return repository.findDataInit(firstDayOfMonth);
         }catch (DataNotFoundException e) {
-            throw new DataNotFoundException("Índice deTJ 6899 UFIR não encontrado para a data: " + firstDayOfMonth);
+            throw new DataNotFoundException("Índice de TJ6899 UFIR não encontrado para a data: " + firstDayOfMonth);
         }
     }
 

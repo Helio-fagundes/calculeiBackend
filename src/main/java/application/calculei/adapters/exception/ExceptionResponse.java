@@ -1,10 +1,14 @@
 package application.calculei.adapters.exception;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Builder
+@Getter
+@Setter
 public class ExceptionResponse {
 
     private Integer status;
@@ -18,4 +22,5 @@ public class ExceptionResponse {
         this.mensagem = mensagem;
         this.timestamp = timestamp;
     }
+
 }
