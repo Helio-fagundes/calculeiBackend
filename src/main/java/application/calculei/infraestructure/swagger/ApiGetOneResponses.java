@@ -13,8 +13,54 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Recurso encontrado com sucesso."),
-        //TODO: fazer a response para a saida com sucesso dos dados!
+        @ApiResponse(responseCode = "200", description = "Recurso encontrado com sucesso.",
+                content = @Content(
+                        mediaType = "application/json",
+                        examples = @ExampleObject(
+                                name = "Exemplo de resposta bem-sucedida",
+                                summary = "Quando o recurso é encontrado e retornado com sucesso.",
+                                value = """
+                                        {
+                                          "geradoEm": "2026-05-27T19:38:27.000Z",
+                                          "totalLancamentos": 1,
+                                          "lancamentos": [
+                                            {
+                                              "id": 1,
+                                              "descricao": "Descrição do lançamento",
+                                              "descricaoComplementar": "Informação adicional (opcional)",
+                                              "dataInicial": "2023-01-01",
+                                              "dataCalculo": "2023-12-31",
+                                              "valorPrincipal": 1000.00,
+                                              "indiceCorrecao": "ipca",
+                                              "valorAtualizado": 1046.20,
+                                              "dias": 364,
+                                              "percentualCorrecao": 4.62,
+                                              "indiceJuros": "poupança",
+                                              "dataInicioJuros": "2023-01-01",
+                                              "dataFimJuros": "2023-12-31",
+                                              "diasJuros": 364,
+                                              "fatorJuros": 1.0617,
+                                              "percentualJurosAcumulado": 6.17,
+                                              "juros": 64.55,
+                                              "total": 1110.75,
+                                              "itensJuros": [
+                                                {
+                                                  "indice": "poupança",
+                                                  "taxa": "0,5% a.m.",
+                                                  "dataInicio": "2023-01-01",
+                                                  "dataFim": "2023-12-31",
+                                                  "dias": 364,
+                                                  "percentual": 6.17,
+                                                  "valor": 64.55
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                        """
+                        )
+                )
+        ),
 
         @ApiResponse(responseCode = "400", description = "Requisição malformada ou dados inválidos.",
                 content = @Content(
@@ -31,7 +77,8 @@ import java.lang.annotation.Target;
                                      }
                                 """
                         )
-                )),
+                )
+        ),
 
         @ApiResponse(responseCode = "404", description = "Recurso não encontrado para o ID fornecido.",
                 content = @Content(
@@ -63,7 +110,8 @@ import java.lang.annotation.Target;
                                         """
                                 )
                         }
-                )),
+                )
+        ),
 
         @ApiResponse(responseCode = "500", description = "Erro interno no servidor.",
                 content = @Content(
