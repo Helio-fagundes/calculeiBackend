@@ -38,12 +38,18 @@ public class BcIpgdiApi implements BuscarIgpdiFromBcPort {
 
             if (response == null) return List.of();
 
-            return List.of(response)
-                    .stream()
-                    .map(d -> new DadoBancoCentral(LocalDate.parse(d.data(),
-                            dateFormatter),
-                            d.valor()))
+            List<DadoBancoCentral> dadosBancoCentral = List.of(response).stream()
+                    .map(d -> new DadoBancoCentral(LocalDate.parse(d.data(), dateFormatter), d.valor()))
                     .toList();
+
+            boolean temDadosNovos = dadosBancoCentral.stream()
+                    .anyMatch(dado -> dado.data().isAfter(dataInicial));
+
+            if (!temDadosNovos) {
+                throw new BancoCentralDataNotFoundException(indice, dataInicial);
+            }
+
+            return dadosBancoCentral;
 
         }catch (HttpMessageNotReadableException | RestClientException e){
             throw new BancoCentralDataNotFoundException(indice, dataInicial);

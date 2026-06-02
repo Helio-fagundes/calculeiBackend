@@ -312,37 +312,6 @@ public class CalculeiApplication {
         return new UpdateSelicDiarioFromBc(buscarSelicDiarioFromBcPort, repository);
     }
 
-
-    @Bean
-    public SchedulerConfig schedulerConfigd(UpdateIgpdiFromBc useCaseIgpdi,
-                                            UpdateIpcaeFromBc useCaseIpcae,
-                                            UpdateIgpmFromBc useCaseIgpm,
-                                            UpdateIpcaFromBc useCaseIpca,
-                                            UpdateCdiFromBc useCaseCdi,
-                                            UpdateSelicMensalFromBc useCaseSelic,
-                                            UpdateTrFromBc useCaseTr,
-                                            UpdatePoupNovaFromBc useCasePoupNova,
-                                            UpdateSalarioFromBc useCaseSalario,
-                                            UpdatePoupAntigoFromBc useCasePoupAntiga,
-                                            UpdateTaxaLegalFromBc useCaseTaxaLegal,
-                                            UpdateTj6899FromUfirRj updateTj6899FromUfirRj,
-                                            UpdateSelicDiarioFromBc updateSelicDiarioFromBc) {
-        return new SchedulerConfig(
-                useCaseIgpdi,
-                useCaseIpcae,
-                useCaseIgpm,
-                useCaseIpca,
-                useCaseCdi,
-                useCaseSelic,
-                useCaseTr,
-                useCasePoupNova,
-                useCaseSalario,
-                useCasePoupAntiga,
-                useCaseTaxaLegal,
-                updateTj6899FromUfirRj,
-                updateSelicDiarioFromBc);
-    }
-
     @Bean
     public CalculateCdiAccumulatedValueBetweenDates calculateCdiAccumulatedValueBetweenDates(
             @Qualifier("indexRepositoryCdi") IndexRepository repo) {

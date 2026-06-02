@@ -1,5 +1,6 @@
 package application.calculei.adapters.scheduler;
 
+import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.selic.diario.UpdateSelicDiarioFromBc;
 import application.calculei.usecase.tj_6899.UpdateTj6899FromUfirRj;
 import application.calculei.usecase.cdi.UpdateCdiFromBc;
@@ -34,27 +35,45 @@ public class SchedulerConfig {
     private final UpdateSalarioFromBc salariousecase;
     private final UpdatePoupAntigoFromBc poupAntigausecase;
     private final UpdateTaxaLegalFromBc taxaLegalusecase;
-    private final UpdateTj6899FromUfirRj  updateTj6899FromUfirRj;
+    private final UpdateTj6899FromUfirRj updateTj6899FromUfirRj;
     private final UpdateSelicDiarioFromBc updateSelicDiario;
 
     @Scheduled(cron = "0 */3 * * * *")
-    public void atualizarMensais(){
-        igpmusecase.execute();
-        selicmensalusecase.execute();
-        taxaLegalusecase.execute();
-        updateTj6899FromUfirRj.execute();
-        ipcaeusecase.execute();
-        salariousecase.execute();
-        poupNovausecase.execute();
-        trusecase.execute();
-        cdiusecase.execute();
-        ipcausecase.execute();
-        igpdiusecase.execute();
-        poupAntigausecase.execute();
+    public void atualizarMensais() {
+        log.info("❗️Iniciando atualização dos índices mensais...");
+
+        executeWithSecurity(igpmusecase::execute, "IGP-M");
+        executeWithSecurity(selicmensalusecase::execute, "Selic Mensal");
+        executeWithSecurity(taxaLegalusecase::execute, "Taxa Legal");
+        executeWithSecurity(updateTj6899FromUfirRj::execute, "TJ-6899 / UFIR-RJ");
+        executeWithSecurity(ipcaeusecase::execute, "IPCA-E");
+        executeWithSecurity(salariousecase::execute, "Salário Mínimo");
+        executeWithSecurity(poupNovausecase::execute, "Poupança Nova");
+        executeWithSecurity(ipcausecase::execute, "IPCA");
+        executeWithSecurity(igpdiusecase::execute, "IGP-DI");
+
+        log.info("✅ Varredura dos índices mensais concluída!");
     }
 
     @Scheduled(cron = "0 */3 * * * *")
-    public void atualizarDiarios(){
-        updateSelicDiario.execute();
+    public void atualizarDiarios() {
+        log.info("❗Iniciando atualização dos índices diários...");
+
+        executeWithSecurity(updateSelicDiario::execute, "Selic Diário");
+        executeWithSecurity(cdiusecase::execute, "CDI");
+        executeWithSecurity(poupAntigausecase::execute, "Poupança Antiga");
+        executeWithSecurity(trusecase::execute, "TR");
+
+        log.info("✅ Varredura dos índices diários concluída!");
+    }
+
+    private void executeWithSecurity(Runnable useCaseExecution, String nomeIndice) {
+        try {
+            useCaseExecution.run();
+        } catch (BancoCentralDataNotFoundException e) {
+            log.warn(e.getMessage());
+        } catch (Exception e) {
+            log.error("Erro crítico inesperado ao atualizar o índice " + nomeIndice + ":", e);
+        }
     }
 }
