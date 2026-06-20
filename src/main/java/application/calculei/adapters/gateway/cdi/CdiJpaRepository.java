@@ -7,7 +7,6 @@ import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.CDI;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.time.LocalDate;
@@ -91,7 +90,7 @@ public class CdiJpaRepository implements IndexRepository {
         return repository.findAll().stream()
                 .map(CDI::getDataInit)
                 .max(LocalDate::compareTo)
-                .orElseThrow(() -> new RuntimeException("Não foi possível encontrar a data máxima de atualização do índice CDI."));
+                .orElse(null);
     }
 
     @Override

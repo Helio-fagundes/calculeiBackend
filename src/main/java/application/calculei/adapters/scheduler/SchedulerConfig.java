@@ -40,7 +40,7 @@ public class SchedulerConfig {
 
     @Scheduled(cron = "0 */3 * * * *")
     public void atualizarMensais() {
-        log.info("❗️Iniciando atualização dos índices mensais...");
+        log.info("Iniciando atualização dos índices mensais...");
 
         executeWithSecurity(igpmusecase::execute, "IGP-M");
         executeWithSecurity(selicmensalusecase::execute, "Selic Mensal");
@@ -52,19 +52,19 @@ public class SchedulerConfig {
         executeWithSecurity(ipcausecase::execute, "IPCA");
         executeWithSecurity(igpdiusecase::execute, "IGP-DI");
 
-        log.info("✅ Varredura dos índices mensais concluída!");
+        log.info("Varredura dos índices mensais concluída!");
     }
 
     @Scheduled(cron = "0 */3 * * * *")
     public void atualizarDiarios() {
-        log.info("❗Iniciando atualização dos índices diários...");
+        log.info("Iniciando atualização dos índices diários...");
 
         executeWithSecurity(updateSelicDiario::execute, "Selic Diário");
         executeWithSecurity(cdiusecase::execute, "CDI");
         executeWithSecurity(poupAntigausecase::execute, "Poupança Antiga");
         executeWithSecurity(trusecase::execute, "TR");
 
-        log.info("✅ Varredura dos índices diários concluída!");
+        log.info("Varredura dos índices diários concluída!");
     }
 
     private void executeWithSecurity(Runnable useCaseExecution, String nomeIndice) {
@@ -73,7 +73,7 @@ public class SchedulerConfig {
         } catch (BancoCentralDataNotFoundException e) {
             log.warn(e.getMessage());
         } catch (Exception e) {
-            log.error("Erro crítico inesperado ao atualizar o índice " + nomeIndice + ":", e);
+            log.error("Erro crítico inesperado ao atualizar o índice (" + nomeIndice + ") :", e);
         }
     }
 }

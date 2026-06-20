@@ -22,10 +22,11 @@ public class UpdateIgpdiFromBc {
 
     public void execute(){
 
-        LocalDate startDate = repository
-                .findByLastUpdate()
-                .map(index -> index.getDataInit().plusMonths(1))
-                .orElse(null);
+        LocalDate dataMax = repository.findMaxDataInit();
+
+        LocalDate startDate = dataMax != null
+                ? dataMax.plusMonths(1)
+                : LocalDate.of(1980, 1, 1);
 
         var bruteDate = buscarIgpdiFromBcPort.buscar(startDate);
 

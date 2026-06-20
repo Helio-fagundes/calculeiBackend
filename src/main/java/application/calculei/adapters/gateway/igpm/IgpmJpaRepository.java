@@ -7,7 +7,6 @@ import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IGPM;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.igpm.IgpmIndexRepository;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.time.LocalDate;
@@ -90,7 +89,7 @@ public class IgpmJpaRepository implements IndexRepository {
         return repository.findAll().stream()
                 .map(IGPM::getDataInit)
                 .max(LocalDate::compareTo)
-                .orElseThrow(() -> new RuntimeException("Não foi possível encontrar a data máxima de atualização do índice IGPM."));
+                .orElse(null);
     }
 
     @Override

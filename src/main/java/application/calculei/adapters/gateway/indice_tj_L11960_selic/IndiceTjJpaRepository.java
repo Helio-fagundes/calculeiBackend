@@ -7,7 +7,6 @@ import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.Indice_TJ_L11960_Selic;
 import application.calculei.infraestructure.repository.indice_tj_L11960_selic.TjL11960SelicIndexRepository;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.time.LocalDate;
@@ -89,7 +88,7 @@ public class IndiceTjJpaRepository implements IndexRepository {
         return repository.findAll().stream()
                 .map(Indice_TJ_L11960_Selic::getDataInit)
                 .max(LocalDate::compareTo)
-                .orElseThrow(() -> new RuntimeException("Não foi possível encontrar a data máxima de atualização do índice Tj11960."));
+                .orElse(null);
     }
 
     @Override

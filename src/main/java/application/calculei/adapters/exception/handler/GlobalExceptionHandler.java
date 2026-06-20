@@ -1,8 +1,12 @@
 package application.calculei.adapters.exception.handler;
 
+import application.calculei.adapters.event.dto.SystemErrorWarning;
 import application.calculei.adapters.exception.ExceptionResponse;
 import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.exceptions.*;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +19,15 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final ApplicationEventPublisher eventPublisher;
+
+    public GlobalExceptionHandler(ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+    }
     @ExceptionHandler(BancoCentralDataNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleBancoCentralDataNotFoundException(
             BancoCentralDataNotFoundException ex) {
@@ -102,8 +112,10 @@ public class GlobalExceptionHandler {
             CannotCreateTransactionException.class,
             DataAccessResourceFailureException.class
     })
-    public ResponseEntity<ExceptionResponse> handleDatabaseDown(Exception ex) {
-        System.err.println("ERRO CRÍTICO: Banco de Dados Inacessível - " + ex.getMessage());
+    public ResponseEntity<ExceptionResponse> handleDatabaseDown(Exception ex, HttpServletRequest request) {
+        log.error("ERRO CRÍTICO: Banco de Dados Inacessível \n" + ex.getMessage());
+
+        eventPublisher.publishEvent(new SystemErrorWarning(ex, request));
 
         ExceptionResponse error = new ExceptionResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -116,8 +128,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleGenericException(Exception ex) {
-        System.err.println("ERRO DESCONHECIDO: " + ex.getClass().getName() + " - " + ex.getMessage());
+    public ResponseEntity<ExceptionResponse> handleGenericException(Exception ex,  HttpServletRequest request) {
+        log.error("ERRO DESCONHECIDO: " + ex.getClass().getName() + " - \n" + ex.getMessage());
+
+        eventPublisher.publishEvent(new SystemErrorWarning(ex, request));
 
         ExceptionResponse error = new ExceptionResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -146,7 +160,6 @@ public class GlobalExceptionHandler {
             DateTimeParseException.class
     })
     public ResponseEntity<ExceptionResponse> handleDateTimeParseException(
-            DateTimeParseException ex
     ){
         ExceptionResponse error = new ExceptionResponse(
                 HttpStatus.BAD_REQUEST.value(),

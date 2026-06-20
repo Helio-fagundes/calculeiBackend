@@ -6,7 +6,6 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.IndiceBC;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.ipca_e.IpcaeIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 
@@ -89,8 +88,8 @@ public class IpcaeJpaRepository implements IndexRepository {
         return repository.findAll().stream()
                 .map(IPCAE::getDataInit)
                 .max(LocalDate::compareTo)
-                .orElseThrow(() -> new RuntimeException("Nenhuma data encontrada para o indice IPCA_E"));
-    }
+                .orElse(null);
+     }
 
     @Override
     public Index findDataInit(LocalDate dataInit) {

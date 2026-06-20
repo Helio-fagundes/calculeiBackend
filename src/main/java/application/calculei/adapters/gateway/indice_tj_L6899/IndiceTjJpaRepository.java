@@ -6,7 +6,6 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.UfirRJ;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 
@@ -89,7 +88,7 @@ public class IndiceTjJpaRepository implements IndexRepository {
         return repository.findAll().stream()
                 .map(UfirRJ::getDataInit)
                 .max(LocalDate::compareTo)
-                .orElseThrow(() -> new RuntimeException("Não foi possível encontrar a data máxima de início para o índice Tj6899."));
+                .orElse(null);
     }
 
     @Override

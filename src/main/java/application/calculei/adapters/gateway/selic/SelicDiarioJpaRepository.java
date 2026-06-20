@@ -6,7 +6,6 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.SelicDiario;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.selic.SelicDiarioIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 
@@ -89,7 +88,7 @@ public class SelicDiarioJpaRepository implements IndexRepository {
         return repository.findAll().stream()
                 .map(SelicDiario::getDataInit)
                 .max(LocalDate::compareTo)
-                .orElseThrow(() -> new RuntimeException("Nenhuma data encontrada para o indice Selic diario"));
+                .orElse(null);
     }
 
     @Override

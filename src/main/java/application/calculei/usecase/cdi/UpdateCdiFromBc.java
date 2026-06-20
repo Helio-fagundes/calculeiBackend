@@ -25,7 +25,7 @@ public class UpdateCdiFromBc {
 
         LocalDate inicio = dataMax != null
                 ? dataMax.plusDays(1)
-                : LocalDate.of(1986, 1, 1);
+                : LocalDate.of(1980, 1, 1);
 
         LocalDate hoje = LocalDate.now();
 

@@ -24,6 +24,7 @@ public class IndiceBC {
     private String descricao;
     @JsonFormat(pattern = "dd~MM~yyyy")
     private LocalDate dataInit;
+    @Column(name = "url_bc")
     private String urlBC;
     private String controller;
     private String periodicidade;

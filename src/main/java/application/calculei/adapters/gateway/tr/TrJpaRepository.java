@@ -6,7 +6,6 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.TR;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.tr.TrIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 
@@ -90,7 +89,7 @@ public class TrJpaRepository implements IndexRepository {
         return repository.findAll().stream()
                 .map(TR::getDataInit)
                 .max(LocalDate::compareTo)
-                .orElseThrow(() -> new RuntimeException("Nenhuma data encontrada para o indice TR"));
+                .orElse(null);
     }
 
     @Override

@@ -7,7 +7,6 @@ import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IGPDI;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
-import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.time.LocalDate;
@@ -90,7 +89,7 @@ public class IgpdiJpaRepository implements IndexRepository {
         return repository.findAll().stream()
                 .map(IGPDI::getDataInit)
                 .max(LocalDate::compareTo)
-                .orElseThrow(() -> new RuntimeException("Não foi possível encontrar a data máxima de início para o índice IGPDI."));
+                .orElse(null);
     }
 
     @Override

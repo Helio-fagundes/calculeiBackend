@@ -8,7 +8,6 @@ import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.exceptions.InvalidValueException;
-import application.calculei.usecase.exceptions.ValueNullOrEmptyException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

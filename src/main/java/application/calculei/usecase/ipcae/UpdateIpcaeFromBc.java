@@ -22,7 +22,7 @@ public class UpdateIpcaeFromBc {
 
         LocalDate startDate = dateMax != null
                 ? dateMax.plusMonths(1)
-                : LocalDate.of(2023, 1, 1);
+                : LocalDate.of(2020, 1, 1);
 
         LocalDate today = LocalDate.now();
 
