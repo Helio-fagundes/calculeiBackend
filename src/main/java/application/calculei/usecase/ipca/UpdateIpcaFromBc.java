@@ -23,7 +23,7 @@ public class UpdateIpcaFromBc {
 
         LocalDate startDate = dataMax != null
                 ? dataMax.plusMonths(1)
-                : LocalDate.of(1980, 1, 1);
+                : LocalDate.of(1970, 1, 1);
 
         var bruteDate = buscarIpcaFromBcPort.buscar(startDate);
 

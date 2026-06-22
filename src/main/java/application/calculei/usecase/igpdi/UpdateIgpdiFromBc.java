@@ -26,7 +26,7 @@ public class UpdateIgpdiFromBc {
 
         LocalDate startDate = dataMax != null
                 ? dataMax.plusMonths(1)
-                : LocalDate.of(1980, 1, 1);
+                : LocalDate.of(1944, 1, 1);
 
         var bruteDate = buscarIgpdiFromBcPort.buscar(startDate);
 
