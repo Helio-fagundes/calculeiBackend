@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CalculateTj11960SelicValueBetweenDates {
 
-    private static final LocalDate CUT_OFF_DATE = LocalDate.of(2021, 12, 1);
+    private static final LocalDate CUT_OFF_DATE = LocalDate.of(2021, 11, 30);
     private static final int SCALE = 10;
 
     private final IndexRepository tjRepository;
@@ -67,16 +67,13 @@ public class CalculateTj11960SelicValueBetweenDates {
     }
 
     private BigDecimal calculateSelicFactor(LocalDate startDate, LocalDate endDate, boolean isHybrid) {
-        List<Index> selicIndexes = selicRepository.findByDataInitBetween(
-                startDate.minusDays(10), endDate.plusDays(10)
-        );
+        List<Index> selicIndexes = selicRepository.findByDataInitBetween(startDate, endDate.minusDays(1));
 
         if (selicIndexes.isEmpty()) {
             throw new DataNotFoundException("Nenhum índice SELIC encontrado entre " + startDate + " e " + endDate);
         }
 
         BigDecimal accumulatedRate = selicIndexes.stream()
-                .filter(index -> !index.getDataInit().isBefore(startDate))
                 .filter(index -> isHybrid ? !index.getDataInit().isAfter(endDate) : index.getDataInit().isBefore(endDate))
                 .map(Index::getFator)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
