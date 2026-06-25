@@ -69,7 +69,7 @@ Para rodar o projeto localmente com sucesso, você precisa injetar essas variáv
 
 1. **Clone o repositório:**
    ```bash
-   git clone https://gitlab.mprj.mp.br/gate/calculei-back-end
+   git clone https://github.com/Helio-fagundes/calculeiBackend
    cd calculeiBackend
 
 2. **Compile o projeto com o Maven:**
