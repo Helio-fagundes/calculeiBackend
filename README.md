@@ -56,18 +56,20 @@ O projeto utiliza variáveis de ambiente para garantir a segurança das credenci
 
 Para rodar o projeto localmente com sucesso, você precisa injetar essas variáveis na configuração de execução da sua IDE. Siga este passo a passo:
 
-1. Na barra superior do IntelliJ, ao lado do botão verde de "Play" (Run), clique no seletor da sua aplicação (ex: `CalculeiApplication`) e escolha **Edit Configurations...**.
-2. Na janela que se abrir, certifique-se de que a sua aplicação Spring Boot está selecionada no menu do lado esquerdo.
-3. No painel direito, procure pelo campo **Environment variables**.
+1. Na barra superior do IntelliJ, ao lado do botão verde de "Play" (Run), clique no seletor de execução e escolha **Edit Configurations...**.
+2. Na janela que se abrir, clique no botão de **+** no canto superior esquerdo e selecione **Application** para que seja possível iniciar o projeto.
+3. Na configuração recém-criada, no campo de classe principal (Main class), selecione o arquivo `CalculeiApplication`.
+4. No painel direito, procure pelo campo **Environment variables**.
    * *Dica:* Se esse campo não estiver visível, clique em **Modify options** (texto em azul) e marque a opção **Environment variables**.
-4. Clique no pequeno ícone de pasta/planilha no canto direito desse campo (ou pressione `Shift + Enter`) para abrir o painel de edição.
-5. Clique no botão **+** e crie uma linha para cada variável da tabela acima. Coloque o nome da variável na coluna **Name** e o seu valor correspondente na coluna **Value**.
-6. Após adicionar todas as chaves e valores, clique em **OK** para fechar a listagem, depois em **Apply** e **OK** na janela principal para salvar.
+5. Clique no pequeno ícone de pasta/planilha no canto direito desse campo (ou pressione `Shift + Enter`) para abrir o painel de edição.
+6. Clique no botão **+** e crie uma linha para cada variável da tabela acima. Coloque o nome da variável na coluna **Name** e o seu valor correspondente na coluna **Value**.
+7. Após adicionar todas as chaves e valores, clique em **OK** para fechar a listagem, depois em **Apply** e **OK** na janela principal para salvar.
+
 ## 🛠️ Como Executar o Projeto
 
 1. **Clone o repositório:**
    ```bash
-   git clone http://gitlab.mprj.mp.br/gate/calculei-back-end.git
+   git clone https://github.com/Helio-fagundes/calculeiBackend
    cd calculeiBackend
 
 2. **Compile o projeto com o Maven:**
@@ -104,7 +106,7 @@ Abaixo estão os principais endpoints disponíveis na aplicação. Para testar d
 ### 1. Cálculos de Índices Financeiros
 A grande maioria dos índices da API compartilha o mesmo formato de requisição e resposta. Você informa o valor inicial e o período, e a API devolve o valor corrigido e o acumulado.
 
-**Endpoints disponíveis com este contrato:**
+**Endpoints disponíveis com esta requisição:**
 * `POST /cdi/calculate/between-dates`
 * `POST /igpdi/calculate/between-dates`
 * `POST /igpm/calculate/between-dates`
