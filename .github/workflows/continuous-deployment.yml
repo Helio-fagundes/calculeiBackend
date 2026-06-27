@@ -24,7 +24,6 @@ jobs:
         cache: maven
 
     - name: Build Application .jar
-      working-directory: ./calculei
       run: mvn clean package -DskipTests
 
     - name: Build to Image and Push
