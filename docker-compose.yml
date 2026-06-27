@@ -3,16 +3,38 @@ version: '3.8'
 services:
   db:
     image: postgres:17-alpine
-    container_name: postgres-calculei
+    container_name: database-postgres
     restart: unless-stopped
+    environment:
+      TZ: "America/Sao_Paulo"
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: calculei
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: calculei
-      POSTGRES_PASSWORD: calculei123
-      POSTGRES_DB: calculei
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+    networks:
+      - calculei-network
 
-volumes:
-  pgdata:
+  calculei:
+    build: .
+    container_name: calculei
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      TZ: "America/Sao_Paulo"
+      PORT: 8080
+      SPRING_DB_HOST: db
+      SPRING_DB_NAME: calculei
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - calculei-network
+
+networks:
+  calculei-network:
+    driver: bridge
