@@ -8,6 +8,7 @@ import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.Salario;
 import application.calculei.infraestructure.repository.salario.SalarioIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -15,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class SalarioJpaRepository implements IndexRepository {
 
     private final SalarioIndexRepository repository;

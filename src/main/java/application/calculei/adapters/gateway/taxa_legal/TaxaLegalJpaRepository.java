@@ -8,12 +8,14 @@ import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.TaxaLegal;
 import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class TaxaLegalJpaRepository implements IndexRepository {
 
     private final TaxaLegalIndexRepository repository;

@@ -8,12 +8,14 @@ import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.UfirRJ;
 import application.calculei.infraestructure.repository.ufir_rj.UfirRjIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class IndiceTjJpaRepository implements IndexRepository {
 
     private final UfirRjIndexRepository repository;

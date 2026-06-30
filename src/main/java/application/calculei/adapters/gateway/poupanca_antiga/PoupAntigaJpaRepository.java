@@ -8,12 +8,14 @@ import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.PoupAntiga;
 import application.calculei.infraestructure.repository.poupanca_antiga.PoupAntigaIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class PoupAntigaJpaRepository implements IndexRepository {
 
     private final PoupAntigaIndexRepository repository;

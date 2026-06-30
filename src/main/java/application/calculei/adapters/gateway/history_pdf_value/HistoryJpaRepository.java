@@ -6,12 +6,14 @@ import application.calculei.infraestructure.repository.history_pdf_value.History
 import application.calculei.usecase.history_pdf_value.dto.HistoryPdfValueRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
+@Transactional
 public class HistoryJpaRepository implements HistoryPdfValuePort {
 
     private final HistoryPdfValueRepository repository;

@@ -16,7 +16,6 @@ import application.calculei.adapters.gateway.selic.SelicMensalJpaRepository;
 import application.calculei.adapters.gateway.taxa_legal.TaxaLegalJpaRepository;
 import application.calculei.adapters.gateway.tr.TrJpaRepository;
 import application.calculei.adapters.gateway.ufir_Rj.UfirRjJpaRepository;
-import application.calculei.adapters.scheduler.SchedulerConfig;
 import application.calculei.domain.port.*;
 import application.calculei.domain.repository.HistoryPdfValuePort;
 import application.calculei.domain.repository.IndexRepository;
@@ -74,11 +73,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
 @EnableScheduling
 @SpringBootApplication
+@EnableAsync
 public class CalculeiApplication {
 
     public static void main(String[] args) {

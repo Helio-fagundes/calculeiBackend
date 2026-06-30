@@ -8,12 +8,14 @@ import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.CDI;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class CdiJpaRepository implements IndexRepository {
 
     private final CdiIndexRepository repository;

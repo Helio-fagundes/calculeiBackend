@@ -16,6 +16,9 @@ import application.calculei.usecase.taxa_legal.UpdateTaxaLegalFromBc;
 import application.calculei.usecase.tr.UpdateTrFromBc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +41,14 @@ public class SchedulerConfig {
     private final UpdateTj6899FromUfirRj updateTj6899FromUfirRj;
     private final UpdateSelicDiarioFromBc updateSelicDiario;
 
-    @Scheduled(cron = "0 */3 * * * *")
+    @EventListener(ApplicationReadyEvent.class)
+    @Async
+    public void updateDataBase(){
+        atualizarMensais();
+        atualizarDiarios();
+    }
+
+    @Scheduled(cron = "0 0 7 * * *", zone = "America/Sao_Paulo")
     public void atualizarMensais() {
         log.info("Iniciando atualização dos índices mensais...");
 
@@ -55,7 +65,7 @@ public class SchedulerConfig {
         log.info("Varredura dos índices mensais concluída!");
     }
 
-    @Scheduled(cron = "0 */3 * * * *")
+    @Scheduled(cron = "0 0 7 * * *", zone = "America/Sao_Paulo")
     public void atualizarDiarios() {
         log.info("Iniciando atualização dos índices diários...");
 
@@ -68,10 +78,17 @@ public class SchedulerConfig {
     }
 
     private void executeWithSecurity(Runnable useCaseExecution, String nomeIndice) {
+        log.info("-> Iniciando busca de dados: {}", nomeIndice);
+        long startTime = System.currentTimeMillis();
+
         try {
             useCaseExecution.run();
+
+            long tempoGasto = System.currentTimeMillis() - startTime;
+            log.info("Índice {} atualizado com sucesso em {}ms!", nomeIndice, tempoGasto);
+
         } catch (BancoCentralDataNotFoundException e) {
-            log.warn(e.getMessage());
+            log.warn("[{}] {}", nomeIndice, e.getMessage());
         } catch (Exception e) {
             log.error("Erro crítico inesperado ao atualizar o índice (" + nomeIndice + ") :", e);
         }

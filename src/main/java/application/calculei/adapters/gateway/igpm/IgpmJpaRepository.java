@@ -8,12 +8,14 @@ import application.calculei.infraestructure.entity.IGPM;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.igpm.IgpmIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class IgpmJpaRepository implements IndexRepository {
 
     private final IgpmIndexRepository repository;

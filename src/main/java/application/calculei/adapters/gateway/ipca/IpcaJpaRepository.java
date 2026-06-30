@@ -8,12 +8,14 @@ import application.calculei.infraestructure.entity.IPCA;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.ipca.IpcaIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class IpcaJpaRepository implements IndexRepository {
 
     private final IpcaIndexRepository repository;

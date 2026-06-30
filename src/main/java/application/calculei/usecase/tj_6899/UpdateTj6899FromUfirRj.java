@@ -24,7 +24,7 @@ public class UpdateTj6899FromUfirRj {
         LocalDate ultimaDataUfir = fetchLastDate(ufirRepository);
         LocalDate ultimaDataTj = fetchLastDate(tjRepository);
 
-        if (ultimaDataUfir.getYear() <= ultimaDataTj.getYear()) return;
+        if (ultimaDataUfir.getYear() <= ultimaDataTj.getYear()) {return;}
 
         BigDecimal fatorTransicao = calculateTransitionFactor(ultimaDataUfir.getYear());
 
@@ -35,7 +35,7 @@ public class UpdateTj6899FromUfirRj {
     private LocalDate fetchLastDate(IndexRepository repo) {
         return repo.findByLastUpdate()
                 .map(Index::getDataInit)
-                .orElseThrow(() -> new DataNotFoundException("Não foi possível encontrar datas base."));
+                .orElse(null);
     }
 
     private BigDecimal calculateTransitionFactor(int currentYear) {
@@ -60,7 +60,7 @@ public class UpdateTj6899FromUfirRj {
 
         for (int mes = 1; mes <= 12; mes++) {
             LocalDate data = LocalDate.of(year, mes, 1);
-            Index index = tjRepository.findDataInit(data); // Retorna Index ou null
+            Index index = tjRepository.findDataInit(data);
 
             if (index != null && index.getFator().compareTo(BigDecimal.ONE) == 0) {
                 index.setFator(factor);
