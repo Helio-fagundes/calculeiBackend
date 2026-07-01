@@ -37,7 +37,7 @@ jobs:
     - name: Build Application .jar
       run: mvn clean package -DskipTests
 
-    - name: Build to Image and Push
+    - name: Build to Image and Push to Docker hub
       uses: docker/build-push-action@v5
       with:
         context: .
@@ -46,11 +46,11 @@ jobs:
           ${{ secrets.DOCKER_USERNAME }}/calculei:latest
           ${{ secrets.DOCKER_USERNAME }}/calculei:${{ github.run_id }}
 
-    - name: BUild, tag and push to Amazon ECR
+    - name: Build, tag and push to Amazon ECR
       uses: docker/build-push-action@v5
       with:
         context: .
         push: true
         tags: |
-          ${{ secrets.IMAGE_REPO_URL }}/calculei:latest
-          ${{ secrets.IMAGE_REPO_URL }}/calculei:${{ github.run_id }}
+          ${{ secrets.IMAGE_REPO_URL }}:latest
+          ${{ secrets.IMAGE_REPO_URL }}:${{ github.run_id }}
