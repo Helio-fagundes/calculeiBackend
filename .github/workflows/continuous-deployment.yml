@@ -52,6 +52,8 @@ jobs:
         context: .
         push: true
         platforms: linux/arm64
+        build-args: |
+          APP_VERSION=${{ github.run_id }}
         tags: |
           ${{ secrets.IMAGE_REPO_URL }}:latest
           ${{ secrets.IMAGE_REPO_URL }}:${{ github.run_id }}
