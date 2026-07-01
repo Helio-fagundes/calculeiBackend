@@ -1,9 +1,10 @@
-# 🏛️ Calculei - Ministério Público
+# 🏛️ Calculei - Ministério Público 
 
 ![Java](https://img.shields.io/badge/Java-21_LTS_(Temurin)-ED8B00?style=for-the-badge&logo=java&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Red Hat OpenShift](https://img.shields.io/badge/Red_Hat_OpenShift-EE0000?style=for-the-badge&logo=redhat&logoColor=white)
+[![Continuos Integration and Delivery With GitHub Actions](https://github.com/Helio-fagundes/calculeiBackend/actions/workflows/continuous-deployment.yml/badge.svg)](https://github.com/Helio-fagundes/calculeiBackend/actions/workflows/continuous-deployment.yml)
 
 ## 📖 Visão Geral
 
