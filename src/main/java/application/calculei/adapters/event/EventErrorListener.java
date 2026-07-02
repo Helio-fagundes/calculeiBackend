@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 public class EventErrorListener {
-
+/*
     @Autowired
     private JavaMailSender mailSender;
 
@@ -113,4 +113,6 @@ public class EventErrorListener {
     </html>
     """.formatted(metodo, rota, ex.getClass().getName(), ex.getMessage(), stackTraceStr.toString());
     }
+
+ */
 }
