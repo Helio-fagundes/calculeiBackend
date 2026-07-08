@@ -6,6 +6,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.TaxaLegal;
+import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.taxa_legal.TaxaLegalIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import jakarta.transaction.Transactional;
@@ -19,11 +20,11 @@ import java.util.Optional;
 public class TaxaLegalJpaRepository implements IndexRepository {
 
     private final TaxaLegalIndexRepository repository;
-    private final IndiceBcPort  indiceBcPort;
+    private final IndicesBcIndexRepository indicesBcIndexRepository;
 
-    public TaxaLegalJpaRepository(TaxaLegalIndexRepository repository, IndiceBcPort indiceBcPort) {
+    public TaxaLegalJpaRepository(TaxaLegalIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
         this.repository = repository;
-        this.indiceBcPort = indiceBcPort;
+        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class TaxaLegalJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indiceBcPort.findBySerie("TAXA_LEGAL")
+        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("TAXA_LEGAL")
                 .orElseThrow(() -> new RuntimeException("Índice Taxa_Legal não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

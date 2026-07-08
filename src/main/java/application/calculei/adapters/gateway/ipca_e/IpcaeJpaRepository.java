@@ -6,6 +6,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IPCAE;
 import application.calculei.infraestructure.entity.IndiceBC;
+import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.ipca_e.IpcaeIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import jakarta.transaction.Transactional;
@@ -19,12 +20,12 @@ import java.util.Optional;
 public class IpcaeJpaRepository implements IndexRepository {
 
     private final IpcaeIndexRepository repository;
-    private final IndiceBcPort indiceBcPort;
+    private final IndicesBcIndexRepository indicesBcIndexRepository;
 
-     public IpcaeJpaRepository(IpcaeIndexRepository repository, IndiceBcPort indiceBcPort) {
+     public IpcaeJpaRepository(IpcaeIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
         this.repository = repository;
-        this.indiceBcPort = indiceBcPort;
-    }
+         this.indicesBcIndexRepository = indicesBcIndexRepository;
+     }
 
     @Override
     public List<Index> findAll() {
@@ -53,7 +54,7 @@ public class IpcaeJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indiceBcPort.findBySerie("IPCAE")
+        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("IPCAE")
                 .orElseThrow(() -> new RuntimeException("Índice IPCA_E não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

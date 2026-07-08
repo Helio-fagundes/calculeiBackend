@@ -2,6 +2,7 @@ package application.calculei.usecase.tj_6899;
 
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
+import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 
 import java.math.BigDecimal;
@@ -14,15 +15,21 @@ public class UpdateTj6899FromUfirRj {
 
     private final IndexRepository tjRepository;
     private final IndexRepository ufirRepository;
+    private final IndiceBcPort indiceBcPort;
 
-    public UpdateTj6899FromUfirRj(IndexRepository tjRepository, IndexRepository ufirRepository) {
+    public UpdateTj6899FromUfirRj(IndexRepository tjRepository, IndexRepository ufirRepository, IndiceBcPort indiceBcPort) {
         this.tjRepository = tjRepository;
         this.ufirRepository = ufirRepository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     public void execute() {
         LocalDate ultimaDataUfir = fetchLastDate(ufirRepository);
         LocalDate ultimaDataTj = fetchLastDate(tjRepository);
+
+        LocalDate dateToSaveLastUpdate = ultimaDataTj.minusYears(1);
+
+        indiceBcPort.updateLastUpdate("TJ6899", dateToSaveLastUpdate);
 
         if (ultimaDataUfir.getYear() <= ultimaDataTj.getYear()) {return;}
 
@@ -30,6 +37,7 @@ public class UpdateTj6899FromUfirRj {
 
         updatePreviousYearFactors(ultimaDataUfir.getYear() - 1, fatorTransicao);
         createNewYearEntries(ultimaDataUfir.getYear());
+        indiceBcPort.updateLastUpdate("TJ_6899", ultimaDataUfir);
     }
 
     private LocalDate fetchLastDate(IndexRepository repo) {

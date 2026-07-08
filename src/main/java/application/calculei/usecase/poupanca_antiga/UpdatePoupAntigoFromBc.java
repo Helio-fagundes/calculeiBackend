@@ -3,6 +3,7 @@ package application.calculei.usecase.poupanca_antiga;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.port.BuscarPoupAntigoFromBcPort;
+import application.calculei.domain.repository.IndiceBcPort;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,10 +12,12 @@ public class UpdatePoupAntigoFromBc {
 
     private final BuscarPoupAntigoFromBcPort buscarPoupAntigoFromBcPort;
     private final IndexRepository repository;
+    private final IndiceBcPort indiceBcPort;
 
-    public UpdatePoupAntigoFromBc(BuscarPoupAntigoFromBcPort buscarPoupAntigoFromBcPort, IndexRepository repository) {
+    public UpdatePoupAntigoFromBc(BuscarPoupAntigoFromBcPort buscarPoupAntigoFromBcPort, IndexRepository repository, IndiceBcPort indiceBcPort) {
         this.buscarPoupAntigoFromBcPort = buscarPoupAntigoFromBcPort;
         this.repository = repository;
+        this.indiceBcPort = indiceBcPort;
     }
 
     public void execute(){
@@ -23,6 +26,8 @@ public class UpdatePoupAntigoFromBc {
         LocalDate startDate = dataMax != null
                 ? dataMax.plusDays(1)
                 : LocalDate.of(1990, 1, 1);
+
+        indiceBcPort.updateLastUpdate("POUPANTIGA", startDate);
 
         LocalDate today = LocalDate.now();
 
@@ -40,6 +45,9 @@ public class UpdatePoupAntigoFromBc {
 
             if (!listEntity.isEmpty()) {
                 repository.saveAll(listEntity);
+
+                LocalDate maxSaved = listEntity.stream().map(Index::getDataInit).max(LocalDate::compareTo).orElse(startDate);
+                indiceBcPort.updateLastUpdate("POUPANTIGA", maxSaved);
             }
             startDate = startDate.plusYears(5);
         }

@@ -14,6 +14,7 @@ import application.calculei.usecase.salario.UpdateSalarioFromBc;
 import application.calculei.usecase.selic.mensal.UpdateSelicMensalFromBc;
 import application.calculei.usecase.taxa_legal.UpdateTaxaLegalFromBc;
 import application.calculei.usecase.tr.UpdateTrFromBc;
+import application.calculei.usecase.ufir.UfirUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -40,6 +41,7 @@ public class SchedulerConfig {
     private final UpdateTaxaLegalFromBc taxaLegalusecase;
     private final UpdateTj6899FromUfirRj updateTj6899FromUfirRj;
     private final UpdateSelicDiarioFromBc updateSelicDiario;
+    private final UfirUseCase updateUfirUseCase;
 
     @EventListener(ApplicationReadyEvent.class)
     @Async
@@ -61,6 +63,7 @@ public class SchedulerConfig {
         executeWithSecurity(poupNovausecase::execute, "Poupança Nova");
         executeWithSecurity(ipcausecase::execute, "IPCA");
         executeWithSecurity(igpdiusecase::execute, "IGP-DI");
+        executeWithSecurity(updateUfirUseCase::updateLastUfirValue, "UFIR");
 
         log.info("Varredura dos índices mensais concluída!");
     }

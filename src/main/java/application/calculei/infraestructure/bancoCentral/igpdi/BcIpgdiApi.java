@@ -1,11 +1,11 @@
 package application.calculei.infraestructure.bancoCentral.igpdi;
 
 import application.calculei.infraestructure.bancoCentral.dto.BcResponse;
-import application.calculei.infraestructure.exceptions.BancoCentralDataNotFoundException;
 import application.calculei.usecase.dto.DadoBancoCentral;
 import application.calculei.domain.port.BuscarIgpdiFromBcPort;
 import application.calculei.domain.port.BuscarUrlBySeriePort;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class BcIpgdiApi implements BuscarIgpdiFromBcPort {
@@ -36,7 +37,9 @@ public class BcIpgdiApi implements BuscarIgpdiFromBcPort {
         try {
             BcResponse[] response = restTemplate.getForObject(url, BcResponse[].class);
 
-            if (response == null) return List.of();
+            if (response == null || response.length == 0) {
+                return List.of();
+            }
 
             List<DadoBancoCentral> dadosBancoCentral = List.of(response).stream()
                     .map(d -> new DadoBancoCentral(LocalDate.parse(d.data(), dateFormatter), d.valor()))
@@ -46,13 +49,17 @@ public class BcIpgdiApi implements BuscarIgpdiFromBcPort {
                     .anyMatch(dado -> dado.data().isAfter(dataInicial));
 
             if (!temDadosNovos) {
-                throw new BancoCentralDataNotFoundException(indice, dataInicial);
+                log.info("[Banco Central] Índice '{}' já está atualizado. Nenhumm dado novo a partir de {}.", indice, dataInicial);
+                return List.of();
             }
 
-            return dadosBancoCentral;
+            return dadosBancoCentral.stream()
+                    .filter(dado -> dado.data().isAfter(dataInicial))
+                    .toList();
 
-        }catch (HttpMessageNotReadableException | RestClientException e){
-            throw new BancoCentralDataNotFoundException(indice, dataInicial);
+        } catch (HttpMessageNotReadableException | RestClientException e) {
+            log.error("💥 Falha na comunicação com o Banco Central para o índice {}: {}", indice, e.getMessage());
+            return List.of();
         }
     }
 }

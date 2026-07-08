@@ -10,12 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v4
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -36,15 +30,6 @@ jobs:
 
     - name: Build Application .jar
       run: mvn clean package -DskipTests
-
-    - name: Build to Image and Push to Docker hub
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        push: true
-        tags: |
-          ${{ secrets.DOCKER_USERNAME }}/calculei:latest
-          ${{ secrets.DOCKER_USERNAME }}/calculei:${{ github.run_id }}
 
     - name: Build, tag and push to Amazon ECR
       uses: docker/build-push-action@v5

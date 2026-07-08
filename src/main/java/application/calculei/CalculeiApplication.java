@@ -16,6 +16,7 @@ import application.calculei.adapters.gateway.selic.SelicMensalJpaRepository;
 import application.calculei.adapters.gateway.taxa_legal.TaxaLegalJpaRepository;
 import application.calculei.adapters.gateway.tr.TrJpaRepository;
 import application.calculei.adapters.gateway.ufir_Rj.UfirRjJpaRepository;
+import application.calculei.domain.models.IndiceBcDomain;
 import application.calculei.domain.port.*;
 import application.calculei.domain.repository.HistoryPdfValuePort;
 import application.calculei.domain.repository.IndexRepository;
@@ -89,107 +90,106 @@ public class CalculeiApplication {
     @Bean
     public IndexRepository indexRepositoryCdi(
             CdiIndexRepository repo,
-            IndiceBcPort indiceBcPort) {
-        return new CdiJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new CdiJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryUfir(
             UfirRjIndexRepository repo,
-            IndiceBcPort indiceBcPort
-    ){
-        return new UfirRjJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+         return new UfirRjJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositorySelicDiario(
             SelicDiarioIndexRepository repo,
-            IndiceBcPort indiceBcPort) {
-        return new SelicDiarioJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new SelicDiarioJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryTaxaLegal(
             TaxaLegalIndexRepository repo,
-            IndiceBcPort indiceBcPort) {
-        return new TaxaLegalJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new TaxaLegalJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryTj6899(
             UfirRjIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new UfirRjJpaRepository(repo,  indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new UfirRjJpaRepository(repo,  indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryTj11960(
             TjL11960SelicIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new IndiceTjJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new IndiceTjJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryIpca(
             IpcaIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new IpcaJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new IpcaJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositorySalario(
             SalarioIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new SalarioJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new SalarioJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryPoupAntiga(
             PoupAntigaIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new PoupAntigaJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new PoupAntigaJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryTr(
             TrIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new TrJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new TrJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryPoupNova(
             PoupNovaIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new PoupNovaJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new PoupNovaJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositorySelic(
             SelicMensalIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new SelicMensalJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new SelicMensalJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryIgpdi(
             IgpdiIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new IgpdiJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new IgpdiJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryIpcae(
             IpcaeIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new IpcaeJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new IpcaeJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
     public IndexRepository indexRepositoryIgpm(
             IgpmIndexRepository repo,
-            IndiceBcPort indiceBcPort){
-        return new IgpmJpaRepository(repo, indiceBcPort);
+            IndicesBcIndexRepository indicesBcIndexRepository) {
+        return new IgpmJpaRepository(repo, indicesBcIndexRepository);
     }
 
     @Bean
@@ -206,111 +206,128 @@ public class CalculeiApplication {
     @Bean
     public UpdateIgpdiFromBc updateIgpdiFromBc(
             BuscarIgpdiFromBcPort indexRepositoryIgpdi,
-            @Qualifier("indexRepositoryIgpdi") IndexRepository indexRepository) {
+            @Qualifier("indexRepositoryIgpdi") IndexRepository indexRepository,
+            IndiceBcPort indiceBcPort) {
 
-        return new UpdateIgpdiFromBc(indexRepositoryIgpdi, indexRepository);
+        return new UpdateIgpdiFromBc(indexRepositoryIgpdi, indexRepository, indiceBcPort);
     }
 
     @Bean
     public UpdateTaxaLegalFromBc updateTaxaLegalFromBc(
             BuscarTaxaLegalFromBcPort buscarTaxaLegalFromBcPort,
-            @Qualifier("indexRepositoryTaxaLegal") IndexRepository repository){
+            @Qualifier("indexRepositoryTaxaLegal") IndexRepository repository,
+            IndiceBcPort indiceBcPort) {
         return new UpdateTaxaLegalFromBc(
                 buscarTaxaLegalFromBcPort,
-                repository);
+                repository,
+                indiceBcPort);
     }
 
     @Bean
     public UpdateSalarioFromBc updateSalarioFromBc(
             BuscarSalarioFromBcPort buscarSalarioFromBcPort,
-            @Qualifier("indexRepositorySalario") IndexRepository indexRepository) {
+            @Qualifier("indexRepositorySalario") IndexRepository indexRepository,
+            IndiceBcPort indiceBcPort) {
 
-        return new UpdateSalarioFromBc(buscarSalarioFromBcPort, indexRepository);
+        return new UpdateSalarioFromBc(buscarSalarioFromBcPort, indexRepository,  indiceBcPort);
     }
 
     @Bean
     public UpdatePoupNovaFromBc updatePoupNovaFromBc(
             @Qualifier("indexRepositoryPoupNova") IndexRepository repository,
-            BuscarPoupNovaFromBcPort buscarPoupNovaFromBcPort) {
+            BuscarPoupNovaFromBcPort buscarPoupNovaFromBcPort,
+            IndiceBcPort indiceBcPort) {
 
-        return new UpdatePoupNovaFromBc(repository, buscarPoupNovaFromBcPort);
+        return new UpdatePoupNovaFromBc(repository, buscarPoupNovaFromBcPort, indiceBcPort);
     }
 
     @Bean
     public UpdateIpcaFromBc updateIpcaFromBc(
             BuscarIpcaFromBcPort buscarIpcaFromBcPort,
-            @Qualifier("indexRepositoryIpca") IndexRepository indexRepository) {
+            @Qualifier("indexRepositoryIpca") IndexRepository indexRepository,
+            IndiceBcPort indiceBcPort) {
 
-        return new UpdateIpcaFromBc(buscarIpcaFromBcPort, indexRepository);
+        return new UpdateIpcaFromBc(buscarIpcaFromBcPort, indexRepository, indiceBcPort);
     }
 
     @Bean
     public UpdateIpcaeFromBc updateIpcaeFromBc(
             @Qualifier("indexRepositoryIpcae") IndexRepository indexRepository,
-            BuscarIpcaeFromBcPort buscarIpcaeFromBcPort) {
+            BuscarIpcaeFromBcPort buscarIpcaeFromBcPort,
+            IndiceBcPort indiceBcPort) {
 
-        return new UpdateIpcaeFromBc(indexRepository, buscarIpcaeFromBcPort);
+        return new UpdateIpcaeFromBc(indexRepository, buscarIpcaeFromBcPort, indiceBcPort);
     }
 
     @Bean
     public UpdateIgpmFromBc updateIgpmFromBc(
             BuscarIgpmFromBcPort buscarIgpmFromBcPort,
-            @Qualifier("indexRepositoryIgpm") IndexRepository indexRepository) {
+            @Qualifier("indexRepositoryIgpm") IndexRepository indexRepository,
+            IndiceBcPort indiceBcPort) {
 
-        return new UpdateIgpmFromBc(buscarIgpmFromBcPort, indexRepository);
+        return new UpdateIgpmFromBc(buscarIgpmFromBcPort, indexRepository, indiceBcPort);
     }
 
     @Bean
     public UpdateCdiFromBc updateCdiFromBc(
             BuscarCdiFromBcPort buscarCdiFromBcPort,
-            @Qualifier("indexRepositoryCdi") IndexRepository indexRepository
+            @Qualifier("indexRepositoryCdi") IndexRepository indexRepository,
+            IndiceBcPort indiceBC
     ) {
 
-        return new UpdateCdiFromBc(buscarCdiFromBcPort, indexRepository);
+        return new UpdateCdiFromBc(buscarCdiFromBcPort, indexRepository,  indiceBC);
     }
 
     @Bean
     public UpdateSelicMensalFromBc updateSelicFromBc(
             BuscarSelicMensalFromBcPort buscarSelicMensalFromBcPort,
-            @Qualifier("indexRepositorySelic") IndexRepository indexRepository) {
+            @Qualifier("indexRepositorySelic") IndexRepository indexRepository,
+            IndiceBcPort indiceBcPort) {
 
-        return new UpdateSelicMensalFromBc(buscarSelicMensalFromBcPort, indexRepository);
+        return new UpdateSelicMensalFromBc(buscarSelicMensalFromBcPort, indexRepository, indiceBcPort);
     }
 
     @Bean
     public UpdateTrFromBc updateTrFromBc(
             BuscarTrFromBcPort buscarTrFromBcPort,
-            @Qualifier("indexRepositoryTr") IndexRepository repository) {
+            @Qualifier("indexRepositoryTr") IndexRepository repository,
+            IndiceBcPort indiceBcPort) {
         return new UpdateTrFromBc(
                 buscarTrFromBcPort,
-                repository);
+                repository,
+                indiceBcPort);
     }
 
     @Bean
     public UpdatePoupAntigoFromBc updatePoupAntigoFromBc(
             BuscarPoupAntigoFromBcPort buscarPoupAntigoFromBcPort,
-            @Qualifier("indexRepositoryPoupAntiga") IndexRepository repository){
+            @Qualifier("indexRepositoryPoupAntiga") IndexRepository repository,
+            IndiceBcPort indiceBcPort) {
         return new UpdatePoupAntigoFromBc(
                 buscarPoupAntigoFromBcPort,
-                repository);
+                repository,
+                indiceBcPort);
     }
 
     @Bean
     public UpdateTj6899FromUfirRj  updateTj6899FromUfirRj(
             @Qualifier("indexRepositoryTj6899") IndexRepository tjRepository,
-            @Qualifier("indexRepositoryTj6899") IndexRepository UfirRjRepository) {
+            @Qualifier("indexRepositoryTj6899") IndexRepository UfirRjRepository,
+            IndiceBcPort indiceBcPort) {
         return new UpdateTj6899FromUfirRj(
                 tjRepository,
-                UfirRjRepository
+                UfirRjRepository,
+                indiceBcPort
         );
     }
 
     @Bean
     public UpdateSelicDiarioFromBc  updateSelicDiarioFromBc(
             BuscarSelicDiarioFromBcPort  buscarSelicDiarioFromBcPort,
-            @Qualifier("indexRepositorySelicDiario") IndexRepository repository
+            @Qualifier("indexRepositorySelicDiario") IndexRepository repository,
+            IndiceBcPort indiceBcPort
     ){
-        return new UpdateSelicDiarioFromBc(buscarSelicDiarioFromBcPort, repository);
+        return new UpdateSelicDiarioFromBc(buscarSelicDiarioFromBcPort, repository, indiceBcPort);
     }
 
     @Bean
@@ -400,8 +417,9 @@ public class CalculeiApplication {
     }
 
     @Bean
-    public UfirUseCase ufirUseCase( @Qualifier("indexRepositoryUfir") IndexRepository repository) {
-        return new UfirUseCase(repository);
+    public UfirUseCase ufirUseCase( @Qualifier("indexRepositoryUfir") IndexRepository repository,
+                                    IndiceBcPort indiceBcPort) {
+        return new UfirUseCase(repository,  indiceBcPort);
     }
 
     @Bean

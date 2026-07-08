@@ -7,6 +7,7 @@ import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.Indice_TJ_L11960_Selic;
 import application.calculei.infraestructure.repository.indice_tj_L11960_selic.TjL11960SelicIndexRepository;
+import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -19,11 +20,11 @@ import java.util.Optional;
 public class IndiceTjJpaRepository implements IndexRepository {
 
     private final TjL11960SelicIndexRepository repository;
-    private final IndiceBcPort  indiceBcPort;
+    private final IndicesBcIndexRepository indicesBcIndexRepository;
 
-    public IndiceTjJpaRepository(TjL11960SelicIndexRepository repository, IndiceBcPort indiceBcPort) {
+    public IndiceTjJpaRepository(TjL11960SelicIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
         this.repository = repository;
-        this.indiceBcPort = indiceBcPort;
+        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class IndiceTjJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indiceBcPort.findBySerie("TJ11960")
+        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("TJ11960")
                 .orElseThrow(() -> new RuntimeException("Índice Tj11960 não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

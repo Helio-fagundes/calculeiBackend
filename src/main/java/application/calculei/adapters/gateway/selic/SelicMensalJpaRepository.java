@@ -6,6 +6,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.SelicMensal;
+import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.selic.SelicMensalIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import jakarta.transaction.Transactional;
@@ -19,11 +20,11 @@ import java.util.Optional;
 public class SelicMensalJpaRepository implements IndexRepository {
 
     private final SelicMensalIndexRepository repository;
-    private final IndiceBcPort indiceBcPort;
+    private final IndicesBcIndexRepository indicesBcIndexRepository;
 
-    public SelicMensalJpaRepository(SelicMensalIndexRepository repository, IndiceBcPort indiceBcPort) {
+    public SelicMensalJpaRepository(SelicMensalIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
         this.repository = repository;
-        this.indiceBcPort = indiceBcPort;
+        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class SelicMensalJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indiceBcPort.findBySerie("SELIC_MENSAL")
+        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("SELIC_MENSAL")
                 .orElseThrow(() -> new RuntimeException("Índice Selic não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

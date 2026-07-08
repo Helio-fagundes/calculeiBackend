@@ -1,12 +1,16 @@
 package application.calculei.adapters.gateway.indice_bc;
 
+import application.calculei.adapters.mapper.indice_bc.IndiceBcMapper;
+import application.calculei.domain.models.IndiceBcDomain;
 import application.calculei.domain.repository.IndiceBcPort;
-import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
+@Slf4j
 @Transactional
 public class IndiceBcJpaRepository implements IndiceBcPort {
 
@@ -17,8 +21,14 @@ public class IndiceBcJpaRepository implements IndiceBcPort {
     }
 
     @Override
-    public Optional<IndiceBC> findBySerie(String serie) {
-        return repository.findBySerie(serie);
+    public Optional<IndiceBcDomain> findBySerie(String serie) {
+        return repository.findBySerie(serie)
+                .map(IndiceBcMapper::toDomain);
+    }
+
+    @Override
+    public void updateLastUpdate(String serie, LocalDate lastUpdate) {
+        repository.updateLastUpdate(serie, lastUpdate);
     }
 
 }

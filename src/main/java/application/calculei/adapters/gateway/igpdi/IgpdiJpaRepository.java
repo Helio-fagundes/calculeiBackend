@@ -7,6 +7,7 @@ import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IGPDI;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;
+import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -19,11 +20,11 @@ import java.util.Optional;
 public class IgpdiJpaRepository implements IndexRepository {
 
     private final IgpdiIndexRepository repository;
-    private final IndiceBcPort  indiceBcPort;
+    private final IndicesBcIndexRepository  indicesBcIndexRepository;
 
-    public IgpdiJpaRepository(IgpdiIndexRepository repository, IndiceBcPort indiceBcPort) {
+    public IgpdiJpaRepository(IgpdiIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
         this.repository = repository;
-        this.indiceBcPort = indiceBcPort;
+        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class IgpdiJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indice = indiceBcPort.findBySerie("IGPDI")
+        IndiceBC indice = indicesBcIndexRepository.findBySerie("IGPDI")
                 .orElseThrow(() -> new RuntimeException("Índice IGPDI não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity

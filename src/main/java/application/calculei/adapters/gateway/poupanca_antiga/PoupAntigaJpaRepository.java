@@ -6,6 +6,7 @@ import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.PoupAntiga;
+import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import application.calculei.infraestructure.repository.poupanca_antiga.PoupAntigaIndexRepository;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import jakarta.transaction.Transactional;
@@ -19,11 +20,11 @@ import java.util.Optional;
 public class PoupAntigaJpaRepository implements IndexRepository {
 
     private final PoupAntigaIndexRepository repository;
-    public final IndiceBcPort  indiceBcPort;
+    public final IndicesBcIndexRepository indicesBcIndexRepository;
 
-    public PoupAntigaJpaRepository(PoupAntigaIndexRepository repository, IndiceBcPort indiceBcPort) {
+    public PoupAntigaJpaRepository(PoupAntigaIndexRepository repository, IndicesBcIndexRepository indicesBcIndexRepository) {
         this.repository = repository;
-        this.indiceBcPort = indiceBcPort;
+        this.indicesBcIndexRepository = indicesBcIndexRepository;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class PoupAntigaJpaRepository implements IndexRepository {
     @Override
     public void saveAll(List<Index> listEntity) {
 
-        IndiceBC indiceBC = indiceBcPort.findBySerie("POUPANTIGA")
+        IndiceBC indiceBC = indicesBcIndexRepository.findBySerie("POUPANTIGA")
                 .orElseThrow(() -> new RuntimeException("Índice Poupança antiga não encontrado na base de dados."));
 
         List<LocalDate> dateToSave = listEntity
