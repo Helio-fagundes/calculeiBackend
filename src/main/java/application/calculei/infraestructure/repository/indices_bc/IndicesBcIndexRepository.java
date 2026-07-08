@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface IndicesBcIndexRepository extends JpaRepository<IndiceBC, Long> {
@@ -16,5 +17,4 @@ public interface IndicesBcIndexRepository extends JpaRepository<IndiceBC, Long> 
     @Modifying
     @Query("UPDATE IndiceBC i SET i.lastUpdate = :lastUpdate WHERE i.serie = :serie")
     void updateLastUpdate(@Param("serie") String serie, @Param("lastUpdate") LocalDate lastUpdate);
-
 }

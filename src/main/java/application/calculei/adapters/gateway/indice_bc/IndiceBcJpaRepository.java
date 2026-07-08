@@ -5,12 +5,11 @@ import application.calculei.domain.models.IndiceBcDomain;
 import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Transactional
 public class IndiceBcJpaRepository implements IndiceBcPort {
 
@@ -29,6 +28,14 @@ public class IndiceBcJpaRepository implements IndiceBcPort {
     @Override
     public void updateLastUpdate(String serie, LocalDate lastUpdate) {
         repository.updateLastUpdate(serie, lastUpdate);
+    }
+
+    @Override
+    public List<IndiceBcDomain> getAll() {
+        return repository.findAll()
+                .stream()
+                .map(IndiceBcMapper::toDomain)
+                .toList();
     }
 
 }
