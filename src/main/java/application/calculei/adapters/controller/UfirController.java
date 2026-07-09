@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,5 +37,10 @@ public class UfirController {
     @ApiGetAllResponses
     public BigDecimal getLastUfirValue() {
         return ufirUseCase.getLastUfirValue();
+    }
+
+    @PostMapping("/save/ufir")
+    public void saveLastUfirValue(BigDecimal lastUfirValue, int year) {
+        ufirUseCase.saveUfirValue(lastUfirValue, year);
     }
 }
