@@ -4,6 +4,7 @@ import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.usecase.exceptions.DataNotFoundException;
+import application.calculei.usecase.ufir.dto.UfirValueRequestDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,15 +26,15 @@ public class UfirUseCase {
         indiceBcPort.updateLastUpdate("UFIR", maxSaved);
     }
 
-    public void saveUfirValue(BigDecimal value, int ano) {
+    public void saveUfirValue(UfirValueRequestDto request) {
         List<Index> ufirYear = IntStream.rangeClosed(1, 12)
-                .mapToObj(month -> {LocalDate.of(ano, month, 1);
-                    return new Index(null, value, LocalDate.of(ano, month, 1));
+                .mapToObj(month -> {LocalDate.of(request.year(), month, 1);
+                    return new Index(null, request.valueUfir(), LocalDate.of(request.year(), month, 1));
                 })
                 .toList();
 
         repository.saveAll(ufirYear);
-        indiceBcPort.updateLastUpdate("UFIR", LocalDate.of(ano, 12, 1));
+        indiceBcPort.updateLastUpdate("UFIR", LocalDate.of(request.year(), 12, 1));
     }
 
     public BigDecimal getLastUfirValue(){
