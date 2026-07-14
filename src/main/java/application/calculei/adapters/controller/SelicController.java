@@ -1,14 +1,9 @@
 package application.calculei.adapters.controller;
 
 import application.calculei.infraestructure.swagger.ApiPostResponses;
-import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
-import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
 import application.calculei.usecase.selic.diario.CalculateSelicDiarioAccumulatedValueBetweenDates;
 import application.calculei.usecase.selic.diario.dto.CalculateSelicDiarioBetweenDateRequest;
 import application.calculei.usecase.selic.diario.dto.CalculateSelicDiarioBetweenDateResponse;
-import application.calculei.usecase.selic.mensal.CalculateSelicMensalAccumulatedValueBetweenDates;
-import application.calculei.usecase.selic.mensal.dto.CalculateSelicMensalBetweenDateRequest;
-import application.calculei.usecase.selic.mensal.dto.CalculateSelicMensalBetweenDateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

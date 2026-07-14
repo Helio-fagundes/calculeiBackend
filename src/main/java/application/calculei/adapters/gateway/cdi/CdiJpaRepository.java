@@ -3,7 +3,6 @@ package application.calculei.adapters.gateway.cdi;
 import application.calculei.adapters.mapper.cdi.CdiMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.CDI;
 import application.calculei.infraestructure.repository.cdi.CdiIndexRepository;

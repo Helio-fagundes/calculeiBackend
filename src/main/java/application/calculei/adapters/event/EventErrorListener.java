@@ -17,15 +17,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 public class EventErrorListener {
-/*
-    @Autowired
+
     private JavaMailSender mailSender;
 
+    public EventErrorListener(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
     @Value("${spring.mail.username}")
     private String email;
 
     private final Map<String, Long> emailCache = new ConcurrentHashMap<>();
-    private static final long COOLDOWN_TIME = 5 * 60 * 1000;
+    private static final long COOLDOWN_TIME = 5L * 60 * 1000;
 
     @Async
     @EventListener
@@ -113,6 +115,4 @@ public class EventErrorListener {
     </html>
     """.formatted(metodo, rota, ex.getClass().getName(), ex.getMessage(), stackTraceStr.toString());
     }
-
- */
 }

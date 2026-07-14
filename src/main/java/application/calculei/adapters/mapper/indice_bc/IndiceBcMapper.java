@@ -6,6 +6,9 @@ import application.calculei.usecase.indice_bc.dto.IndicesBcResponseDto;
 
 public class IndiceBcMapper {
 
+    private IndiceBcMapper() {
+    }
+
     public static IndiceBcDomain toDomain(IndiceBC entity) {
         if (entity == null) {
             return null;

@@ -1,8 +1,6 @@
 package application.calculei.adapters.controller;
 
 import application.calculei.infraestructure.swagger.ApiPostResponses;
-import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
-import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
 import application.calculei.usecase.simple_interest.CalculateInterestByPeriod;
 import application.calculei.usecase.simple_interest.CalculateSimpleInterest;
 import application.calculei.usecase.simple_interest.dto.SimpleInterestDto;
