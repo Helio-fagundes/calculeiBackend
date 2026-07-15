@@ -123,8 +123,8 @@ jobs:
       - uses: ./.github/actions/setup-padrao
 
       - uses: JetBrains/qodana-action@v2024.1
-        with:
-          qodana_token: ${{ secrets.QODANA_TOKEN }}
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
 
   # ---------------------------------------------------
   # 5. Continuous Delivery in AWS
