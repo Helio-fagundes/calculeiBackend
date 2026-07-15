@@ -15,6 +15,9 @@ jobs:
     name: Build the Application
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup-padrao
 
       - name: Build Application .jar
@@ -34,6 +37,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup-padrao
       - name: Test Application
         run: mvn test
@@ -46,6 +52,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup-padrao
 
       - name: Credential Scan (TruffleHog)
@@ -75,6 +84,9 @@ jobs:
       pull-requests: write
       checks: write
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup-padrao
 
       - uses: JetBrains/qodana-action@v2024.1
@@ -89,6 +101,9 @@ jobs:
     needs: quality-scan
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup-padrao
 
       - name: Download JAR Artifact
@@ -128,6 +143,9 @@ jobs:
     needs: continuous-delivery
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup-padrao
 
       - name: Configure AWS credentials
