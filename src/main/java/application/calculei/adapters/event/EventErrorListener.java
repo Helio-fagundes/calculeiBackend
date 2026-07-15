@@ -3,7 +3,6 @@ package application.calculei.adapters.event;
 import application.calculei.adapters.event.dto.SystemErrorWarning;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class EventErrorListener {
 
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     public EventErrorListener(JavaMailSender mailSender) {
         this.mailSender = mailSender;

@@ -2,7 +2,7 @@ package application.calculei.usecase.cdi;
 
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.domain.valueObject.DateUtils;
+import application.calculei.domain.value_object.DateUtils;
 import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
 import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
 import application.calculei.usecase.exceptions.DataNotFoundException;

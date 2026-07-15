@@ -1,7 +1,6 @@
 package application.calculei.adapters.controller;
 
 import application.calculei.infraestructure.swagger.ApiGetOneResponses;
-import application.calculei.infraestructure.swagger.ApiPostResponses;
 import application.calculei.infraestructure.swagger.ApiSaveResponse;
 import application.calculei.usecase.history_pdf_value.HistoryPdfValueMethod;
 import application.calculei.usecase.history_pdf_value.dto.HistoryPdfValueRequest;

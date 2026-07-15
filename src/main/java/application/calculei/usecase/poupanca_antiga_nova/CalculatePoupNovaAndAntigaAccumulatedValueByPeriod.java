@@ -2,7 +2,7 @@ package application.calculei.usecase.poupanca_antiga_nova;
 
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.domain.valueObject.DateUtils;
+import application.calculei.domain.value_object.DateUtils;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.exceptions.InvalidValueException;
 import application.calculei.usecase.poupanca_antiga_nova.dto.CalculateIndexPoupBetweenDateRequest;

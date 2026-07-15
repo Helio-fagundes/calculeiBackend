@@ -1,4 +1,4 @@
-package application.calculei.domain.valueObject;
+package application.calculei.domain.value_object;
 
 import java.time.LocalDate;
 
@@ -12,8 +12,8 @@ public final class DateUtils {
         int daysInit = Math.min(dataInicial.getDayOfMonth(), 30);
         int daysFinal = Math.min(dataFinal.getDayOfMonth(), 30);
 
-        return Long.valueOf((dataFinal.getYear() - dataInicial.getYear()) * 360 +
-                (dataFinal.getMonthValue() - dataInicial.getMonthValue()) * 30 +
-                (daysFinal - daysInit));
+        return (dataFinal.getYear() - dataInicial.getYear()) * 360L +
+                (dataFinal.getMonthValue() - dataInicial.getMonthValue()) * 30L +
+                (daysFinal - daysInit);
     }
 }
