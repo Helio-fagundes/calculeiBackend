@@ -113,7 +113,7 @@ public class GlobalExceptionHandler {
             DataAccessResourceFailureException.class
     })
     public ResponseEntity<ExceptionResponse> handleDatabaseDown(Exception ex, HttpServletRequest request) {
-        log.error("ERRO CRÍTICO: Banco de Dados Inacessível \n" + ex.getMessage());
+        log.error("ERRO CRÍTICO: Banco de Dados Inacessível \n{}", ex.getMessage());
 
         eventPublisher.publishEvent(new SystemErrorWarning(ex, request));
 
@@ -129,7 +129,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleGenericException(Exception ex,  HttpServletRequest request) {
-        log.error("ERRO DESCONHECIDO: " + ex.getClass().getName() + " - \n" + ex.getMessage());
+        log.error("ERRO DESCONHECIDO: {} - \n{}", ex.getClass().getName(), ex.getMessage());
 
         eventPublisher.publishEvent(new SystemErrorWarning(ex, request));
 
@@ -144,7 +144,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ExceptionResponse> handleNullPointerException(
-            NullPointerException ex
     ){
         ExceptionResponse error = new ExceptionResponse(
                 HttpStatus.BAD_REQUEST.value(),
@@ -172,7 +171,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ExceptionResponse> handleNoResourceFoundException(
-            NoResourceFoundException ex
     ){
         ExceptionResponse error = new ExceptionResponse(
                 HttpStatus.NOT_FOUND.value(),

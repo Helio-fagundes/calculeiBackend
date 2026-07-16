@@ -51,10 +51,8 @@ public class EventErrorListener {
     }
 
     private void emailSend(SystemErrorWarning event) {
-        log.warn("Sending system error warnings to email");
-        log.warn("Subject: System Error Warning");
-        log.warn("Method: " + event.request().getMethod());
-        log.warn("Request: " + event.request().getRequestURI());
+        log.warn("Sending system error warnings to email\nSubject: System Error Warning\nMethod: {}\nRequest: {}",
+                event.request().getMethod(), event.request().getRequestURI());
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -74,7 +72,7 @@ public class EventErrorListener {
             mailSender.send(message);
 
         } catch (Exception mailException) {
-            log.error("Falha ao enviar e-mail de alerta: " + mailException.getMessage());
+            log.error("Falha ao enviar e-mail de alerta: {}", mailException.getMessage());
         }
     }
 

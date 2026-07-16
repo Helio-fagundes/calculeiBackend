@@ -93,7 +93,7 @@ public class SchedulerConfig {
         } catch (BancoCentralDataNotFoundException e) {
             log.warn("[{}] {}", nomeIndice, e.getMessage());
         } catch (Exception e) {
-            log.error("Erro crítico inesperado ao atualizar o índice (" + nomeIndice + ") :", e);
+            log.error("Erro crítico inesperado ao atualizar o índice ({}) :", nomeIndice, e);
         }
     }
 }

@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - uses: ./.github/actions/setup-padrao
 
@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: Checkout do código
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Padrão
         uses: ./.github/actions/setup-padrao
@@ -82,11 +82,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: '0'
-
-      - uses: ./.github/actions/setup-padrao
 
       - name: Credential Scan (TruffleHog)
         uses: trufflesecurity/trufflehog@main
@@ -103,9 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
-
-      - uses: ./.github/actions/setup-padrao
+        uses: actions/checkout@v4
 
       - name: Set up QEMU (Para suportar builds ARM64)
         uses: docker/setup-qemu-action@v3
@@ -151,9 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
-
-      - uses: ./.github/actions/setup-padrao
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4

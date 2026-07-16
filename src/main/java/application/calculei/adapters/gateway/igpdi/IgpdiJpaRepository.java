@@ -3,7 +3,6 @@ package application.calculei.adapters.gateway.igpdi;
 import application.calculei.adapters.mapper.igpdi.IgpdiMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IGPDI;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.repository.igpdi.IgpdiIndexRepository;

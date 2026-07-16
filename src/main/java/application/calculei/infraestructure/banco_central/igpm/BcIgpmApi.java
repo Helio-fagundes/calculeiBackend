@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class BcIgpmApi implements BuscarIgpmFromBcPort {
 
             if (response == null) return List.of();
 
-            List<DadoBancoCentral> dadosBancoCentral = List.of(response).stream()
+            List<DadoBancoCentral> dadosBancoCentral = Stream.of(response)
                     .map(d -> new DadoBancoCentral(LocalDate.parse(d.data(), dateFormatter), d.valor()))
                     .toList();
 
