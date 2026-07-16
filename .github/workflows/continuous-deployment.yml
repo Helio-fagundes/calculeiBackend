@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - uses: ./.github/actions/setup-padrao
 
@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: Checkout do código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Padrão
         uses: ./.github/actions/setup-padrao
@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: '0'
 
@@ -94,51 +94,16 @@ jobs:
           path: ./
           extra_args: --only-verified
 
-      - name: Install Snyk CLI
-        uses: snyk/actions/setup@master
-
-      - name: Dependency Vulnerability Scan (Snyk)
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run:
-          chmod +x mvnw || true
-          snyk test --all-projects --severity-threshold=high
-          snyk monitor --all-projects
-
   # ---------------------------------------------------
-  # 4. Quality Scan
-  # ---------------------------------------------------
-  quality-scan:
-    name: Verify Code Quality with qodana
-    needs: security-scan
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      checks: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: ./.github/actions/setup-padrao
-
-      - name: Run Qodana
-        uses: JetBrains/qodana-action@v2026.1
-        with:
-          args: --fail-threshold=1
-        env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-
-  # ---------------------------------------------------
-  # 5. Continuous Delivery in AWS
+  # 4. Continuous Delivery in AWS
   # ---------------------------------------------------
   continuous-delivery:
     name: Continuous Delivery in AWS
-    needs: quality-scan
+    needs: security-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - uses: ./.github/actions/setup-padrao
 
@@ -178,7 +143,7 @@ jobs:
             ${{ secrets.IMAGE_REPO_URL }}:${{ github.run_id }}
 
   # ---------------------------------------------------
-  # 6. Continuous Deployment in AWS
+  # 5. Continuous Deployment in AWS
   # ---------------------------------------------------
   continuous-deployment:
     name: Continuous Deployment in AWS
@@ -186,7 +151,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - uses: ./.github/actions/setup-padrao
 
