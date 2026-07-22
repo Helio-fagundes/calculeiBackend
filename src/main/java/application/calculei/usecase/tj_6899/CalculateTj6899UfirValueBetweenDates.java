@@ -76,7 +76,7 @@ public class CalculateTj6899UfirValueBetweenDates {
 
     private BigDecimal calculateAccumulatedPercentage(Index inicial, Index finalIndex) {
         return finalIndex.getFator()
-                .divide(inicial.getFator(), 8, RoundingMode.HALF_UP);
+                .divide(inicial.getFator(), 6, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(double baseValue, BigDecimal percentage) {

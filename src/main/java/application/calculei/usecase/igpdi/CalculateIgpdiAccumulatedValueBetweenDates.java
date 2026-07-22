@@ -38,8 +38,6 @@ public class CalculateIgpdiAccumulatedValueBetweenDates {
 
         BigDecimal valueFinal = calculateFinalValue(request.amount(), accumulatedValue);
 
-        BigDecimal accumulatedPercentage = calculateAccumulatedPercentage(accumulatedValue);
-
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
         return new CalculateIgpdiBetweenDateResponse(
@@ -47,7 +45,7 @@ public class CalculateIgpdiAccumulatedValueBetweenDates {
                 request.endDate(),
                 businessDays,
                 valueFinal,
-                accumulatedPercentage
+                accumulatedValue
         );
     }
 
@@ -71,22 +69,16 @@ public class CalculateIgpdiAccumulatedValueBetweenDates {
         }
     }
 
-    private BigDecimal calculateAccumulatedFactor(List<Index> indexes){
+    private BigDecimal calculateAccumulatedFactor(List<Index> indexes) {
         return indexes.stream()
                 .map(Index::getFator)
-                .reduce(BigDecimal.ONE, BigDecimal::multiply);
+                .reduce(BigDecimal.ONE, BigDecimal::multiply)
+                .setScale(6, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedFactor) {
         return BigDecimal.valueOf(amount)
                 .multiply(accumulatedFactor)
                 .setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
-        return accumulatedFactor
-                .subtract(BigDecimal.ONE)
-                .multiply(BigDecimal.valueOf(100))
-                .setScale(6, RoundingMode.HALF_UP);
     }
 }

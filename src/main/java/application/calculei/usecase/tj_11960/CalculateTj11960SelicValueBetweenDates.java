@@ -17,7 +17,7 @@ import java.util.List;
 public class CalculateTj11960SelicValueBetweenDates {
 
     private static final LocalDate CUT_OFF_DATE = LocalDate.of(2021, 11, 30);
-    private static final int SCALE = 10;
+    private static final int SCALE = 6;
 
     private final IndexRepository tjRepository;
     private final IndexRepository selicRepository;

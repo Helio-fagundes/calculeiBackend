@@ -34,11 +34,9 @@ public class CalculateIgpmAccumulatedValueBetweenDates {
             throw new DataNotFoundException("Nenhum índice IGP-M encontrado para o período informado.");
         }
 
-        BigDecimal accumulatedValue = acumulatedFactor(listEntity);
+        BigDecimal accumulatedValue = calculateAccumulatedFactor(listEntity);
 
         BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedValue);
-
-        BigDecimal accumulatedPercentual = calculateAccumulatedPercentage(accumulatedValue);
 
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
@@ -47,7 +45,7 @@ public class CalculateIgpmAccumulatedValueBetweenDates {
                 request.endDate(),
                 businessDays,
                 finalValue,
-                accumulatedPercentual
+                accumulatedValue
         );
     }
 
@@ -71,22 +69,16 @@ public class CalculateIgpmAccumulatedValueBetweenDates {
         }
     }
 
-    private BigDecimal acumulatedFactor(List<Index> indexes){
+    private BigDecimal calculateAccumulatedFactor(List<Index> indexes) {
         return indexes.stream()
                 .map(Index::getFator)
-                .reduce(BigDecimal.ONE, BigDecimal::multiply);
+                .reduce(BigDecimal.ONE, BigDecimal::multiply)
+                .setScale(6, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedFactor) {
         return BigDecimal.valueOf(amount)
                 .multiply(accumulatedFactor)
                 .setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
-        return accumulatedFactor
-                .subtract(BigDecimal.ONE)
-                .multiply(BigDecimal.valueOf(100))
-                .setScale(6, RoundingMode.HALF_UP);
     }
 }

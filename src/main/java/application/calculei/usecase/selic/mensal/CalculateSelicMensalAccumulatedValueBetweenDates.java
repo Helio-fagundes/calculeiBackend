@@ -38,8 +38,6 @@ public class CalculateSelicMensalAccumulatedValueBetweenDates {
 
         BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedFactor);
 
-        BigDecimal percentualAccumulated = calculateAccumulatedPercentage(accumulatedFactor);
-
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
         return new CalculateSelicMensalBetweenDateResponse(
@@ -47,7 +45,7 @@ public class CalculateSelicMensalAccumulatedValueBetweenDates {
                 request.endDate(),
                 businessDays,
                 finalValue,
-                percentualAccumulated);
+                accumulatedFactor);
     }
 
     private void validateFactor(BigDecimal fator) {
@@ -73,20 +71,14 @@ public class CalculateSelicMensalAccumulatedValueBetweenDates {
     private BigDecimal calculateAccumulatedValue(List<Index> listEntity){
         return listEntity.stream()
                 .map(Index::getFator)
-                .reduce(BigDecimal.ONE, BigDecimal::multiply);
+                .reduce(BigDecimal.ONE, BigDecimal::multiply)
+                .setScale(6,  RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedFactor) {
         return BigDecimal.valueOf(amount)
                 .multiply(accumulatedFactor)
                 .setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
-        return accumulatedFactor
-                .subtract(BigDecimal.ONE)
-                .multiply(BigDecimal.valueOf(100))
-                .setScale(6, RoundingMode.HALF_UP);
     }
 }
 

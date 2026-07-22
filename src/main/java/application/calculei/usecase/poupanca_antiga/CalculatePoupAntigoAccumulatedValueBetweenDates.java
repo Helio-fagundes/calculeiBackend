@@ -38,8 +38,6 @@ public class CalculatePoupAntigoAccumulatedValueBetweenDates {
 
         BigDecimal valueFinal = calculateFinalValue(request.amount(), accumulatedValue);
 
-        BigDecimal accumulatedPercentual = calculateAccumulatedPercentage(accumulatedValue);
-
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
         return new CalculatePoupAntigoBetweenDateResponse(
@@ -47,7 +45,7 @@ public class CalculatePoupAntigoAccumulatedValueBetweenDates {
                 request.endDate(),
                 businessDays,
                 valueFinal,
-                accumulatedPercentual
+                accumulatedValue
         );
     }
 
@@ -77,19 +75,13 @@ public class CalculatePoupAntigoAccumulatedValueBetweenDates {
         return listEntity.stream()
                 .filter(index -> index.getDataInit().getDayOfMonth() == anniversaryDay)
                 .map(Index::getFator)
-                .reduce(BigDecimal.ONE, BigDecimal::multiply);
+                .reduce(BigDecimal.ONE, BigDecimal::multiply)
+                .setScale(6, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedValue){
         return BigDecimal.valueOf(amount)
                 .multiply(accumulatedValue)
                 .setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
-        return accumulatedFactor
-                .subtract(BigDecimal.ONE)
-                .multiply(BigDecimal.valueOf(100))
-                .setScale(6, RoundingMode.HALF_UP);
     }
 }
