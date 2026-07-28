@@ -28,7 +28,7 @@ public class CalculateCdiAccumulatedValueBetweenDates {
 
         validateFactor(BigDecimal.valueOf(request.amount()));
 
-        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
+        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate().minusDays(1));
 
         if (listEntity.isEmpty()) {
             throw new DataNotFoundException("Nenhum índice CDI encontrado para o período informado.");
@@ -73,7 +73,7 @@ public class CalculateCdiAccumulatedValueBetweenDates {
         return indexes.stream()
                 .map(Index::getFator)
                 .reduce(BigDecimal.ONE, BigDecimal::multiply)
-                .setScale(6, RoundingMode.HALF_UP);
+                .setScale(8, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedFactor) {

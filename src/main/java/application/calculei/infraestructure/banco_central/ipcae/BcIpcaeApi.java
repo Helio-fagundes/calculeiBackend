@@ -6,6 +6,7 @@ import application.calculei.usecase.dto.DadoBancoCentral;
 import application.calculei.domain.port.BuscarIpcaeFromBcPort;
 import application.calculei.domain.port.BuscarUrlBySeriePort;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -18,6 +19,7 @@ import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class BcIpcaeApi implements BuscarIpcaeFromBcPort {
     private final RestTemplate restTemplate;
     private final BuscarUrlBySeriePort buscarUrl;
@@ -44,13 +46,16 @@ public class BcIpcaeApi implements BuscarIpcaeFromBcPort {
                     .toList();
 
             boolean temDadosNovos = dadosBancoCentral.stream()
-                    .anyMatch(dado -> dado.data().isAfter(dataInicial));
+                    .anyMatch(dado -> !dado.data().isBefore(dataInicial));
 
             if (!temDadosNovos) {
-                throw new BancoCentralDataNotFoundException(indice, dataInicial);
+                log.info("[Banco Central] Índice '{}' já está atualizado. Nenhum dado novo a partir de {}.", indice, dataInicial);
+                return List.of();
             }
 
-            return dadosBancoCentral;
+            return dadosBancoCentral.stream()
+                    .filter(dado -> !dado.data().isBefore(dataInicial))
+                    .toList();
 
         }catch (HttpMessageNotReadableException | RestClientException e){
             throw new BancoCentralDataNotFoundException(indice, dataInicial);

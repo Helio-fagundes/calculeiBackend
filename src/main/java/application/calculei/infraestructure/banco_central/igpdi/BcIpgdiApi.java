@@ -47,15 +47,15 @@ public class BcIpgdiApi implements BuscarIgpdiFromBcPort {
                     .toList();
 
             boolean temDadosNovos = dadosBancoCentral.stream()
-                    .anyMatch(dado -> dado.data().isAfter(dataInicial));
+                    .anyMatch(dado -> !dado.data().isBefore(dataInicial));
 
             if (!temDadosNovos) {
-                log.info("[Banco Central] Índice '{}' já está atualizado. Nenhumm dado novo a partir de {}.", indice, dataInicial);
+                log.info("[Banco Central] Índice '{}' já está atualizado. Nenhum dado novo a partir de {}.", indice, dataInicial);
                 return List.of();
             }
 
             return dadosBancoCentral.stream()
-                    .filter(dado -> dado.data().isAfter(dataInicial))
+                    .filter(dado -> !dado.data().isBefore(dataInicial))
                     .toList();
 
         } catch (HttpMessageNotReadableException | RestClientException e) {

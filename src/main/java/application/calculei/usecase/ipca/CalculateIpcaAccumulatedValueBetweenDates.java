@@ -72,7 +72,7 @@ public class CalculateIpcaAccumulatedValueBetweenDates {
         return indexes.stream()
                 .map(Index::getFator)
                 .reduce(BigDecimal.ONE, BigDecimal::multiply)
-                .setScale(6, RoundingMode.HALF_UP);
+                .setScale(8, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedFactor) {

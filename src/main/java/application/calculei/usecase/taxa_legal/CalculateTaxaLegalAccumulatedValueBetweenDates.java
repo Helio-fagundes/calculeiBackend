@@ -76,7 +76,7 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
                 .filter(index -> index.getDataInit().isBefore(endDate))
                 .map(index -> index.getFator().subtract(BigDecimal.ONE))
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .setScale(6, RoundingMode.HALF_UP);
+                .setScale(8, RoundingMode.HALF_UP);
         return BigDecimal.ONE.add(sumOfRates);
     }
 

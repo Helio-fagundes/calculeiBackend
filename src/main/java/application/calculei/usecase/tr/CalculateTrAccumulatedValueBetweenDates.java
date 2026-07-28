@@ -73,12 +73,11 @@ public class CalculateTrAccumulatedValueBetweenDates {
         return listEntity.stream()
                 .filter(index -> index.getDataInit().getDayOfMonth() == 1)
                 .map(Index::getFator)
-                .reduce(BigDecimal.ONE, (acc, fator) -> acc.multiply(fator).setScale(6, RoundingMode.HALF_UP));
+                .reduce(BigDecimal.ONE, (acc, fator) -> acc.multiply(fator).setScale(8, RoundingMode.HALF_UP));
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedValue){
-        BigDecimal value = new BigDecimal(String.valueOf(amount));
-        return value
+        return BigDecimal.valueOf(amount)
                 .multiply(accumulatedValue)
                 .setScale(2, RoundingMode.HALF_UP);
     }

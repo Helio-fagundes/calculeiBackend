@@ -87,7 +87,7 @@ public class CalculatePoupNovaAndAntigaAccumulatedValueByPeriod {
     private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
         return accumulatedFactor
                 .subtract(BigDecimal.ONE)
-                .setScale(6, RoundingMode.HALF_UP);
+                .setScale(8, RoundingMode.HALF_UP);
     }
 
     private void validateFactor(BigDecimal fator) {
