@@ -1,8 +1,6 @@
 package application.calculei.adapters.controller;
 
 import application.calculei.infraestructure.swagger.ApiPostResponses;
-import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
-import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
 import application.calculei.usecase.tj_6899.CalculateTj6899UfirValueBetweenDates;
 import application.calculei.usecase.tj_6899.dto.CalculateTj6899BetweenDateRequest;
 import application.calculei.usecase.tj_6899.dto.CalculateTj6899BetweenDateResponse;

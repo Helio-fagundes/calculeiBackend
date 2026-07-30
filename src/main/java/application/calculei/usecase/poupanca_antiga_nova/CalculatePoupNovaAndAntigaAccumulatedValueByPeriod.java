@@ -2,7 +2,7 @@ package application.calculei.usecase.poupanca_antiga_nova;
 
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.domain.valueObject.DateUtils;
+import application.calculei.domain.value_object.DateUtils;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.exceptions.InvalidValueException;
 import application.calculei.usecase.poupanca_antiga_nova.dto.CalculateIndexPoupBetweenDateRequest;
@@ -87,8 +87,7 @@ public class CalculatePoupNovaAndAntigaAccumulatedValueByPeriod {
     private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
         return accumulatedFactor
                 .subtract(BigDecimal.ONE)
-                .multiply(BigDecimal.valueOf(100))
-                .setScale(6, RoundingMode.HALF_UP);
+                .setScale(8, RoundingMode.HALF_UP);
     }
 
     private void validateFactor(BigDecimal fator) {

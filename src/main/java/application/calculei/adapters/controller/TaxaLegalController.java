@@ -1,8 +1,6 @@
 package application.calculei.adapters.controller;
 
 import application.calculei.infraestructure.swagger.ApiPostResponses;
-import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
-import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
 import application.calculei.usecase.taxa_legal.CalculateTaxaLegalAccumulatedValueBetweenDates;
 import application.calculei.usecase.taxa_legal.dto.CalculateTaxaLegalBetweenDateRequest;
 import application.calculei.usecase.taxa_legal.dto.CalculateTaxaLegalBetweenDateResponse;

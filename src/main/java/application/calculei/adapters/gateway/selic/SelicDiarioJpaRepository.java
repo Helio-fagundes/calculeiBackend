@@ -3,7 +3,6 @@ package application.calculei.adapters.gateway.selic;
 import application.calculei.adapters.mapper.selic.SelicDiarioMapperEntity;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.domain.repository.IndiceBcPort;
 import application.calculei.infraestructure.entity.IndiceBC;
 import application.calculei.infraestructure.entity.SelicDiario;
 import application.calculei.infraestructure.repository.indices_bc.IndicesBcIndexRepository;

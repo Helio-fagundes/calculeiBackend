@@ -2,7 +2,7 @@ package application.calculei.usecase.tj_11960;
 
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.domain.valueObject.DateUtils;
+import application.calculei.domain.value_object.DateUtils;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.exceptions.InvalidValueException;
@@ -17,7 +17,7 @@ import java.util.List;
 public class CalculateTj11960SelicValueBetweenDates {
 
     private static final LocalDate CUT_OFF_DATE = LocalDate.of(2021, 11, 30);
-    private static final int SCALE = 10;
+    private static final int SCALE = 8;
 
     private final IndexRepository tjRepository;
     private final IndexRepository selicRepository;

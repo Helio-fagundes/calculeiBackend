@@ -1,7 +1,7 @@
 package application.calculei.usecase.index_monetary_correction;
 
-import application.calculei.domain.indexEnum.InterestCorrection;
-import application.calculei.domain.indexEnum.MonetaryCorrection;
+import application.calculei.domain.index_enum.InterestCorrection;
+import application.calculei.domain.index_enum.MonetaryCorrection;
 
 import java.util.List;
 

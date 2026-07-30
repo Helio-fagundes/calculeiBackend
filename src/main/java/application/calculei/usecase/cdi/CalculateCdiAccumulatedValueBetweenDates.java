@@ -2,7 +2,7 @@ package application.calculei.usecase.cdi;
 
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.domain.valueObject.DateUtils;
+import application.calculei.domain.value_object.DateUtils;
 import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
 import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
 import application.calculei.usecase.exceptions.DataNotFoundException;
@@ -28,7 +28,7 @@ public class CalculateCdiAccumulatedValueBetweenDates {
 
         validateFactor(BigDecimal.valueOf(request.amount()));
 
-        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
+        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate().minusDays(1));
 
         if (listEntity.isEmpty()) {
             throw new DataNotFoundException("Nenhum índice CDI encontrado para o período informado.");
@@ -38,8 +38,6 @@ public class CalculateCdiAccumulatedValueBetweenDates {
 
         BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedValue);
 
-        BigDecimal accumulatedPercentage = calculateAccumulatedPercentage(accumulatedValue);
-
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
         return new CalculateCdiBetweenDateResponse(
@@ -47,7 +45,7 @@ public class CalculateCdiAccumulatedValueBetweenDates {
                 request.endDate(),
                 businessDays,
                 finalValue,
-                accumulatedPercentage
+                accumulatedValue
                 );
     }
 
@@ -74,19 +72,13 @@ public class CalculateCdiAccumulatedValueBetweenDates {
     private BigDecimal calculateAccumulatedFactor(List<Index> indexes) {
         return indexes.stream()
                 .map(Index::getFator)
-                .reduce(BigDecimal.ONE, BigDecimal::multiply);
+                .reduce(BigDecimal.ONE, BigDecimal::multiply)
+                .setScale(8, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedFactor) {
         return BigDecimal.valueOf(amount)
                 .multiply(accumulatedFactor)
                 .setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
-        return accumulatedFactor
-                .subtract(BigDecimal.ONE)
-                .multiply(BigDecimal.valueOf(100))
-                .setScale(6, RoundingMode.HALF_UP);
     }
 }

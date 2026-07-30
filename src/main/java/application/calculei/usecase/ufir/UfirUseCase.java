@@ -28,9 +28,7 @@ public class UfirUseCase {
 
     public void saveUfirValue(UfirValueRequestDto request) {
         List<Index> ufirYear = IntStream.rangeClosed(1, 12)
-                .mapToObj(month -> {LocalDate.of(request.year(), month, 1);
-                    return new Index(null, request.valueUfir(), LocalDate.of(request.year(), month, 1));
-                })
+                .mapToObj(month -> new Index(null, request.valueUfir(), LocalDate.of(request.year(), month, 1)))
                 .toList();
 
         repository.saveAll(ufirYear);

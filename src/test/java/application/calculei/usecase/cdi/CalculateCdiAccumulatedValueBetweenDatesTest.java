@@ -4,6 +4,9 @@ import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
 import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
+import application.calculei.usecase.exceptions.DataNotFoundException;
+import application.calculei.usecase.exceptions.InvalidPeriodException;
+import application.calculei.usecase.exceptions.InvalidValueException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -48,25 +51,109 @@ class CalculateCdiAccumulatedValueBetweenDatesTest {
             Index index2 = new Index();
             index2.setFator(BigDecimal.valueOf(1.02));
 
-            when(repository.findByDataInitBetween(startDate, endDate)).thenReturn(List.of(index1, index2));
-
             //WHEN
+            when(repository.findByDataInitBetween(startDate, endDate.minusDays(1))).thenReturn(List.of(index1, index2));
             CalculateCdiBetweenDateResponse response = useCase.execute(request);
 
             //THEN
             // Matemática esperada:
             // Fator acumulado = 1.01 * 1.02 = 1.0302
             // Valor Final = 1000 * 1.0302 = 1030.20
-            // Percentual Acumulado = (1.0302 - 1) * 100 = 3.020000
             assertAll(
                     () -> assertNotNull(response),
                     () -> assertEquals(new BigDecimal("1030.20"), response.valueFinal(), "o valor final está calculado incorretamente."),
-                    () -> assertEquals(new BigDecimal("3.020000"), response.accumulatedFactor(), "o percentual está calculado incorretamente."),
+                    () -> assertEquals(new BigDecimal("1.03020000"), response.accumulatedFactor(), "o percentual está calculado incorretamente."),
                     () -> assertEquals(startDate, response.startDate(), "a data inicial não está igual."),
                     () -> assertEquals(endDate, response.endDate(), "a data final não está igual."),
                     () -> assertEquals(10, response.businessDays(), "o número de dias úteis não está correto.")
             );
-            verify(repository, times(1)).findByDataInitBetween(startDate, endDate);
+            verify(repository, times(1)).findByDataInitBetween(startDate, endDate.minusDays(1));
+        }
+    }
+
+    @Nested
+    @DisplayName("Cenários de erro")
+    class ErrorScenarios {
+
+        @Test
+        @DisplayName("Deve lançar InvalidPeriodException quando a data final for anterior à data inicial")
+        void givenEndDateBeforeStartDate_whenExecute_thenThrowInvalidPeriodException() {
+            // GIVEN
+            LocalDate startDate = LocalDate.now();
+            LocalDate endDate = LocalDate.now().minusDays(5);
+            CalculateCdiBetweenDateRequest request = new CalculateCdiBetweenDateRequest(1000.0, startDate, endDate);
+
+            // WHEN & THEN
+            assertThrows(InvalidPeriodException.class, () -> useCase.execute(request));
+            verifyNoInteractions(repository);
+        }
+
+        @Test
+        @DisplayName("Deve lançar InvalidPeriodException quando a data inicial for no futuro")
+        void givenStartDateInFuture_whenExecute_thenThrowInvalidPeriodException() {
+            // GIVEN
+            LocalDate startDate = LocalDate.now().plusDays(1);
+            LocalDate endDate = LocalDate.now().plusDays(5);
+            CalculateCdiBetweenDateRequest request = new CalculateCdiBetweenDateRequest(1000.0, startDate, endDate);
+
+            // WHEN & THEN
+            assertThrows(InvalidPeriodException.class, () -> useCase.execute(request));
+            verifyNoInteractions(repository);
+        }
+
+        @Test
+        @DisplayName("Deve lançar InvalidPeriodException quando a data final for no futuro")
+        void givenEndDateInFuture_whenExecute_thenThrowInvalidPeriodException() {
+            // GIVEN
+            LocalDate startDate = LocalDate.now().minusDays(5);
+            LocalDate endDate = LocalDate.now().plusDays(1);
+            CalculateCdiBetweenDateRequest request = new CalculateCdiBetweenDateRequest(1000.0, startDate, endDate);
+
+            // WHEN & THEN
+            assertThrows(InvalidPeriodException.class, () -> useCase.execute(request));
+            verifyNoInteractions(repository);
+        }
+
+        @Test
+        @DisplayName("Deve lançar InvalidValueException quando o valor informado for zero")
+        void givenAmountIsZero_whenExecute_thenThrowInvalidValueException() {
+            // GIVEN
+            LocalDate startDate = LocalDate.now().minusDays(5);
+            LocalDate endDate = LocalDate.now();
+            CalculateCdiBetweenDateRequest request = new CalculateCdiBetweenDateRequest(0.0, startDate, endDate);
+
+            // WHEN & THEN
+            assertThrows(InvalidValueException.class, () -> useCase.execute(request));
+            verifyNoInteractions(repository);
+        }
+
+        @Test
+        @DisplayName("Deve lançar InvalidValueException quando o valor informado for negativo")
+        void givenAmountIsNegative_whenExecute_thenThrowInvalidValueException() {
+            // GIVEN
+            LocalDate startDate = LocalDate.now().minusDays(5);
+            LocalDate endDate = LocalDate.now();
+            CalculateCdiBetweenDateRequest request = new CalculateCdiBetweenDateRequest(-500.0, startDate, endDate);
+
+            // WHEN & THEN
+            assertThrows(InvalidValueException.class, () -> useCase.execute(request));
+            verifyNoInteractions(repository);
+        }
+
+        @Test
+        @DisplayName("Deve lançar DataNotFoundException quando o repositório não retornar nenhum índice para o período")
+        void givenNoIndexesFound_whenExecute_thenThrowDataNotFoundException() {
+            // GIVEN
+            LocalDate startDate = LocalDate.now().minusDays(5);
+            LocalDate endDate = LocalDate.now();
+            CalculateCdiBetweenDateRequest request = new CalculateCdiBetweenDateRequest(1000.0, startDate, endDate);
+
+            //WHEN
+            when(repository.findByDataInitBetween(startDate, endDate.minusDays(1))).thenReturn(List.of());
+
+            //THEN
+            assertThrows(DataNotFoundException.class, () -> useCase.execute(request));
+            verify(repository, times(1)).findByDataInitBetween(startDate, endDate.minusDays(1));
         }
     }
 }

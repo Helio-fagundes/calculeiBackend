@@ -1,11 +1,10 @@
 package application.calculei.adapters.controller;
 
-import application.calculei.domain.indexEnum.InterestCorrection;
-import application.calculei.domain.indexEnum.MonetaryCorrection;
+import application.calculei.domain.index_enum.InterestCorrection;
+import application.calculei.domain.index_enum.MonetaryCorrection;
 import application.calculei.infraestructure.swagger.ApiGetAllResponses;
 import application.calculei.usecase.index_monetary_correction.IndexMonetaryCorrection;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

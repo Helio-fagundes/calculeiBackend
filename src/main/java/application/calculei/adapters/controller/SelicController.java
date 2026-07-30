@@ -1,8 +1,6 @@
 package application.calculei.adapters.controller;
 
 import application.calculei.infraestructure.swagger.ApiPostResponses;
-import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateRequest;
-import application.calculei.usecase.cdi.dto.CalculateCdiBetweenDateResponse;
 import application.calculei.usecase.selic.diario.CalculateSelicDiarioAccumulatedValueBetweenDates;
 import application.calculei.usecase.selic.diario.dto.CalculateSelicDiarioBetweenDateRequest;
 import application.calculei.usecase.selic.diario.dto.CalculateSelicDiarioBetweenDateResponse;
@@ -26,11 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class SelicController {
 
     private final CalculateSelicDiarioAccumulatedValueBetweenDates  useCaseCalculateDays;
+    private final CalculateSelicMensalAccumulatedValueBetweenDates useCaseCalculateMonths;
 
     public SelicController(
-            CalculateSelicDiarioAccumulatedValueBetweenDates useCaseCalculateDays
+            CalculateSelicDiarioAccumulatedValueBetweenDates useCaseCalculateDays, CalculateSelicMensalAccumulatedValueBetweenDates useCaseCalculateMonths
     ) {
         this.useCaseCalculateDays = useCaseCalculateDays;
+        this.useCaseCalculateMonths = useCaseCalculateMonths;
     }
 
     @PostMapping("/diario/calculate/between-dates")
@@ -44,4 +44,10 @@ public class SelicController {
     public CalculateSelicDiarioBetweenDateResponse calculateDiarioBetweenDate(@Valid @RequestBody CalculateSelicDiarioBetweenDateRequest request){
         return useCaseCalculateDays.execute(request);
     }
+
+    @PostMapping("/mensal/calculate/between-dates")
+    public CalculateSelicMensalBetweenDateResponse calculateMensalBetweenDates(@Valid @RequestBody CalculateSelicMensalBetweenDateRequest request){
+        return useCaseCalculateMonths.execute(request);
+    }
+
 }

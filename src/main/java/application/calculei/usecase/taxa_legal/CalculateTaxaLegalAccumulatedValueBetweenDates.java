@@ -2,7 +2,7 @@ package application.calculei.usecase.taxa_legal;
 
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
-import application.calculei.domain.valueObject.DateUtils;
+import application.calculei.domain.value_object.DateUtils;
 import application.calculei.usecase.exceptions.DataNotFoundException;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.exceptions.InvalidValueException;
@@ -38,8 +38,6 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
 
         BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedValue);
 
-        BigDecimal accumulatedPercentage = calculateAccumulatedPercentage(accumulatedValue);
-
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
 
@@ -48,7 +46,7 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
                 request.endDate(),
                 businessDays,
                 finalValue,
-                accumulatedPercentage
+                accumulatedValue
         );
     }
 
@@ -77,7 +75,8 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
                 .filter(index -> !index.getDataInit().isBefore(startDate))
                 .filter(index -> index.getDataInit().isBefore(endDate))
                 .map(index -> index.getFator().subtract(BigDecimal.ONE))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(8, RoundingMode.HALF_UP);
         return BigDecimal.ONE.add(sumOfRates);
     }
 
@@ -85,12 +84,5 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
         return BigDecimal.valueOf(amount)
                 .multiply(accumulatedValue)
                 .setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
-        return accumulatedFactor
-                .subtract(BigDecimal.ONE)
-                .multiply(BigDecimal.valueOf(100))
-                .setScale(6, RoundingMode.HALF_UP);
     }
 }

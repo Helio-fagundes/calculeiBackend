@@ -1,6 +1,6 @@
 package application.calculei.usecase.simple_interest;
 
-import application.calculei.domain.valueObject.DateUtils;
+import application.calculei.domain.value_object.DateUtils;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.exceptions.InvalidValueException;
 import application.calculei.usecase.simple_interest.dto.SimpleInterestDto;

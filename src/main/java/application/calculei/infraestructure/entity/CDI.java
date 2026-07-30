@@ -1,6 +1,6 @@
 package application.calculei.infraestructure.entity;
 
-import application.calculei.infraestructure.entity.mappedClass.BaseEntity;
+import application.calculei.infraestructure.entity.mapped_class.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

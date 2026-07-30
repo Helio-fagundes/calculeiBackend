@@ -3,7 +3,6 @@ package application.calculei.adapters.event;
 import application.calculei.adapters.event.dto.SystemErrorWarning;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,15 +16,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 public class EventErrorListener {
-/*
-    @Autowired
-    private JavaMailSender mailSender;
 
+    private final JavaMailSender mailSender;
+
+    public EventErrorListener(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
     @Value("${spring.mail.username}")
     private String email;
 
     private final Map<String, Long> emailCache = new ConcurrentHashMap<>();
-    private static final long COOLDOWN_TIME = 5 * 60 * 1000;
+    private static final long COOLDOWN_TIME = 5L * 60 * 1000;
 
     @Async
     @EventListener
@@ -50,10 +51,8 @@ public class EventErrorListener {
     }
 
     private void emailSend(SystemErrorWarning event) {
-        log.warn("Sending system error warnings to email");
-        log.warn("Subject: System Error Warning");
-        log.warn("Method: " + event.request().getMethod());
-        log.warn("Request: " + event.request().getRequestURI());
+        log.warn("Sending system error warnings to email\nSubject: System Error Warning\nMethod: {}\nRequest: {}",
+                event.request().getMethod(), event.request().getRequestURI());
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -73,7 +72,7 @@ public class EventErrorListener {
             mailSender.send(message);
 
         } catch (Exception mailException) {
-            log.error("Falha ao enviar e-mail de alerta: " + mailException.getMessage());
+            log.error("Falha ao enviar e-mail de alerta: {}", mailException.getMessage());
         }
     }
 
@@ -113,6 +112,4 @@ public class EventErrorListener {
     </html>
     """.formatted(metodo, rota, ex.getClass().getName(), ex.getMessage(), stackTraceStr.toString());
     }
-
- */
 }
