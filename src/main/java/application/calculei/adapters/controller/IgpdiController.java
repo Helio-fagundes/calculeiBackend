@@ -27,13 +27,7 @@ public class IgpdiController {
     }
 
     @PostMapping("/calculate/between-dates")
-    @Operation(
-            summary = "Calcular valor acumulado do IGP-DI entre datas",
-            description = "Calcula o valor acumulado do IGP-DI entre as datas fornecidas no request."
-    )
-    @ApiResponse(content = @Content(schema = @Schema(description = "Requisição para cálculo do IGP-DI entre datas", implementation = CalculateIgpdiBetweenDateRequest.class)))
-    @ApiResponse(content = @Content(schema = @Schema(description = "Resposta para cálculo do IGP-DI entre datas", implementation = CalculateIgpdiBetweenDateResponse.class)))
-    @ApiGetOneResponses
+
     public CalculateIgpdiBetweenDateResponse calculateBetweenDays(@Valid @RequestBody CalculateIgpdiBetweenDateRequest request){
         return useCaseCalculateDays.execute(request);
     }

@@ -12,7 +12,10 @@ import application.calculei.usecase.tr.dto.CalculateTrBetweenDateResponse;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CalculateTrAccumulatedValueBetweenDates {
 
@@ -28,13 +31,13 @@ public class CalculateTrAccumulatedValueBetweenDates {
 
         validateFactor(BigDecimal.valueOf(request.amount()));
 
-        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate().minusDays(1));
+        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
 
         if (listEntity.isEmpty()){
             throw new DataNotFoundException("Nenhum índice de TR encontrado para o período informado.");
         }
 
-        BigDecimal accumulatedValue = calculateAccumulatedValue(listEntity);
+        BigDecimal accumulatedValue = calculateAccumulatedValue(listEntity, request.startDate(), request.endDate().minusDays(1));
 
         BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedValue);
 
@@ -69,11 +72,25 @@ public class CalculateTrAccumulatedValueBetweenDates {
         }
     }
 
-    private BigDecimal calculateAccumulatedValue(List<Index> listEntity){
+    private BigDecimal calculateAccumulatedValue(List<Index> listEntity, LocalDate startDate, LocalDate endDate) {
+        int dayAnniversary = startDate.getDayOfMonth();
+
         return listEntity.stream()
-                .filter(index -> index.getDataInit().getDayOfMonth() == 1)
+                .filter(index -> {
+                    LocalDate dataInit = index.getDataInit();
+
+                    if (dataInit.isBefore(startDate) || dataInit.isAfter(endDate)) {
+                        return false;
+                    }
+
+                    int ultimoDiaDoMes = YearMonth.from(dataInit).lengthOfMonth();
+                    int diaAlvo = Math.min(dayAnniversary, ultimoDiaDoMes);
+
+                    return dataInit.getDayOfMonth() == diaAlvo;
+                })
                 .map(Index::getFator)
-                .reduce(BigDecimal.ONE, (acc, fator) -> acc.multiply(fator).setScale(8, RoundingMode.HALF_UP));
+                .reduce(BigDecimal.ONE, BigDecimal::multiply)
+                .setScale(8, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedValue){

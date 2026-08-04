@@ -5,8 +5,6 @@ public enum MonetaryCorrection {
     SELIC,
     IPCA,
     IPCA_E,
-    IGP_DI,
-    TR,
     IGP_M,
     TJ11960,
     TJ6899
