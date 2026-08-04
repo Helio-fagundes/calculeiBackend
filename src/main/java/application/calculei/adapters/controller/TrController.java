@@ -27,13 +27,6 @@ public class TrController {
     }
 
     @PostMapping("/calculate/between-dates")
-    @Operation(
-            summary = "Calcular o valor acumulado da TR entre duas datas",
-            description = "Calcula o valor acumulado da Taxa Referencial (TR) entre as datas fornecidas no request."
-    )
-    @ApiResponse(content = @Content(schema = @Schema(description = "Requisição para cálculo da TR entre datas", implementation = CalculateTrBetweenDateRequest.class)))
-    @ApiResponse(content = @Content(schema = @Schema(description = "Resposta para cálculo da TR entre datas", implementation = CalculateTrBetweenDateResponse.class)))
-    @ApiPostResponses
     public CalculateTrBetweenDateResponse calculateBetweenDate(@Valid @RequestBody CalculateTrBetweenDateRequest request){
         return useCaseCalculateDays.execute(request);
     }

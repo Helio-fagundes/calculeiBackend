@@ -46,8 +46,14 @@ public class SelicController {
     }
 
     @PostMapping("/mensal/calculate/between-dates")
+    @Operation(
+            summary = "Calcular o valor acumulado da SELIC Mensal entre duas datas",
+            description = "Calcula o valor acumulado da SELIC Mensal entre as datas fornecidas no request."
+    )
+    @ApiResponse(content = @Content(schema = @Schema(description = "Requisição para cálculo da SELIC Mensal entre datas", implementation = CalculateSelicMensalBetweenDateRequest.class)))
+    @ApiResponse(content = @Content(schema = @Schema(description = "Resposta para cálculo da SELIC Mensal entre datas", implementation = CalculateSelicMensalBetweenDateResponse.class)))
+    @ApiPostResponses
     public CalculateSelicMensalBetweenDateResponse calculateMensalBetweenDates(@Valid @RequestBody CalculateSelicMensalBetweenDateRequest request){
         return useCaseCalculateMonths.execute(request);
     }
-
 }
