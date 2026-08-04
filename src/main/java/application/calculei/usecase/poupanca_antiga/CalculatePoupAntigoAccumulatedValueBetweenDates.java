@@ -3,7 +3,6 @@ package application.calculei.usecase.poupanca_antiga;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.value_object.DateUtils;
-import application.calculei.usecase.exceptions.DataNotFoundException;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.exceptions.InvalidValueException;
 import application.calculei.usecase.poupanca_antiga.dto.CalculatePoupAntigoBetweenDateRequest;
@@ -28,14 +27,13 @@ public class CalculatePoupAntigoAccumulatedValueBetweenDates {
 
         validateFactor(BigDecimal.valueOf(request.amount()));
 
-        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
+        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate().minusMonths(1));
 
-        if (listEntity.isEmpty()) {
-            throw new DataNotFoundException("Nenhum índice de Poupança Antiga encontrado para o período informado.");
+        BigDecimal accumulatedValue = BigDecimal.ONE;
+
+        if (!listEntity.isEmpty()) {
+            accumulatedValue = calculateAccumulatedValue(listEntity, request.startDate());
         }
-
-        BigDecimal accumulatedValue = calculateAccumulatedValue(listEntity, request.startDate());
-
         BigDecimal valueFinal = calculateFinalValue(request.amount(), accumulatedValue);
 
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
@@ -72,8 +70,14 @@ public class CalculatePoupAntigoAccumulatedValueBetweenDates {
     private BigDecimal calculateAccumulatedValue(List<Index> listEntity, LocalDate startDate){
         int anniversaryDay = startDate.getDayOfMonth();
 
+        if (anniversaryDay > 28) {
+            anniversaryDay = 1;
+        }
+
+        final int targetDay = anniversaryDay;
+
         return listEntity.stream()
-                .filter(index -> index.getDataInit().getDayOfMonth() == anniversaryDay)
+                .filter(index -> index.getDataInit().getDayOfMonth() == targetDay)
                 .map(Index::getFator)
                 .reduce(BigDecimal.ONE, BigDecimal::multiply)
                 .setScale(8, RoundingMode.HALF_UP);

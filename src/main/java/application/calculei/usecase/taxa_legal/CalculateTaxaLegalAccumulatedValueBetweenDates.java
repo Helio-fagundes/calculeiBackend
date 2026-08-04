@@ -12,9 +12,11 @@ import application.calculei.usecase.taxa_legal.dto.CalculateTaxaLegalBetweenDate
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class CalculateTaxaLegalAccumulatedValueBetweenDates{
+public class CalculateTaxaLegalAccumulatedValueBetweenDates {
 
     private final IndexRepository repository;
 
@@ -28,7 +30,10 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
 
         validateFactor(BigDecimal.valueOf(request.amount()));
 
-        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
+        LocalDate queryStartDate = request.startDate().withDayOfMonth(1);
+        LocalDate queryEndDate = YearMonth.from(request.endDate()).atEndOfMonth();
+
+        List<Index> listEntity = repository.findByDataInitBetween(queryStartDate, queryEndDate);
 
         if (listEntity.isEmpty()){
             throw new DataNotFoundException("Nenhum índice de Taxa Legal encontrado para o período informado.");
@@ -39,7 +44,6 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
         BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedValue);
 
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
-
 
         return new CalculateTaxaLegalBetweenDateResponse(
                 request.startDate(),
@@ -57,7 +61,12 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
     }
 
     private void validateDates(LocalDate startDate, LocalDate endDate){
-        if (endDate.isBefore(startDate)){
+        LocalDate inicioMetodologia = LocalDate.of(2024, 8, 30);
+        if (startDate.isBefore(inicioMetodologia)) {
+            throw new InvalidPeriodException("A Taxa Legal só pode ser aplicada a partir de 30/08/2024.");
+        }
+
+        if (!endDate.isAfter(startDate)){
             throw new InvalidPeriodException(endDate, startDate);
         }
 
@@ -71,13 +80,43 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates{
     }
 
     private BigDecimal calculateAccumulatedValue(List<Index> listEntity, LocalDate startDate, LocalDate endDate) {
-        BigDecimal sumOfRates = listEntity.stream()
-                .filter(index -> !index.getDataInit().isBefore(startDate))
-                .filter(index -> index.getDataInit().isBefore(endDate))
-                .map(index -> index.getFator().subtract(BigDecimal.ONE))
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .setScale(8, RoundingMode.HALF_UP);
-        return BigDecimal.ONE.add(sumOfRates);
+        BigDecimal sumOfRates = BigDecimal.ZERO;
+
+        for (Index index : listEntity) {
+            LocalDate dataIndex = index.getDataInit();
+            YearMonth anoMes = YearMonth.from(dataIndex);
+
+            LocalDate primeiroDiaMes = anoMes.atDay(1);
+            LocalDate ultimoDiaMes = anoMes.atEndOfMonth();
+            int diasMes = anoMes.lengthOfMonth();
+
+            LocalDate trechoInicio = startDate.isAfter(primeiroDiaMes) ? startDate : primeiroDiaMes;
+
+            LocalDate trechoFimExclusive = endDate.isBefore(ultimoDiaMes.plusDays(1))
+                    ? endDate
+                    : ultimoDiaMes.plusDays(1);
+
+            if (trechoInicio.isBefore(trechoFimExclusive)) {
+
+                long diasPcalculo = ChronoUnit.DAYS.between(trechoInicio, trechoFimExclusive);
+
+                if (diasPcalculo > 0) {
+                    BigDecimal taxaDecimal = index.getFator().subtract(BigDecimal.ONE);
+
+                    if (taxaDecimal.compareTo(BigDecimal.ZERO) < 0) {
+                        taxaDecimal = BigDecimal.ZERO;
+                    }
+
+                    BigDecimal jurosProRata = taxaDecimal
+                            .multiply(BigDecimal.valueOf(diasPcalculo))
+                            .divide(BigDecimal.valueOf(diasMes), 16, RoundingMode.HALF_UP);
+
+                    sumOfRates = sumOfRates.add(jurosProRata);
+                }
+            }
+        }
+
+        return BigDecimal.ONE.add(sumOfRates).setScale(8, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateFinalValue(Double amount, BigDecimal accumulatedValue){
