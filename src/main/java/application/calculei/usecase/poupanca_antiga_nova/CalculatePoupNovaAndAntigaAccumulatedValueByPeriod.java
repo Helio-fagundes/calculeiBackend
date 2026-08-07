@@ -10,6 +10,7 @@ import application.calculei.usecase.poupanca_antiga_nova.dto.CalculateIndexPoupB
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -40,11 +41,14 @@ public class CalculatePoupNovaAndAntigaAccumulatedValueByPeriod {
 
         Long calendarDays = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
 
+        DayOfWeek dayOfWeek = request.endDate().getDayOfWeek();
+
         return new CalculateIndexPoupBetweenDateResponse(
                 request.startDate(),
                 request.endDate(),
                 businessDays,
                 calendarDays,
+                dayOfWeek,
                 finalValue,
                 finalPercentage
         );

@@ -8,6 +8,7 @@ import application.calculei.usecase.simple_interest.dto.SimpleInterestResponseDT
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -20,6 +21,8 @@ public class CalculateSimpleInterest {
         long totalDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
         Long diasCorridos = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
+
+        DayOfWeek dayOfWeek = request.endDate().getDayOfWeek();
 
         validateDates(request.startDate(), request.endDate());
 
@@ -38,7 +41,7 @@ public class CalculateSimpleInterest {
                 .add(totalInterest)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        return new SimpleInterestResponseDTO(finalAmount ,request.startDate(), request.endDate(), totalDays, diasCorridos);
+        return new SimpleInterestResponseDTO(finalAmount ,request.startDate(), request.endDate(), totalDays, diasCorridos, dayOfWeek);
     }
 
     private BigDecimal calculatePorcentage(BigDecimal interest){

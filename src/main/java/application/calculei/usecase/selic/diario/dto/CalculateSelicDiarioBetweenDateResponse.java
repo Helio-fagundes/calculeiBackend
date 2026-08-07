@@ -1,7 +1,8 @@
 package application.calculei.usecase.selic.diario.dto;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
-public record CalculateSelicDiarioBetweenDateResponse(LocalDate startDate, LocalDate endDate, long businessDays, Long calendarDays, BigDecimal finalValue, BigDecimal accumulatedFactor) {
+public record CalculateSelicDiarioBetweenDateResponse(LocalDate startDate, LocalDate endDate, long businessDays, Long calendarDays, DayOfWeek dayOfWeek, BigDecimal finalValue, BigDecimal accumulatedFactor) {
 }

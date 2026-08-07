@@ -1,7 +1,7 @@
 package application.calculei.adapters.controller;
 
-import application.calculei.domain.index_enum.InterestCorrection;
-import application.calculei.domain.index_enum.MonetaryCorrection;
+import application.calculei.domain.enums.index_enum.InterestCorrection;
+import application.calculei.domain.enums.index_enum.MonetaryCorrection;
 import application.calculei.infraestructure.swagger.ApiGetAllResponses;
 import application.calculei.usecase.index_monetary_correction.IndexMonetaryCorrection;
 import io.swagger.v3.oas.annotations.Operation;

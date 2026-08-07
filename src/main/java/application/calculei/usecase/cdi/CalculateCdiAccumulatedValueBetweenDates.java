@@ -11,6 +11,7 @@ import application.calculei.usecase.exceptions.InvalidValueException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -43,11 +44,14 @@ public class CalculateCdiAccumulatedValueBetweenDates {
 
         Long calendarDays = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
 
+        DayOfWeek dayWeek = request.endDate().getDayOfWeek();
+
         return new CalculateCdiBetweenDateResponse(
                 request.startDate(),
                 request.endDate(),
                 businessDays,
                 calendarDays,
+                dayWeek,
                 finalValue,
                 accumulatedValue
         );

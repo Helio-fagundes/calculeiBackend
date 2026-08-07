@@ -8,6 +8,7 @@ import application.calculei.usecase.simple_interest.dto.SimpleInterestResponseDT
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -28,6 +29,8 @@ public class CalculateInterestByPeriod {
 
         Long diasCorridos = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
 
+        DayOfWeek dayOfWeek = request.endDate().getDayOfWeek();
+
         validateFactor(request.amount());
 
         BigDecimal totalInterestPercentage = calculateHybridPercentage(
@@ -43,7 +46,7 @@ public class CalculateInterestByPeriod {
                 .add(interestValue)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        return new SimpleInterestResponseDTO(finalAmount, request.startDate(), request.endDate(), daysBusiness, diasCorridos);
+        return new SimpleInterestResponseDTO(finalAmount, request.startDate(), request.endDate(), daysBusiness, diasCorridos, dayOfWeek);
     }
 
     private BigDecimal calculateHybridPercentage(LocalDate startDate, LocalDate endDate) {
