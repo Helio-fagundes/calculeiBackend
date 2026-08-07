@@ -1,4 +1,4 @@
-package application.calculei.domain.index_enum;
+package application.calculei.domain.enums.index_enum;
 
 public enum MonetaryCorrection {
     CDI,

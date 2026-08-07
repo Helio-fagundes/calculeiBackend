@@ -1,5 +1,6 @@
 package application.calculei.usecase.poupanca_antiga_nova;
 
+import application.calculei.domain.enums.identify_enum.IdentifyFactorOrPercentual;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.value_object.DateUtils;
@@ -53,7 +54,8 @@ public class CalculatePoupNovaAndAntigaAccumulatedValueByPeriod {
                 dayOfWeekStartDate,
                 dayOfWeekEndDate,
                 finalValue,
-                finalPercentage
+                finalPercentage,
+                IdentifyFactorOrPercentual.FACTOR
         );
     }
 

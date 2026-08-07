@@ -1,5 +1,6 @@
 package application.calculei.usecase.cdi;
 
+import application.calculei.domain.enums.identify_enum.IdentifyFactorOrPercentual;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.value_object.DateUtils;
@@ -56,7 +57,8 @@ public class CalculateCdiAccumulatedValueBetweenDates {
                 dayOfWeekStartDate,
                 dayOfWeekEndDate,
                 finalValue,
-                accumulatedValue
+                accumulatedValue,
+                IdentifyFactorOrPercentual.FACTOR
         );
     }
 

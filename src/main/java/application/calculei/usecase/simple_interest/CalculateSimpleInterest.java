@@ -1,5 +1,6 @@
 package application.calculei.usecase.simple_interest;
 
+import application.calculei.domain.enums.identify_enum.IdentifyFactorOrPercentual;
 import application.calculei.domain.value_object.DateUtils;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.exceptions.InvalidValueException;
@@ -43,7 +44,7 @@ public class CalculateSimpleInterest {
                 .add(totalInterest)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        return new SimpleInterestResponseDTO(finalAmount ,request.startDate(), request.endDate(), totalDays, diasCorridos, dayOfWeekStartDate, dayOfWeekEndDate);
+        return new SimpleInterestResponseDTO(finalAmount ,request.startDate(), request.endDate(), totalDays, diasCorridos, dayOfWeekStartDate, dayOfWeekEndDate, IdentifyFactorOrPercentual.PERCENTUAL);
     }
 
     private BigDecimal calculatePorcentage(BigDecimal interest){
