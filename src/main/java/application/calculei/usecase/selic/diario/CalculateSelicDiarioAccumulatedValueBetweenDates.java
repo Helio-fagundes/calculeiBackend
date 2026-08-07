@@ -44,14 +44,17 @@ public class CalculateSelicDiarioAccumulatedValueBetweenDates {
 
         Long calendarDays = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
 
-        DayOfWeek dayOfWeek = request.endDate().getDayOfWeek();
+        DayOfWeek dayOfWeekStartDate = request.startDate().getDayOfWeek();
+
+        DayOfWeek dayOfWeekEndDate = request.endDate().getDayOfWeek();
 
         return new CalculateSelicDiarioBetweenDateResponse(
                 request.startDate(),
                 request.endDate(),
                 businessDays,
                 calendarDays,
-                dayOfWeek,
+                dayOfWeekStartDate,
+                dayOfWeekEndDate,
                 finalValue,
                 accumulatedValue);
     }

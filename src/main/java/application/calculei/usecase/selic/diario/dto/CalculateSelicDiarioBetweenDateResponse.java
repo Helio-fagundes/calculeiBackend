@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
-public record CalculateSelicDiarioBetweenDateResponse(LocalDate startDate, LocalDate endDate, long businessDays, Long calendarDays, DayOfWeek dayOfWeek, BigDecimal finalValue, BigDecimal accumulatedFactor) {
+public record CalculateSelicDiarioBetweenDateResponse(LocalDate startDate, LocalDate endDate, long businessDays, Long calendarDays, DayOfWeek dayOfWeekStartDate, DayOfWeek dayOfWeekEndDate,BigDecimal finalValue, BigDecimal accumulatedFactor) {
 }

@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
-public record SimpleInterestResponseDTO(BigDecimal amount, LocalDate startDate, LocalDate endDate, Long businessDays, Long calenderDays, DayOfWeek dayOfWeek) {
+public record SimpleInterestResponseDTO(BigDecimal amount, LocalDate startDate, LocalDate endDate, Long businessDays, Long calenderDays, DayOfWeek dayOfWeekStartDate, DayOfWeek dayOfWeekEndDate) {
 }

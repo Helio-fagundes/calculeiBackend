@@ -29,7 +29,9 @@ public class CalculateInterestByPeriod {
 
         Long diasCorridos = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
 
-        DayOfWeek dayOfWeek = request.endDate().getDayOfWeek();
+        DayOfWeek dayOfWeekStartDate = request.startDate().getDayOfWeek();
+
+        DayOfWeek dayOfWeekEndDate = request.endDate().getDayOfWeek();
 
         validateFactor(request.amount());
 
@@ -46,7 +48,7 @@ public class CalculateInterestByPeriod {
                 .add(interestValue)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        return new SimpleInterestResponseDTO(finalAmount, request.startDate(), request.endDate(), daysBusiness, diasCorridos, dayOfWeek);
+        return new SimpleInterestResponseDTO(finalAmount, request.startDate(), request.endDate(), daysBusiness, diasCorridos, dayOfWeekStartDate, dayOfWeekEndDate);
     }
 
     private BigDecimal calculateHybridPercentage(LocalDate startDate, LocalDate endDate) {

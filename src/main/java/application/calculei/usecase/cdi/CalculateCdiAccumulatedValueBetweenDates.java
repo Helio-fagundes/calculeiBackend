@@ -44,14 +44,17 @@ public class CalculateCdiAccumulatedValueBetweenDates {
 
         Long calendarDays = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
 
-        DayOfWeek dayWeek = request.endDate().getDayOfWeek();
+        DayOfWeek dayOfWeekStartDate = request.startDate().getDayOfWeek();
+
+        DayOfWeek dayOfWeekEndDate = request.endDate().getDayOfWeek();
 
         return new CalculateCdiBetweenDateResponse(
                 request.startDate(),
                 request.endDate(),
                 businessDays,
                 calendarDays,
-                dayWeek,
+                dayOfWeekStartDate,
+                dayOfWeekEndDate,
                 finalValue,
                 accumulatedValue
         );
