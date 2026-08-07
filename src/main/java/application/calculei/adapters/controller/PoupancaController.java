@@ -41,25 +41,11 @@ public class PoupancaController {
     }
 
     @PostMapping("/nova/calculate/between-dates")
-    @Operation(
-            summary = "Calcular o valor acumulado da Poupança Nova entre duas datas",
-            description = "Calcula o valor acumulado da Poupança Nova entre as datas fornecidas no request."
-    )
-    @ApiResponse(content = @Content(schema = @Schema(description = "Requisição para cálculo da Poupança Nova entre datas", implementation = CalculatePoupNovaBetweenDateRequest.class)))
-    @ApiResponse(content = @Content(schema = @Schema(description = "Resposta para cálculo da Poupança Nova entre datas", implementation = CalculatePoupNovaBetweenDateResponse.class)))
-    @ApiPostResponses
     public CalculatePoupNovaBetweenDateResponse calculateBetweenDate(@Valid @RequestBody CalculatePoupNovaBetweenDateRequest request){
         return useCaseCalculatePoupancaBetweenDates.execute(request);
     }
 
     @PostMapping("/antiga/calculate/between-dates")
-    @Operation(
-            summary = "Calcular o valor acumulado da Poupança Antiga entre duas datas",
-            description = "Calcula o valor acumulado da Poupança Antiga entre as datas fornecidas no request."
-    )
-    @ApiResponse(content = @Content(schema = @Schema(description = "Requisição para cálculo da Poupança Antiga entre datas", implementation = CalculatePoupAntigoBetweenDateRequest.class)))
-    @ApiResponse(content = @Content(schema = @Schema(description = "Resposta para cálculo da Poupança Antiga entre datas", implementation = CalculatePoupAntigoBetweenDateResponse.class)))
-    @ApiPostResponses
     public CalculatePoupAntigoBetweenDateResponse calculateBetweenDateAntiga(@Valid @RequestBody CalculatePoupAntigoBetweenDateRequest request){
         return useCaseCalculatePoupancaAntigaBetweenDates.execute(request);
     }

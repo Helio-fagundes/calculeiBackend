@@ -12,6 +12,7 @@ import application.calculei.usecase.exceptions.InvalidValueException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class CalculateCdiAccumulatedValueBetweenDates {
@@ -40,13 +41,16 @@ public class CalculateCdiAccumulatedValueBetweenDates {
 
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
+        Long calendarDays = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
+
         return new CalculateCdiBetweenDateResponse(
                 request.startDate(),
                 request.endDate(),
                 businessDays,
+                calendarDays,
                 finalValue,
                 accumulatedValue
-                );
+        );
     }
 
     private void validateFactor(BigDecimal fator) {

@@ -12,6 +12,7 @@ import application.calculei.usecase.selic.diario.dto.CalculateSelicDiarioBetween
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class CalculateSelicDiarioAccumulatedValueBetweenDates {
@@ -40,10 +41,13 @@ public class CalculateSelicDiarioAccumulatedValueBetweenDates {
 
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
+        Long calendarDays = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
+
         return new CalculateSelicDiarioBetweenDateResponse(
                 request.startDate(),
                 request.endDate(),
                 businessDays,
+                calendarDays,
                 finalValue,
                 accumulatedValue);
     }

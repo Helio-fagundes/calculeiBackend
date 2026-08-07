@@ -45,10 +45,13 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates {
 
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
+        Long calendarDays = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
+
         return new CalculateTaxaLegalBetweenDateResponse(
                 request.startDate(),
                 request.endDate(),
                 businessDays,
+                calendarDays,
                 finalValue,
                 accumulatedValue
         );
