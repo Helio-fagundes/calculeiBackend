@@ -1,14 +1,12 @@
 package application.calculei.domain.index_enum;
 
 public enum InterestCorrection {
-    SELIC,
+    SELIC, //já mandava os dias 3
     CODIGO_CIVIL,
     JUROS_SIMPLES_6,
     JUROS_SIMPLES_12,
-    CDI,
-    POUPANCA_NOVA,
-    POUPANCA_ANTIGA,
-    POUPANCA_ANTIGA_E_NOVA,
-    TAXA_LEGAL,
+    CDI, //já mandava os dias 3
+    POUPANCA_ANTIGA_E_NOVA, //já mandava os dias 360
+    TAXA_LEGAL, //já mandava os dias 360
     ESPECIFICAR_TAXA
 }
