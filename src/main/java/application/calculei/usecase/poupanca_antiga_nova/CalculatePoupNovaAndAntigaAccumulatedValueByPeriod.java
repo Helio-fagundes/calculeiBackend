@@ -51,6 +51,12 @@ public class CalculatePoupNovaAndAntigaAccumulatedValueByPeriod {
         List<Index> indicesAntiga = poupAntiga.findByDataInitBetween(startDate, realCalculationEnd);
         List<Index> indicesNova = poupNova.findByDataInitBetween(startDate, realCalculationEnd);
 
+        int anniversaryDay = startDate.getDayOfMonth();
+        if (anniversaryDay > 28) {
+            anniversaryDay = 1;
+        }
+        final int targetDay = anniversaryDay;
+
         BigDecimal totalFactor = BigDecimal.ONE;
         LocalDate current = startDate;
 
@@ -58,21 +64,22 @@ public class CalculatePoupNovaAndAntigaAccumulatedValueByPeriod {
             BigDecimal monthFactor;
 
             if (current.isBefore(LocalDate.of(2012, 6, 1))) {
-                monthFactor = findFactorByMonthYear(indicesAntiga, current);
+                monthFactor = findFactorByMonthYear(indicesAntiga, current, targetDay);
             } else {
-                monthFactor = findFactorByMonthYear(indicesNova, current);
+                monthFactor = findFactorByMonthYear(indicesNova, current, targetDay);
             }
 
             totalFactor = totalFactor.multiply(monthFactor);
             current = current.plusMonths(1);
         }
-        return totalFactor.setScale(10, RoundingMode.HALF_UP);
+        return totalFactor.setScale(8, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal findFactorByMonthYear(List<Index> list, LocalDate date) {
+    private BigDecimal findFactorByMonthYear(List<Index> list, LocalDate date, int targetDay) {
         return list.stream()
-                .filter(i -> i.getDataInit().getMonth() == date.getMonth() &&
-                        i.getDataInit().getYear() == date.getYear())
+                .filter(i -> i.getDataInit().getYear() == date.getYear() &&
+                        i.getDataInit().getMonth() == date.getMonth() &&
+                        i.getDataInit().getDayOfMonth() == targetDay)
                 .map(Index::getFator)
                 .findFirst()
                 .orElse(BigDecimal.ONE);
@@ -85,9 +92,7 @@ public class CalculatePoupNovaAndAntigaAccumulatedValueByPeriod {
     }
 
     private BigDecimal calculateAccumulatedPercentage(BigDecimal accumulatedFactor){
-        return accumulatedFactor
-                .subtract(BigDecimal.ONE)
-                .setScale(8, RoundingMode.HALF_UP);
+        return accumulatedFactor.setScale(8, RoundingMode.HALF_UP);
     }
 
     private void validateFactor(BigDecimal fator) {
