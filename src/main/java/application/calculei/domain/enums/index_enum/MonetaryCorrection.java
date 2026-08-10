@@ -1,4 +1,4 @@
-package application.calculei.domain.index_enum;
+package application.calculei.domain.enums.index_enum;
 
 public enum MonetaryCorrection {
     CDI,
@@ -7,5 +7,7 @@ public enum MonetaryCorrection {
     IPCA_E,
     IGP_M,
     TJ11960,
-    TJ6899
+    TJ6899;
+
+
 }

@@ -1,5 +1,6 @@
 package application.calculei.usecase.selic.diario;
 
+import application.calculei.domain.enums.identify_enum.IdentifyFactorOrPercentual;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.value_object.DateUtils;
@@ -11,7 +12,9 @@ import application.calculei.usecase.selic.diario.dto.CalculateSelicDiarioBetween
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class CalculateSelicDiarioAccumulatedValueBetweenDates {
@@ -40,12 +43,22 @@ public class CalculateSelicDiarioAccumulatedValueBetweenDates {
 
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
+        Long calendarDays = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
+
+        DayOfWeek dayOfWeekStartDate = request.startDate().getDayOfWeek();
+
+        DayOfWeek dayOfWeekEndDate = request.endDate().getDayOfWeek();
+
         return new CalculateSelicDiarioBetweenDateResponse(
                 request.startDate(),
                 request.endDate(),
                 businessDays,
+                calendarDays,
+                dayOfWeekStartDate,
+                dayOfWeekEndDate,
                 finalValue,
-                accumulatedValue);
+                accumulatedValue,
+                IdentifyFactorOrPercentual.FACTOR);
     }
 
     private void validateFactor(BigDecimal fator) {

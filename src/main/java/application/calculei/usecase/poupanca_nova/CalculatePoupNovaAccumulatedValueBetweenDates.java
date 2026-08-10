@@ -28,18 +28,21 @@ public class CalculatePoupNovaAccumulatedValueBetweenDates {
 
         validateFactor(BigDecimal.valueOf(request.amount()));
 
-        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate());
+        List<Index> listEntity = repository.findByDataInitBetween(request.startDate(), request.endDate().minusMonths(1));
 
-        if (listEntity.isEmpty()) {
-            throw new DataNotFoundException("Nenhum índice de Poupança Nova encontrado para o período informado.");
+        BigDecimal accumulatedFactor = BigDecimal.ONE;
+
+        if (!listEntity.isEmpty()) {
+            accumulatedFactor = calculateAccumulatedValue(listEntity, request.startDate());
         }
 
-        BigDecimal accumulatedFactor = calculateAccumulatedValue(listEntity);
+        if (listEntity.isEmpty()) {
+            throw new DataNotFoundException("Nenhum índice de Poupança nova encontrado para o período informado.");
+        }
 
         BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedFactor);
 
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
-
 
         return new CalculatePoupNovaBetweenDateResponse(
                 request.startDate(),
@@ -70,8 +73,17 @@ public class CalculatePoupNovaAccumulatedValueBetweenDates {
         }
     }
 
-    private BigDecimal calculateAccumulatedValue(List<Index> listEntity){
+    private BigDecimal calculateAccumulatedValue(List<Index> listEntity, LocalDate startDate){
+        int anniversaryDay = startDate.getDayOfMonth();
+
+        if (anniversaryDay > 28) {
+            anniversaryDay = 1;
+        }
+
+        final int targetDay = anniversaryDay;
+
         return listEntity.stream()
+                .filter(index -> index.getDataInit().getDayOfMonth() == targetDay)
                 .map(Index::getFator)
                 .reduce(BigDecimal.ONE, BigDecimal::multiply)
                 .setScale(8, RoundingMode.HALF_UP);

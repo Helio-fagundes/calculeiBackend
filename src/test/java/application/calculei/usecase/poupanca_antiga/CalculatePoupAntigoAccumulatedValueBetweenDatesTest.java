@@ -43,7 +43,7 @@ class CalculatePoupAntigoAccumulatedValueBetweenDatesTest {
         void givenRequestValid_whenExecute_thenReturnCalculatePoupAntigoBetweenDateResponse() {
 
             //GIVEN
-            LocalDate startDate = LocalDate.now().minusDays(10);
+            LocalDate startDate = LocalDate.now().minusMonths(2);
             LocalDate endDate = LocalDate.now();
             Double amount = 1000.0;
             CalculatePoupAntigoBetweenDateRequest request = new CalculatePoupAntigoBetweenDateRequest(amount, startDate, endDate);
@@ -58,7 +58,7 @@ class CalculatePoupAntigoAccumulatedValueBetweenDatesTest {
 
 
             //WHEN
-            when(repository.findByDataInitBetween(startDate, endDate)).thenReturn(List.of(index1, index2));
+            when(repository.findByDataInitBetween(startDate, endDate.minusMonths(1))).thenReturn(List.of(index1, index2));
             CalculatePoupAntigoBetweenDateResponse response = useCase.execute(request);
 
             //THEN
@@ -71,9 +71,9 @@ class CalculatePoupAntigoAccumulatedValueBetweenDatesTest {
                     () -> assertEquals(new BigDecimal("1.03020000"), response.accumulatedFactor(), "o percentual está calculado incorretamente."),
                     () -> assertEquals(startDate, response.startDate(), "a data inicial não está igual."),
                     () -> assertEquals(endDate, response.endDate(), "a data final não está igual."),
-                    () -> assertEquals(10, response.businessDays(), "o número de dias úteis não está correto.")
+                    () -> assertEquals(60, response.businessDays(), "o número de dias úteis não está correto.")
             );
-            verify(repository, times(1)).findByDataInitBetween(startDate, endDate);
+            verify(repository, times(1)).findByDataInitBetween(startDate, endDate.minusMonths(1));
         }
     }
 
@@ -155,17 +155,17 @@ class CalculatePoupAntigoAccumulatedValueBetweenDatesTest {
         @DisplayName("Deve lançar DataNotFoundException quando não houver índices para o período informado")
         void givenNoIndexesForPeriod_whenExecute_thenThrowDataNotFoundException() {
             //GIVEN
-            LocalDate startDate = LocalDate.now().minusDays(10);
+            LocalDate startDate = LocalDate.now().minusMonths(2);
             LocalDate endDate = LocalDate.now();
             Double amount = 1000.0;
             CalculatePoupAntigoBetweenDateRequest request = new CalculatePoupAntigoBetweenDateRequest(amount, startDate, endDate);
 
             //WHEN
-            when(repository.findByDataInitBetween(startDate, endDate)).thenReturn(List.of());
+            when(repository.findByDataInitBetween(startDate, endDate.minusMonths(1))).thenReturn(List.of());
 
             //THEN
             assertThrows(DataNotFoundException.class, () -> useCase.execute(request));
-            verify(repository, times(1)).findByDataInitBetween(startDate, endDate);
+            verify(repository, times(1)).findByDataInitBetween(startDate, endDate.minusMonths(1));
         }
 
     }

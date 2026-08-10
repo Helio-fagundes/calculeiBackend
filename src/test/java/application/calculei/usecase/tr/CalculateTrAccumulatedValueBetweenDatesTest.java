@@ -57,15 +57,13 @@ class CalculateTrAccumulatedValueBetweenDatesTest {
             index2.setFator(new BigDecimal("1.02"));
             index2.setDataInit(LocalDate.of(2024, 2, 1));
 
-            when(repository.findByDataInitBetween(startDate, endDate.minusDays(1)))
+            when(repository.findByDataInitBetween(startDate, endDate))
                     .thenReturn(List.of(index1, index2));
 
             // WHEN
             CalculateTrBetweenDateResponse response = useCase.execute(request);
 
             // THEN
-            // Fator acumulado = 1.01 * 1.02 = 1.0302
-            // Valor Final = 1000 * 1.0302 = 1030.20
             assertAll(
                     () -> assertNotNull(response),
                     () -> assertEquals(new BigDecimal("1030.20"), response.finalValue(), "o valor final está calculado incorretamente."),
@@ -75,7 +73,7 @@ class CalculateTrAccumulatedValueBetweenDatesTest {
                     () -> assertEquals(DateUtils.businessDays(startDate, endDate), response.businessDays(), "o número de dias úteis não está correto.")
             );
 
-            verify(repository, times(1)).findByDataInitBetween(startDate, endDate.minusDays(1));
+            verify(repository, times(1)).findByDataInitBetween(startDate, endDate);
         }
     }
 
@@ -157,17 +155,17 @@ class CalculateTrAccumulatedValueBetweenDatesTest {
         @DisplayName("Deve lançar DataNotFoundException quando não houver índices para o período informado")
         void givenNoIndexesForPeriod_whenExecute_thenThrowDataNotFoundException() {
             //GIVEN
-            LocalDate startDate = LocalDate.now().minusDays(10);
+            LocalDate startDate = LocalDate.now().minusMonths(2);
             LocalDate endDate = LocalDate.now();
             Double amount = 1000.0;
             CalculateTrBetweenDateRequest request = new CalculateTrBetweenDateRequest(amount, startDate, endDate);
 
             //WHEN
-            when(repository.findByDataInitBetween(startDate, endDate.minusDays(1))).thenReturn(List.of());
+            when(repository.findByDataInitBetween(startDate, endDate)).thenReturn(List.of());
 
             //THEN
             assertThrows(DataNotFoundException.class, () -> useCase.execute(request));
-            verify(repository, times(1)).findByDataInitBetween(startDate, endDate.minusDays(1));
+            verify(repository, times(1)).findByDataInitBetween(startDate, endDate);
         }
 
     }

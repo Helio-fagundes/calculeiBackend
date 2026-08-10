@@ -1,5 +1,6 @@
 package application.calculei.usecase.taxa_legal;
 
+import application.calculei.domain.enums.identify_enum.IdentifyFactorOrPercentual;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.value_object.DateUtils;
@@ -11,6 +12,7 @@ import application.calculei.usecase.taxa_legal.dto.CalculateTaxaLegalBetweenDate
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
@@ -45,12 +47,22 @@ public class CalculateTaxaLegalAccumulatedValueBetweenDates {
 
         long businessDays = DateUtils.businessDays(request.startDate(), request.endDate());
 
+        Long calendarDays = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
+
+        DayOfWeek dayOfWeekStartDate = request.startDate().getDayOfWeek();
+
+        DayOfWeek dayOfWeekEndDate = request.endDate().getDayOfWeek();
+
         return new CalculateTaxaLegalBetweenDateResponse(
                 request.startDate(),
                 request.endDate(),
                 businessDays,
+                calendarDays,
+                dayOfWeekStartDate,
+                dayOfWeekEndDate,
                 finalValue,
-                accumulatedValue
+                accumulatedValue,
+                IdentifyFactorOrPercentual.PERCENTUAL
         );
     }
 

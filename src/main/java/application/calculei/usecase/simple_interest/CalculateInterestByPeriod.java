@@ -1,13 +1,17 @@
 package application.calculei.usecase.simple_interest;
 
+import application.calculei.domain.enums.identify_enum.IdentifyFactorOrPercentual;
 import application.calculei.domain.value_object.DateUtils;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.exceptions.InvalidValueException;
-import application.calculei.usecase.simple_interest.dto.SimpleInterestDto;
+import application.calculei.usecase.simple_interest.dto.SimpleInterestRequestDTO;
+import application.calculei.usecase.simple_interest.dto.SimpleInterestResponseDTO;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class CalculateInterestByPeriod {
 
@@ -19,8 +23,16 @@ public class CalculateInterestByPeriod {
     private static final BigDecimal DAILY_RATE_TWELVE = BigDecimal.valueOf(0.12)
             .divide(BigDecimal.valueOf(360), 10, RoundingMode.HALF_UP);
 
-    public SimpleInterestDto execute(SimpleInterestDto request) {
+    public SimpleInterestResponseDTO execute(SimpleInterestRequestDTO request) {
         validateDates(request.startDate(), request.endDate());
+
+        Long daysBusiness = DateUtils.businessDays(request.startDate(), request.endDate());
+
+        Long diasCorridos = ChronoUnit.DAYS.between(request.startDate(), request.endDate());
+
+        DayOfWeek dayOfWeekStartDate = request.startDate().getDayOfWeek();
+
+        DayOfWeek dayOfWeekEndDate = request.endDate().getDayOfWeek();
 
         validateFactor(request.amount());
 
@@ -37,7 +49,7 @@ public class CalculateInterestByPeriod {
                 .add(interestValue)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        return new SimpleInterestDto(finalAmount, request.startDate(), request.endDate());
+        return new SimpleInterestResponseDTO(finalAmount, request.startDate(), request.endDate(), daysBusiness, diasCorridos, dayOfWeekStartDate, dayOfWeekEndDate, IdentifyFactorOrPercentual.PERCENTUAL);
     }
 
     private BigDecimal calculateHybridPercentage(LocalDate startDate, LocalDate endDate) {
