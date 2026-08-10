@@ -3,6 +3,7 @@ package application.calculei.usecase.poupanca_nova;
 import application.calculei.domain.models.Index;
 import application.calculei.domain.repository.IndexRepository;
 import application.calculei.domain.value_object.DateUtils;
+import application.calculei.usecase.exceptions.DataNotFoundException;
 import application.calculei.usecase.exceptions.InvalidPeriodException;
 import application.calculei.usecase.exceptions.InvalidValueException;
 import application.calculei.usecase.poupanca_nova.dto.CalculatePoupNovaBetweenDateRequest;
@@ -33,6 +34,10 @@ public class CalculatePoupNovaAccumulatedValueBetweenDates {
 
         if (!listEntity.isEmpty()) {
             accumulatedFactor = calculateAccumulatedValue(listEntity, request.startDate());
+        }
+
+        if (listEntity.isEmpty()) {
+            throw new DataNotFoundException("Nenhum índice de Poupança nova encontrado para o período informado.");
         }
 
         BigDecimal finalValue = calculateFinalValue(request.amount(), accumulatedFactor);

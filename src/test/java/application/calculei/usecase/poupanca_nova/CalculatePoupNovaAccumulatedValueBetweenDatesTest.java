@@ -43,19 +43,21 @@ class CalculatePoupNovaAccumulatedValueBetweenDatesTest {
         void givenRequestValid_whenExecute_thenReturnCalculatePoupNovaBetweenDateResponse(){
 
             //GIVEN
-            LocalDate startDate = LocalDate.now().minusDays(10);
+            LocalDate startDate = LocalDate.now().minusMonths(2);
             LocalDate endDate = LocalDate.now();
             Double amount = 1000.0;
             CalculatePoupNovaBetweenDateRequest request = new CalculatePoupNovaBetweenDateRequest(amount, startDate, endDate);
 
             Index index1 =  new Index();
             index1.setFator(BigDecimal.valueOf(1.01));
+            index1.setDataInit(startDate);
 
             Index index2 =  new Index();
             index2.setFator(BigDecimal.valueOf(1.02));
+            index2.setDataInit(endDate);
 
             //WHEN
-            when(repository.findByDataInitBetween(startDate, endDate)).thenReturn(List.of(index1, index2));
+            when(repository.findByDataInitBetween(startDate, endDate.minusMonths(1))).thenReturn(List.of(index1, index2));
             CalculatePoupNovaBetweenDateResponse response = useCase.execute(request);
 
             //THEN
@@ -68,9 +70,9 @@ class CalculatePoupNovaAccumulatedValueBetweenDatesTest {
                     () -> assertEquals(new BigDecimal("1.03020000"), response.accumulatedFactor(), "o percentual está calculado incorretamente."),
                     () -> assertEquals(startDate, response.startDate(), "a data inicial não está igual."),
                     () -> assertEquals(endDate, response.endDate(), "a data final não está igual."),
-                    () -> assertEquals(10, response.businessDays(), "o número de dias úteis não está correto.")
+                    () -> assertEquals(60, response.businessDays(), "o número de dias úteis não está correto.")
             );
-            verify(repository, times(1)).findByDataInitBetween(startDate, endDate);
+            verify(repository, times(1)).findByDataInitBetween(startDate, endDate.minusMonths(1));
         }
     }
 
@@ -152,17 +154,17 @@ class CalculatePoupNovaAccumulatedValueBetweenDatesTest {
         @DisplayName("Deve lançar DataNotFoundException quando não houver índices para o período informado")
         void givenNoIndexesForPeriod_whenExecute_thenThrowDataNotFoundException() {
             //GIVEN
-            LocalDate startDate = LocalDate.now().minusDays(10);
+            LocalDate startDate = LocalDate.now().minusMonths(2);
             LocalDate endDate = LocalDate.now();
             Double amount = 1000.0;
             CalculatePoupNovaBetweenDateRequest request = new CalculatePoupNovaBetweenDateRequest(amount, startDate, endDate);
 
             //WHEN
-            when(repository.findByDataInitBetween(startDate, endDate)).thenReturn(List.of());
+            when(repository.findByDataInitBetween(startDate, endDate.minusMonths(1))).thenReturn(List.of());
 
             //THEN
             assertThrows(DataNotFoundException.class, () -> useCase.execute(request));
-            verify(repository, times(1)).findByDataInitBetween(startDate, endDate);
+            verify(repository, times(1)).findByDataInitBetween(startDate, endDate.minusMonths(1));
         }
 
     }
