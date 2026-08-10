@@ -7,5 +7,7 @@ public enum MonetaryCorrection {
     IPCA_E,
     IGP_M,
     TJ11960,
-    TJ6899
+    TJ6899;
+
+
 }

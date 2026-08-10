@@ -1,9 +1,8 @@
 package application.calculei.adapters.controller;
 
-import application.calculei.domain.enums.index_enum.InterestCorrection;
-import application.calculei.domain.enums.index_enum.MonetaryCorrection;
 import application.calculei.infraestructure.swagger.ApiGetAllResponses;
 import application.calculei.usecase.index_monetary_correction.IndexMonetaryCorrection;
+import application.calculei.usecase.index_monetary_correction.dto.IndexResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +28,7 @@ public class IndexNameProviderController {
             description = "Retorna uma lista de nomes de índices de correção monetária disponíveis para cálculo."
     )
     @ApiGetAllResponses
-    public List<MonetaryCorrection> monetaryCorrection() {
+    public List<IndexResponseDto> monetaryCorrection() {
         return indexMonetaryCorrection.getAllMonetaryCorrections();
     }
 
@@ -39,7 +38,7 @@ public class IndexNameProviderController {
             description = "Retorna uma lista de nomes de índices de correção por juros disponíveis para cálculo."
     )
     @ApiGetAllResponses
-    public List<InterestCorrection> interestCorrection() {
+    public List<IndexResponseDto> interestCorrection() {
         return indexMonetaryCorrection.getAllInterestCorrections();
     }
 }
