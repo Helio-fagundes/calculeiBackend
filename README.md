@@ -3,8 +3,17 @@
 ![Java](https://img.shields.io/badge/Java-21_LTS_(Temurin)-ED8B00?style=for-the-badge&logo=java&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Red Hat OpenShift](https://img.shields.io/badge/Red_Hat_OpenShift-EE0000?style=for-the-badge&logo=redhat&logoColor=white)
-[![Continuos Integration and Delivery With GitHub Actions](https://github.com/Helio-fagundes/calculeiBackend/actions/workflows/continuous-deployment.yml/badge.svg)](https://github.com/Helio-fagundes/calculeiBackend/actions/workflows/continuous-deployment.yml)
+![Flyway](https://img.shields.io/badge/Flyway-CC0200?style=for-the-badge&logo=flyway&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Amazon ECS](https://img.shields.io/badge/Amazon_ECS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+![Amazon ECR](https://img.shields.io/badge/Amazon_ECR-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+![Amazon RDS](https://img.shields.io/badge/Amazon_RDS-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+
+![Continuous Integration and Delivery With GitHub Actions](https://github.com/Helio-fagundes/calculeiBackend/actions/workflows/continuous-deployment.yml/badge.svg)
+
 
 ## 📖 Visão Geral
 
@@ -21,13 +30,30 @@ Este projeto foi construído seguindo rigorosos padrões de qualidade de softwar
 * **SOLID & Clean Code:** Código expressivo, testável e de fácil leitura, garantindo que novos desenvolvedores possam contribuir rapidamente.
 
 ## 🚀 Tecnologias Utilizadas
+* Linguagem: Java 21 LTS (Eclipse Temurin)
+* Framework: Spring Boot (Web, Data JPA, Validation)
+* Banco de Dados: PostgreSQL (Hospedado no AWS RDS)
+* Migration de Banco: Flyway
+* Documentação: Swagger / Springdoc OpenAPI
+* Conteinerização: Docker
+* Infraestrutura Cloud: Amazon Web Services (AWS - ECS, ECR, ALB, RDS, IAM)
+* CI/CD: GitHub Actions
 
-* **Linguagem:** Java 21 LTS (Eclipse Temurin)
-* **Framework:** Spring Boot (Web, Data JPA, Validation)
-* **Banco de Dados:** PostgreSQL
-* **Migration de Banco:** Flyway
-* **Documentação:** Swagger / Springdoc OpenAPI
-* **Deploy/Orquestração:** Preparado para ambiente **Red Hat OpenShift**
+## ☁️ Infraestrutura Cloud (AWS) e Deploy
+O deploy da aplicação foi desenhado para ser totalmente conteinerizado e cloud-native, rodando em um ambiente de alta disponibilidade na AWS:
+* Amazon ECS (Elastic Container Service): Onde os containers Docker do Spring Boot são executados, orquestrando as tarefas de forma serverless e auto-escalável.
+* Amazon ECR (Elastic Container Registry): O repositório privado onde as imagens Docker da aplicação são armazenadas após cada build.
+* ALB (Application Load Balancer): O balanceador de carga que recebe o tráfego HTTP/HTTPS externo e distribui de forma inteligente e segura para as instâncias do ECS.
+* Amazon RDS (Relational Database Service): O banco de dados PostgreSQL rodando como serviço gerenciado, garantindo backups automatizados e alta performance para as consultas de índices.
+
+## 🔄 CI/CD (Integração e Entrega Contínuas)
+Todo o processo de entrega de código é automatizado utilizando GitHub Actions. O pipeline garante que nenhuma alteração chegue ao ambiente sem validação. O fluxo funciona da seguinte forma:
+1.  Commit & Push: O desenvolvedor realiza o push para a branch main.
+2.  Build & Tests: A pipeline executa a compilação do projeto via Maven e roda toda a suíte de testes unitários.
+3.  Docker Build: Caso os testes passem, a pipeline constrói a imagem Docker da aplicação.
+4.  Push ECR: A imagem é tageada com o hash do commit e enviada com segurança para o Amazon ECR, autenticando via IAM Roles/Access Keys.
+5.  Update Task Definition: A Action do GitHub cria uma nova revisão da Task Definition apontando para a nova imagem do ECR.
+6.  Deploy no ECS: O cluster atualiza os serviços sem downtime (Rolling Update), registrando os novos containers no ALB e removendo os antigos de forma transparente.
 
 ## ⚙️ Pré-requisitos
 
@@ -45,13 +71,14 @@ O projeto utiliza variáveis de ambiente para garantir a segurança das credenci
 | Variável        | Descrição                                | Exemplo Local                               |
 |:----------------|:-----------------------------------------|:--------------------------------------------|
 | `PORT`          | Porta onde o Spring Boot vai rodar       | `8080`                                      |
-| `SWHOST`        | Host base para a documentação do Swagger | `localhost:8080/swagger-ui/index.html#/`    |
-| `OPENSHIFT_DB`  | URL JDBC de conexão com o PostgreSQL     | `jdbc:postgresql://localhost:5432/calculei` |
-| `dbusername`    | Usuário do banco de dados                | `postgres`                                  |
-| `dbpassword`    | Senha do banco de dados                  | `sua_senha_aqui`                            |
+| `DB_HOST`       | Host / Endereço do banco de dados        | `localhost`                                 |
+| `DB_NAME`       | Nome do banco de dados                   | `calculei`                                  |
+| `DB_USER`       | Usuário do banco de dados                | `postgres`                                  |
+| `DB_PASSWORD`   | Senha do banco de dados                  | `sua_senha_aqui`                            |
 | `MAIL_HOST`     | Host do servidor de e-mail               | `smtp.gmail.com`                            |
-| `MAIL_PORT`     | Porta do servidor de e-mail              | `sua_porta_aqui`                            |
-| `MAIL_PASSWORD` | Senha do servidor de e-mail              | `sua_senha_aqui`                            |
+| `MAIL_PORT`     | Porta do servidor de e-mail              | `587`                                       |
+| `MAIL_USERNAME` | E-mail/Usuário para autenticação SMTP    | `seu_email@gmail.com`                       |
+| `MAIL_PASSWORD` | Senha (ou senha de app) do e-mail        | `sua_senha_aqui`                            |
 
 ### 🛠️ Como configurar as variáveis no IntelliJ IDEA
 
