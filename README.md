@@ -21,6 +21,8 @@ O **Calculei** é uma plataforma automatizada para cálculos judiciais e correç
 
 A aplicação sincroniza-se automaticamente com os índices oficiais do **Banco Central (Bc)**, garantindo extrema precisão e atualização em tempo real para cálculos de juros e correções (como Selic e TR). O sistema foi projetado para oferecer uma interação fluida e segura para o usuário final, com documentação interativa para a equipe técnica.
 
+<img width="1480" height="420" alt="image" src="https://github.com/user-attachments/assets/192699d9-4595-40ed-89d4-922d2502b880" />
+
 ## 🏗️ Arquitetura e Engenharia de Software
 
 Este projeto foi construído seguindo rigorosos padrões de qualidade de software do mercado corporativo, visando manutenibilidade, escalabilidade e resiliência:
