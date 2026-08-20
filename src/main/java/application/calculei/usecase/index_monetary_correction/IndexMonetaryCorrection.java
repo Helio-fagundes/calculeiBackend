@@ -11,7 +11,7 @@ public class IndexMonetaryCorrection {
 
     public List<IndexResponseDto> getAllMonetaryCorrections() {
         return Arrays.stream(MonetaryCorrection.values())
-                .map(index -> new IndexResponseDto(index.name()))
+                .map(index -> new IndexResponseDto(index.name(), index.getDescription()))
                 .toList();
     }
 
