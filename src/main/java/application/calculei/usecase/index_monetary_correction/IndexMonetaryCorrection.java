@@ -11,13 +11,13 @@ public class IndexMonetaryCorrection {
 
     public List<IndexResponseDto> getAllMonetaryCorrections() {
         return Arrays.stream(MonetaryCorrection.values())
-                .map(index -> new IndexResponseDto(index.name(), index.getDescription()))
+                .map(index -> new IndexResponseDto(index.name(), index.getLabel(), index.getDescription()))
                 .toList();
     }
 
     public List<IndexResponseDto>  getAllInterestCorrections() {
         return Arrays.stream(InterestCorrection.values())
-                .map(object -> new IndexResponseDto(object.name(), object.getDescription()))
+                .map(object -> new IndexResponseDto(object.name(), object.getLabel(), object.getDescription()))
                 .toList();
     }
 

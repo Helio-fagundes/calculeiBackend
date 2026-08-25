@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("tj6899")
+@RequestMapping("tTJ6899")
 @Tag(name = "TJ-6899", description = "Endpoints relacionados ao TJ-6899")
 public class Tj6899Controller {
 

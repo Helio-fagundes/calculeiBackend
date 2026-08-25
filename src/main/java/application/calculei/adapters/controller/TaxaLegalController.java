@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("taxalegal")
+@RequestMapping("TAXA-LEGAL")
 @Tag(name = "Taxa Legal", description = "Endpoints relacionados à Taxa Legal")
 public class TaxaLegalController {
 

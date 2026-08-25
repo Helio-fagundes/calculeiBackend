@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/ipca")
+@RequestMapping("/IPCA")
 @Tag(name = "IPCA", description = "Endpoints relacionados ao IPCA")
 public class IpcaController {
 

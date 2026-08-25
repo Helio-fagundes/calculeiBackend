@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/tr")
+@RequestMapping("/TR")
 @Tag(name = "TR", description = "Endpoints relacionados à Taxa Referencial (TR)")
 public class TrController {
 

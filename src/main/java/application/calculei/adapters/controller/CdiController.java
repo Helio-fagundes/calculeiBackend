@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/cdi")
+@RequestMapping("/CDI")
 @Tag(name = "CDI", description = "Endpoints relacionados ao CDI")
 public class CdiController {
 

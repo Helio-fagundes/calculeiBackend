@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/poupanca")
+@RequestMapping("/POUPANCA")
 @Tag(name = "Poupança", description = "Endpoints relacionados à Poupança")
 public class PoupancaController {
 

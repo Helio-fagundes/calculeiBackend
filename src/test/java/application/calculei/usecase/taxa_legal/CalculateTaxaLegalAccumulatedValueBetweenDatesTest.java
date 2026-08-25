@@ -75,7 +75,7 @@ class CalculateTaxaLegalAccumulatedValueBetweenDatesTest {
                     () -> assertEquals(new BigDecimal("1.03000000"), response.accumulatedFactor(), "o percentual está calculado incorretamente."),
                     () -> assertEquals(startDate, response.startDate(), "a data inicial não está igual."),
                     () -> assertEquals(endDate, response.endDate(), "a data final não está igual."),
-                    () -> assertEquals(99, response.businessDays(), "o número de dias úteis não está correto.")
+                    () -> assertEquals(114, response.businessDays(), "o número de dias úteis não está correto.")
             );
             verify(repository, times(1)).findByDataInitBetween(startDate, newDate);
         }

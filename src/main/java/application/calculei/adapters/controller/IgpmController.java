@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/igpm")
+@RequestMapping("/IGP_M")
 @Tag(name = "IGP-M", description = "Endpoints relacionados ao IGP-M")
 public class IgpmController {
 
